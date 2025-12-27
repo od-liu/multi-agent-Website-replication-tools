@@ -1,0 +1,209 @@
+# 产品卡片页面 - UI需求文档示例（Agent输出格式）
+# 这是Agent应该输出的格式示例
+
+- id: REQ-PRODUCT-CARD
+  name: 产品卡片
+  description: |
+    商品展示卡片，用于展示单个商品的基本信息。
+    
+    **整体布局分析**:
+    产品卡片采用垂直排列布局：
+    ```
+    ┌─────────────────────────┐
+    │                         │
+    │   ProductImage (图片)   │ ← 顶部，高度300px
+    │                         │
+    ├─────────────────────────┤
+    │  ProductInfo (商品信息) │ ← 中间，padding 20px
+    │  - 标题                 │
+    │  - 价格 + 评分          │
+    ├─────────────────────────┤
+    │  AddToCartButton (按钮) │ ← 底部，高度48px
+    └─────────────────────────┘
+    ```
+    
+    **颜色体系**（从截图中提取）:
+    - 主题色: #ff6b6b (红色，用于价格和按钮)
+    - 辅助色: #4ecdc4 (青色，用于评分星星)
+    - 背景色: #ffffff (卡片背景)
+    - 文本色: #333333 (商品名称), #999999 (原价)
+    - 边框色: #eeeeee (卡片边框)
+    
+    **页面尺寸参考**:
+    - 设计稿宽度: 1920px
+    - 卡片宽度: 300px (约占15%)
+    
+    **CSS 布局方式**:
+    ```css
+    .product-card {
+      display: flex;
+      flex-direction: column;  /* 垂直排列 */
+      width: 300px;
+      background: #ffffff;
+      border: 1px solid #eeeeee;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    ```
+    
+    参考图片: "./images/整体页面截图/产品卡片.png"
+  
+  dependencies: []
+  scenarios: []
+  
+  children:
+    - id: REQ-PRODUCT-IMAGE
+      name: 商品图片区域
+      description: |
+        展示商品主图，支持悬停放大效果。
+        
+        **位置信息**:
+        - 父容器: .product-card
+        - 位置: 卡片最上方（第一个子元素）
+        - 宽度: 100% (占据整个卡片宽度)
+        - 高度: 300px (固定高度)
+        
+        **在 JSX 中的位置**:
+        ```tsx
+        <div className="product-card">
+          <ProductImage src="..." />  {/* ← 第一个子元素 */}
+          <ProductInfo ... />
+          <AddToCartButton />
+        </div>
+        ```
+        
+        **CSS 布局方式**:
+        ```css
+        .product-image {
+          width: 100%;
+          height: 300px;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+        
+        .product-image:hover {
+          transform: scale(1.05);  /* 悬停放大 */
+        }
+        ```
+        
+        **网页资源**（直接用于实现）:
+        - 占位图片: "/images/product-placeholder.jpg"（从初始需求的"组件资源"中提取，图片加载失败时使用）
+        - 加载中图标: "/images/loading-spinner.gif"（从初始需求的"组件资源"中提取，图片加载中显示）
+        
+        参考图片: "./images/组件特写截图/商品图片.png"
+      
+      dependencies: []
+      scenarios: []
+      children: []
+    
+    - id: REQ-PRODUCT-INFO
+      name: 商品信息区域
+      description: |
+        展示商品名称、价格、评分等信息。
+        
+        **位置信息**:
+        - 父容器: .product-card
+        - 位置: 图片下方（第二个子元素）
+        - 内边距: 20px (上下左右)
+        - 布局: 垂直排列（标题在上，价格和评分在下）
+        
+        **在 JSX 中的位置**:
+        ```tsx
+        <div className="product-card">
+          <ProductImage />
+          <ProductInfo>         {/* ← 第二个子元素 */}
+            <h3>商品名称</h3>
+            <div className="price-rating">
+              <span className="price">¥99.00</span>
+              <span className="rating">⭐⭐⭐⭐⭐</span>
+            </div>
+          </ProductInfo>
+          <AddToCartButton />
+        </div>
+        ```
+        
+        **CSS 布局方式**:
+        ```css
+        .product-info {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .product-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #333333;
+          line-height: 1.5;
+          /* 限制两行显示 */
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .price-rating {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        ```
+        
+        参考图片: "./images/组件特写截图/商品信息.png"
+      
+      dependencies: []
+      scenarios: []
+      children: []
+    
+    - id: REQ-ADD-TO-CART-BUTTON
+      name: 加入购物车按钮
+      description: |
+        允许用户将商品加入购物车。
+        
+        **位置信息**:
+        - 父容器: .product-card
+        - 位置: 卡片最底部（第三个子元素）
+        - 宽度: 100% (占据整个卡片宽度)
+        - 高度: 48px
+        
+        **在 JSX 中的位置**:
+        ```tsx
+        <div className="product-card">
+          <ProductImage />
+          <ProductInfo />
+          <AddToCartButton onClick={...} />  {/* ← 第三个子元素 */}
+        </div>
+        ```
+        
+        **CSS 布局方式**:
+        ```css
+        .add-to-cart-button {
+          width: 100%;
+          height: 48px;
+          background: #ff6b6b;
+          color: #ffffff;
+          border: none;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        
+        .add-to-cart-button:hover {
+          background: #ff5252;
+          box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+        }
+        
+        .add-to-cart-button:disabled {
+          background: #cccccc;
+          cursor: not-allowed;
+        }
+        ```
+        
+        参考图片: "./images/组件特写截图/购物车按钮.png"
+      
+      dependencies: []
+      scenarios: []
+      children: []
+

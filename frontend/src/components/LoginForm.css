@@ -1,0 +1,208 @@
+/* ========== 表单卡片容器 ========== */
+.login-form-card {
+  width: 400px !important;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  padding: 40px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ========== 标签切换区域 ========== */
+.login-tabs {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  margin-bottom: 30px !important;
+}
+
+.login-tab {
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  color: #999999 !important;
+  cursor: pointer !important;
+  transition: color 0.3s ease !important;
+  user-select: none !important;
+}
+
+.login-tab.active {
+  color: #1890ff !important;
+  font-weight: 500 !important;
+}
+
+.login-tab:hover:not(.active) {
+  color: #666666 !important;
+}
+
+.login-tabs-divider {
+  width: 1px !important;
+  height: 20px !important;
+  background: #d9d9d9 !important;
+}
+
+/* ========== 输入框样式 ========== */
+.login-input-wrapper {
+  position: relative !important;
+  margin-bottom: 20px !important;
+}
+
+.login-input {
+  width: 100% !important;
+  height: 48px !important;
+  padding: 0 15px 0 45px !important;
+  font-size: 16px !important;
+  color: #333333 !important;
+  background: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-sizing: border-box !important;
+}
+
+.login-input::placeholder {
+  color: #c0c4cc !important;
+  font-size: 16px !important;
+}
+
+.login-input:focus {
+  border-color: #1890ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1) !important;
+}
+
+.login-input.error {
+  border-color: #ff4d4f !important;
+}
+
+.login-input.error:focus {
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1) !important;
+}
+
+/* ========== 输入框图标 ========== */
+.login-input-icon {
+  position: absolute !important;
+  left: 15px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 18px !important;
+  pointer-events: none !important;
+}
+
+/* ========== 错误提示 ========== */
+.login-error-message {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #ff4d4f !important;
+  font-size: 14px !important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.login-error-icon {
+  font-size: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* ========== 登录按钮 ========== */
+.login-button {
+  width: 100% !important;
+  height: 48px !important;
+  background: #ff8001 !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  margin-top: 30px !important;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #d97000 !important;
+  box-shadow: 0 2px 4px rgba(255, 128, 1, 0.3) !important;
+}
+
+.login-button:active:not(:disabled) {
+  background: #c86500 !important;
+}
+
+.login-button:disabled {
+  background: #f5f5f5 !important;
+  color: #c0c4cc !important;
+  cursor: not-allowed !important;
+}
+
+/* ========== 底部链接区域 ========== */
+.login-links {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important;
+  margin-top: 20px !important;
+}
+
+.login-link {
+  font-size: 14px !important;
+  color: #1890ff !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: color 0.3s ease !important;
+}
+
+.login-link:hover {
+  color: #40a9ff !important;
+  text-decoration: underline !important;
+}
+
+.login-links-divider {
+  width: 1px !important;
+  height: 14px !important;
+  background: #d9d9d9 !important;
+}
+
+/* ========== 服务时间说明 ========== */
+.login-service-info {
+  font-size: 12px !important;
+  color: #999999 !important;
+  line-height: 1.6 !important;
+  margin-top: 30px !important;
+  text-align: left !important;
+}
+
+/* ========== 扫码登录区域 ========== */
+.qr-login-area {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 0 !important;
+}
+
+.qr-code-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.qr-code-placeholder {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+.qr-instructions {
+  text-align: center !important;
+  color: #666666 !important;
+  font-size: 14px !important;
+}
+
+.qr-instructions p {
+  margin: 0 !important;
+}
+

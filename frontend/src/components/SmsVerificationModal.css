@@ -1,0 +1,195 @@
+/* ========== 遮罩层 ========== */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ========== 弹窗容器 ========== */
+.sms-verification-modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 700px !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 40px !important;
+  z-index: 1001 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* ========== 标题栏 ========== */
+.modal-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 30px !important;
+}
+
+.modal-title {
+  font-size: 18px !important;
+  color: #333333 !important;
+  font-weight: 500 !important;
+}
+
+.modal-close-button {
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 24px !important;
+  color: #999999 !important;
+  cursor: pointer !important;
+  transition: color 0.3s ease !important;
+}
+
+.modal-close-button:hover {
+  color: #333333 !important;
+}
+
+/* ========== 验证方式标题 ========== */
+.modal-verification-title {
+  font-size: 24px !important;
+  color: #1890ff !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  margin-bottom: 40px !important;
+}
+
+/* ========== 输入框样式 ========== */
+.modal-input-wrapper {
+  margin-bottom: 20px !important;
+}
+
+.modal-input {
+  width: 100% !important;
+  height: 60px !important;
+  padding: 0 20px !important;
+  font-size: 18px !important;
+  color: #333333 !important;
+  background: #ffffff !important;
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-sizing: border-box !important;
+}
+
+.modal-input::placeholder {
+  color: #c0c4cc !important;
+  font-size: 18px !important;
+}
+
+.modal-input:focus {
+  border-color: #1890ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1) !important;
+}
+
+.modal-input.error {
+  border-color: #ff4d4f !important;
+}
+
+/* ========== 验证码输入区域 ========== */
+.modal-verification-input-group {
+  display: flex !important;
+  gap: 15px !important;
+  margin-bottom: 20px !important;
+}
+
+.modal-verification-input {
+  flex: 1 !important;
+  margin-bottom: 0 !important;
+}
+
+.modal-get-code-button {
+  width: 200px !important;
+  height: 60px !important;
+  background: #f5f5f5 !important;
+  color: #666666 !important;
+  font-size: 16px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-get-code-button:hover:not(:disabled) {
+  background: #e8e8e8 !important;
+}
+
+.modal-get-code-button:disabled {
+  background: #e8e8e8 !important;
+  color: #999999 !important;
+  cursor: not-allowed !important;
+}
+
+/* ========== 消息提示框 ========== */
+.modal-message {
+  padding: 12px 20px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.modal-message.error {
+  background: #fff1f0 !important;
+  border: 1px solid #ff4d4f !important;
+  color: #ff4d4f !important;
+}
+
+.modal-message.success {
+  background: #f6ffed !important;
+  border: 1px solid #52c41a !important;
+  color: #52c41a !important;
+}
+
+/* ========== 确定按钮 ========== */
+.modal-confirm-button {
+  width: 100% !important;
+  height: 60px !important;
+  background: #ff8001 !important;
+  color: #ffffff !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+  margin-top: 30px !important;
+}
+
+.modal-confirm-button:hover:not(:disabled) {
+  background: #d97000 !important;
+  box-shadow: 0 2px 4px rgba(255, 128, 1, 0.3) !important;
+}
+
+.modal-confirm-button:active:not(:disabled) {
+  background: #c86500 !important;
+}
+
+.modal-confirm-button:disabled {
+  background: #f5f5f5 !important;
+  color: #c0c4cc !important;
+  cursor: not-allowed !important;
+}
+

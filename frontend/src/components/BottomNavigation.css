@@ -1,0 +1,73 @@
+/* ========== 容器样式 ========== */
+.bottom-navigation {
+  width: 100% !important;
+  background: #ffffff !important;
+  padding: 30px 50px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 40px !important;
+}
+
+/* ========== 友情链接区域 ========== */
+.bottom-links-section {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+.bottom-links-title {
+  font-size: 14px !important;
+  color: #666666 !important;
+  font-weight: 400 !important;
+}
+
+.bottom-links-logos {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 15px 20px !important;
+}
+
+.bottom-link-logo {
+  width: auto !important;
+  max-width: 180px !important;
+  height: auto !important;
+}
+
+/* ========== 二维码区域 ========== */
+.bottom-qrcode-section {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 30px !important;
+}
+
+.bottom-qrcode-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.bottom-qrcode-title {
+  font-size: 14px !important;
+  color: #666666 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.bottom-qrcode-image {
+  width: 90px !important;
+  height: 90px !important;
+  border: 1px solid #e8e8e8 !important;
+  border-radius: 4px !important;
+}
+
+/* ========== 免责声明区域 ========== */
+.bottom-disclaimer {
+  font-size: 12px !important;
+  color: #999999 !important;
+  line-height: 1.6 !important;
+  max-width: 250px !important;
+  text-align: right !important;
+}
+

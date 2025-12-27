@@ -1,0 +1,39 @@
+/* ========== 容器样式 ========== */
+.top-navigation {
+  width: 100% !important;
+  height: 80px !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid #e8e8e8 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  padding: 0 50px !important;
+  gap: 20px !important;
+}
+
+/* ========== Logo区域 ========== */
+.top-navigation-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+}
+
+.top-navigation-logo img {
+  height: 40px !important;
+  width: auto !important;
+}
+
+/* ========== 欢迎文字 ========== */
+.top-navigation-welcome {
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  color: #333333 !important;
+  line-height: 1 !important;
+}
+
+/* ========== 交互状态 ========== */
+.top-navigation-logo:hover {
+  opacity: 0.85 !important;
+}
+

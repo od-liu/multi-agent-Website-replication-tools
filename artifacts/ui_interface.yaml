@@ -1,0 +1,33 @@
+UI-TOP-NAV:
+  related_req_id: REQ-TOP-NAV
+  path: frontend/src/components/TopNavigation.tsx
+  description: 顶部导航栏，包含品牌Logo和欢迎文字
+  upstream_ids: []
+  downstream_ids: []
+UI-LOGIN-FORM:
+  related_req_id: REQ-LOGIN-FORM
+  path: frontend/src/components/LoginForm.tsx
+  description: 用户登录表单，支持账号登录和扫码登录两种模式
+  upstream_ids: []
+  downstream_ids:
+    - API-LOGIN
+UI-BOTTOM-NAV:
+  related_req_id: REQ-BOTTOM-NAV
+  path: frontend/src/components/BottomNavigation.tsx
+  description: 底部导航区域，包含友情链接、二维码和免责声明
+  upstream_ids: []
+  downstream_ids: []
+UI-SMS-VERIFICATION:
+  related_req_id: REQ-SMS-VERIFICATION
+  path: frontend/src/components/SmsVerificationModal.tsx
+  description: 短信验证弹窗，用于二次验证用户身份
+  upstream_ids: []
+  downstream_ids:
+    - API-SEND-SMS
+    - API-VERIFY-SMS
+UI-LOGIN-PAGE:
+  related_req_id: REQ-LOGIN-PAGE
+  path: frontend/src/pages/LoginPage.tsx
+  description: 登录页面容器，组合所有子组件（顶部导航、登录表单、底部导航、短信验证）
+  upstream_ids: []
+  downstream_ids: []
