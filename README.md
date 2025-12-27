@@ -1,40 +1,49 @@
-# 12306 登录系统 - 骨架代码
+# 12306登录系统 - 骨架代码
 
-这是一个完整的登录系统骨架代码，包含前端（React + TypeScript）和后端（Node.js + Express + SQLite）。
+这是一个12306登录系统的骨架代码实现，包含完整的前后端架构和接口定义。
 
 ## 项目结构
 
 ```
-/
-├── frontend/               # React前端应用
+├── backend/                    # 后端服务
 │   ├── src/
-│   │   ├── components/    # React组件
-│   │   │   ├── TopNavigation.tsx
-│   │   │   ├── LoginForm.tsx
-│   │   │   ├── BottomNavigation.tsx
-│   │   │   └── SmsVerificationModal.tsx
-│   │   ├── pages/
-│   │   │   └── LoginPage.tsx
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── public/
-│   │   └── images/        # 静态资源图片
-│   └── package.json
-│
-├── backend/               # Node.js后端服务
-│   ├── src/
+│   │   ├── database/          # 数据库相关
+│   │   │   ├── init_db.js     # 数据库初始化
+│   │   │   ├── db.js          # 数据库连接
+│   │   │   └── operations.js  # 数据库操作函数
 │   │   ├── routes/
-│   │   │   └── auth.js    # 登录和验证API
-│   │   ├── database/
-│   │   │   ├── db.js
-│   │   │   ├── init_db.js
-│   │   │   └── operations.js
+│   │   │   └── api.js         # API路由
 │   │   ├── utils/
-│   │   │   └── response.js
-│   │   └── index.js       # 服务器入口
+│   │   │   └── response.js    # 响应工具函数
+│   │   └── index.js           # Express服务器入口
+│   ├── database.db            # SQLite数据库文件（运行后生成）
 │   └── package.json
 │
-└── requirements/          # 需求文档和参考图片
+├── frontend/                   # 前端应用
+│   ├── public/
+│   │   └── images/            # 静态图片资源（10张）
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── index.ts       # Axios API客户端
+│   │   ├── components/
+│   │   │   ├── TopNavigation.tsx/css      # 顶部导航组件
+│   │   │   ├── LoginForm.tsx/css          # 登录表单组件
+│   │   │   ├── BottomNavigation.tsx/css   # 底部导航组件
+│   │   │   └── SMSVerification.tsx/css    # 短信验证组件
+│   │   ├── pages/
+│   │   │   └── LoginPage.tsx/css          # 登录页面
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
+│   ├── index.html
+│   ├── vite.config.ts
+│   ├── tsconfig.json
+│   └── package.json
+│
+└── requirements/               # 需求文档和参考图片
+    ├── ui-requirements.yaml
+    ├── ui-style-guide.md
+    └── images/                # 参考图片
 ```
 
 ## 技术栈
@@ -42,28 +51,27 @@
 ### 前端
 - **框架**: React 18 + TypeScript
 - **构建工具**: Vite
+- **样式**: 传统CSS（无预处理器）
+- **HTTP客户端**: Axios
 - **路由**: React Router DOM v6
-- **HTTP 客户端**: Axios
-- **样式**: 传统CSS（非Tailwind）
-- **测试**: Vitest + React Testing Library
 
 ### 后端
-- **运行时**: Node.js
+- **运行时**: Node.js (ES Modules)
 - **框架**: Express.js
 - **数据库**: SQLite3
-- **测试**: Vitest + Supertest
+- **工具**: Nodemon (开发), CORS, Body-parser
 
 ## 快速开始
 
 ### 1. 安装依赖
 
 ```bash
-# 安装前端依赖
-cd frontend
+# 安装后端依赖
+cd backend
 npm install
 
-# 安装后端依赖
-cd ../backend
+# 安装前端依赖
+cd ../frontend
 npm install
 ```
 
@@ -74,18 +82,24 @@ cd backend
 node src/database/init_db.js
 ```
 
-这将创建数据库表并插入测试用户：
+这将创建以下数据表：
+- **users**: 用户表（id, username, password, email, phone, id_card_last4）
+- **verification_codes**: 验证码表（id, user_id, code, expires_at, is_used）
+
+测试用户数据：
 - 用户名: `testuser`, 密码: `password123`, 证件号后4位: `1234`
-- 用户名: `admin`, 密码: `admin123`, 证件号后4位: `5678`
+- 用户名: `admin`, 密码: `admin123456`, 证件号后4位: `5678`
 
 ### 3. 启动后端服务
 
 ```bash
 cd backend
-npm run dev
+npm run dev    # 开发模式（使用nodemon）
+# 或
+npm start      # 生产模式
 ```
 
-后端服务将运行在 http://localhost:5000
+后端服务将在 `http://localhost:3001` 启动
 
 ### 4. 启动前端应用
 
@@ -94,201 +108,202 @@ cd frontend
 npm run dev
 ```
 
-前端应用将运行在 http://localhost:3000
+前端应用将在 `http://localhost:5173` 启动
 
-## 功能实现清单
+## 🔒 测试凭证配置（可选）
 
-### 已实现功能（骨架代码）
+**⚠️ 重要说明**：此步骤仅在使用 UI Analyzer Agent 的**交互场景截图功能**时需要。如果你只是运行普通的登录功能测试，可以跳过此步骤。
 
-#### UI 组件
-- ✅ **登录页面** (LoginPage)
-  - 上中下三段式布局
-  - 背景图片
-  - 子组件插槽
+### 为什么需要配置凭证？
 
-- ✅ **顶部导航** (TopNavigation)
-  - 品牌Logo和名称
-  - 欢迎文字
+UI Analyzer Agent 可以自动执行交互场景并截图（例如：登录后的短信验证弹窗）。这些交互需要真实的测试账户凭证，但**绝对不能**将真实用户名和密码提交到 Git 仓库。
 
-- ✅ **登录表单** (LoginForm)
-  - 账号/扫码登录切换
-  - 用户名和密码输入
-  - 6个验证场景：
-    - 用户名为空
-    - 密码为空
-    - 密码长度不足
-    - 用户名未注册
-    - 密码错误
-    - 登录成功
-  - 注册和忘记密码链接
+### 快速配置步骤
 
-- ✅ **底部导航** (BottomNavigation)
-  - 友情链接图片
-  - 4个二维码展示
-  - 免责声明文字
+1. **复制凭证模板文件**：
+```bash
+cp credentials.example.env credentials.env
+```
 
-- ✅ **短信验证弹窗** (SmsVerificationModal)
-  - 证件号输入
-  - 验证码输入
-  - 获取验证码（60秒倒计时）
-  - 10个验证场景：
-    - 证件号错误
-    - 获取验证码成功
-    - 频率限制
-    - 证件号为空
-    - 证件号长度不正确
-    - 验证码为空
-    - 验证码长度不正确
-    - 验证码错误
-    - 验证码过期
-    - 验证成功
+2. **编辑 credentials.env 文件**：
+```env
+# 填入你的测试账户信息
+LOGIN_USERNAME=your_test_username
+LOGIN_PASSWORD=your_test_password
+LOGIN_ID_CARD_LAST4=1234
+```
 
-#### API 接口
-- ✅ `POST /api/auth/login` - 用户登录
-- ✅ `POST /api/auth/send-sms` - 发送短信验证码
-- ✅ `POST /api/auth/verify-sms` - 验证短信验证码
+3. **验证配置**（推荐）：
+```bash
+./check_credentials.sh
+```
 
-#### 业务逻辑
-- ✅ `validateLogin()` - 验证用户凭据
-- ✅ `sendSmsCode()` - 发送短信验证码
-- ✅ `verifySmsCode()` - 验证短信验证码
+如果所有检查通过，你会看到：
+```
+🎉 所有检查通过！凭证配置正确。
+```
 
-## 测试账号
+### 📚 详细文档
 
-### 登录测试
-- 用户名: `testuser`
-- 密码: `password123`
-- 证件号后4位: `1234`
+完整的凭证配置指南请查看：[CREDENTIALS_SETUP.md](CREDENTIALS_SETUP.md)
 
-或
+### ✅ 安全保证
 
-- 用户名: `admin`
-- 密码: `admin123`
-- 证件号后4位: `5678`
+- ✅ `credentials.env` 已在 `.gitignore` 中，不会被提交到 Git
+- ✅ 只有 `credentials.example.env`（模板）会被提交，不包含真实信息
+- ✅ 建议使用专门的测试账户，不要使用个人主账户
 
-### 短信验证码
-在开发环境中，验证码会输出到浏览器控制台。
-模拟验证码：`123456`（用于测试）
-
-## API 文档
+## API接口文档
 
 ### 1. 用户登录
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "password": "password123"
-}
-
-Response:
-{
-  "success": true,
-  "message": "登录成功",
-  "data": {
+- **接口**: `POST /api/auth/login`
+- **请求体**:
+  ```json
+  {
+    "username": "testuser",
+    "password": "password123"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "success": true,
     "userId": 1,
     "username": "testuser",
-    "needSmsVerification": true
+    "message": "登录成功"
   }
-}
-```
+  ```
 
 ### 2. 发送短信验证码
-```http
-POST /api/auth/send-sms
-Content-Type: application/json
-
-{
-  "userId": 1,
-  "idNumber": "1234"
-}
-
-Response:
-{
-  "success": true,
-  "message": "验证码发送成功",
-  "code": "123456"
-}
-```
+- **接口**: `POST /api/auth/send-sms`
+- **请求体**:
+  ```json
+  {
+    "userId": 1,
+    "idCardLast4": "1234"
+  }
+  ```
+- **响应**:
+  ```json
+  {
+    "success": true,
+    "code": "123456",
+    "message": "验证码已发送，请注意查收。"
+  }
+  ```
+- **注意**: 验证码会同时输出到浏览器控制台
 
 ### 3. 验证短信验证码
-```http
-POST /api/auth/verify-sms
-Content-Type: application/json
-
-{
-  "userId": 1,
-  "idNumber": "1234",
-  "smsCode": "123456"
-}
-
-Response:
-{
-  "success": true,
-  "message": "验证成功",
-  "data": {
+- **接口**: `POST /api/auth/verify-sms`
+- **请求体**:
+  ```json
+  {
     "userId": 1,
-    "username": "testuser"
+    "idCardLast4": "1234",
+    "code": "123456"
   }
-}
+  ```
+- **响应**:
+  ```json
+  {
+    "success": true,
+    "message": "验证成功"
+  }
+  ```
+
+## 功能场景覆盖
+
+### 登录表单（6个场景）
+1. ✅ 校验用户名为空
+2. ✅ 校验密码为空
+3. ✅ 校验密码长度
+4. ✅ 用户名未注册
+5. ✅ 密码错误
+6. ✅ 登录成功
+
+### 短信验证（9个场景）
+1. ✅ 获取验证码-证件号错误
+2. ✅ 获取验证码-成功
+3. ✅ 获取验证码-频率限制（1分钟）
+4. ✅ 验证-证件号为空
+5. ✅ 验证-证件号长度不正确
+6. ✅ 验证-验证码为空
+7. ✅ 验证-验证码长度不正确
+8. ✅ 验证-验证码错误/过期
+9. ✅ 验证-成功
+
+## UI组件说明
+
+### 1. LoginPage（登录页面容器）
+- **位置**: `frontend/src/pages/LoginPage.tsx`
+- **布局**: 上中下三段式（1185px × 954px）
+- **子组件**: TopNavigation, LoginForm, BottomNavigation, SMSVerification
+
+### 2. TopNavigation（顶部导航）
+- **位置**: `frontend/src/components/TopNavigation.tsx`
+- **功能**: 显示Logo和欢迎文字
+- **尺寸**: 100% × 80px
+
+### 3. LoginForm（登录表单）
+- **位置**: `frontend/src/components/LoginForm.tsx`
+- **功能**: 账号登录/扫码登录切换、用户名密码输入、验证
+- **尺寸**: 380px × 373px（绝对定位右侧）
+
+### 4. BottomNavigation（底部导航）
+- **位置**: `frontend/src/components/BottomNavigation.tsx`
+- **功能**: 友情链接（4个）、二维码（4个）、版权信息
+- **尺寸**: 100% × 274px
+
+### 5. SMSVerification（短信验证）
+- **位置**: `frontend/src/components/SMSVerification.tsx`
+- **功能**: 证件号验证、验证码发送和验证
+- **尺寸**: 700px（固定定位居中）
+
+## 接口调用链
+
+```
+UI-LOGIN-FORM 
+  → API-LOGIN 
+    → FUNC-AUTHENTICATE-USER 
+      → users表查询
+
+UI-SMS-VERIFICATION 
+  → API-SEND-SMS 
+    → FUNC-GENERATE-CODE 
+      → users表查询 + verification_codes表插入
+
+UI-SMS-VERIFICATION 
+  → API-VERIFY-SMS 
+    → FUNC-VERIFY-CODE 
+      → users表查询 + verification_codes表查询/更新
 ```
 
 ## 注意事项
 
-### 骨架代码说明
-这是一个**骨架代码项目**，提供完整的接口定义和基本实现，但以下功能仅为模拟：
+1. **图片资源**: 所有图片资源已复制到 `frontend/public/images/`，共10张
+2. **密码加密**: 当前使用明文密码，生产环境应使用bcrypt等加密
+3. **验证码**: 验证码会在控制台输出，实际项目应通过短信服务发送
+4. **CORS**: 后端已配置CORS中间件，允许跨域请求
+5. **代理**: Vite已配置API代理，前端请求会自动转发到后端
 
-1. **数据库操作**：当前使用内存中的模拟数据，需要在实际实现时连接真实数据库
-2. **短信发送**：验证码仅输出到控制台，实际需要集成第三方短信服务
-3. **密码加密**：当前明文存储，实际需要使用bcrypt等加密
-4. **Token认证**：未实现JWT token，需要在实际实现时添加
-5. **表单验证**：基础验证已实现，可能需要更严格的验证规则
+## 开发说明
 
-### UI 视觉还原
-所有组件的CSS样式严格按照 `requirements/ui-style-guide.md` 规范实现，确保像素级精确还原参考图片。
+这是一个骨架代码（Skeleton Code）项目，包含：
+- ✅ 完整的接口定义和类型声明
+- ✅ 所有场景的实现逻辑
+- ✅ 像素级精确的UI还原
+- ✅ 前后端完整的调用链
+- ⚠️ 不包含单元测试（需要在TDD阶段添加）
+- ⚠️ 不包含生产级的安全措施（如密码加密、HTTPS等）
 
-### 接口注册
-所有UI组件、API接口和业务函数已通过MCP工具注册，可追溯完整的调用链：
-- UI → API → Function → Database
+## 下一步
 
-## 下一步工作
-
-要将骨架代码转变为生产级应用，建议按以下顺序完成：
-
-1. **数据库集成**
-   - 实现真实的SQLite查询
-   - 添加数据库迁移脚本
-   - 实现连接池
-
-2. **安全增强**
-   - 密码哈希（bcrypt）
-   - JWT token认证
-   - HTTPS配置
-   - CSRF防护
-
-3. **短信服务**
-   - 集成阿里云/腾讯云短信服务
-   - 实现频率限制
-   - 添加验证码过期机制
-
-4. **测试完善**
-   - 编写单元测试
-   - 编写集成测试
-   - 添加E2E测试
-
-5. **生产部署**
-   - 环境变量配置
-   - Docker容器化
-   - CI/CD流程
-   - 监控和日志
+1. **TDD Developer**: 为所有组件和函数编写测试
+2. **安全加固**: 实现密码加密、JWT认证等
+3. **错误处理**: 完善错误边界和全局错误处理
+4. **性能优化**: 添加加载状态、防抖节流等
+5. **部署**: 配置生产环境构建和部署
 
 ## 许可证
 
-MIT License
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-
+本项目仅用于学习和开发目的。

@@ -1,0 +1,122 @@
+{
+  "登录页-顶部导航-Logo.png": {
+    "originalSize": {
+      "width": 200,
+      "height": 50
+    },
+    "displaySize": {
+      "width": 200,
+      "height": 50
+    },
+    "scale": "1.000",
+    "cssStrategy": "background-image: url(...); background-size: auto; background-position: 0% 0%;"
+  },
+  "登录页-背景-新.jpg": {
+    "originalSize": {
+      "width": 1185,
+      "height": 600
+    },
+    "displaySize": {
+      "width": 1185,
+      "height": 600
+    },
+    "scale": "1.000",
+    "cssStrategy": "background-image: url(...); background-size: auto; background-position: 50% 50%; background-repeat: no-repeat;"
+  },
+  "登录页-底部导航-中国铁路官方微信二维码.png": {
+    "originalSize": {
+      "width": 344,
+      "height": 344
+    },
+    "displaySize": {
+      "width": 80,
+      "height": 80
+    },
+    "scale": "0.233",
+    "cssStrategy": "width: 80px; height: 80px; object-fit: contain;"
+  },
+  "登录页-底部导航-中国铁路官方微博二维码.png": {
+    "originalSize": {
+      "width": 800,
+      "height": 800
+    },
+    "displaySize": {
+      "width": 80,
+      "height": 80
+    },
+    "scale": "0.100",
+    "cssStrategy": "width: 80px; height: 80px; object-fit: contain;"
+  },
+  "登录页-底部导航-12306公众号二维码.png": {
+    "originalSize": {
+      "width": 258,
+      "height": 258
+    },
+    "displaySize": {
+      "width": 80,
+      "height": 80
+    },
+    "scale": "0.310",
+    "cssStrategy": "width: 80px; height: 80px; object-fit: contain;"
+  },
+  "登录页-底部导航-铁路12306二维码.png": {
+    "originalSize": {
+      "width": 258,
+      "height": 258
+    },
+    "displaySize": {
+      "width": 80,
+      "height": 80
+    },
+    "scale": "0.310",
+    "cssStrategy": "width: 80px; height: 80px; object-fit: contain;"
+  },
+  "登录页-底部导航-中国国家铁路集团有限公司.png": {
+    "originalSize": {
+      "width": 300,
+      "height": 51
+    },
+    "displaySize": {
+      "width": 200,
+      "height": 34
+    },
+    "scale": "0.667",
+    "cssStrategy": "width: 200px; height: 34px; object-fit: contain;"
+  },
+  "登录页-底部导航-中国铁路财产保险自保有限公司.png": {
+    "originalSize": {
+      "width": 400,
+      "height": 68
+    },
+    "displaySize": {
+      "width": 200,
+      "height": 34
+    },
+    "scale": "0.500",
+    "cssStrategy": "width: 200px; height: 34px; object-fit: contain;"
+  },
+  "登录页-底部导航-中国铁路95306网.png": {
+    "originalSize": {
+      "width": 800,
+      "height": 136
+    },
+    "displaySize": {
+      "width": 200,
+      "height": 34
+    },
+    "scale": "0.250",
+    "cssStrategy": "width: 200px; height: 34px; object-fit: contain;"
+  },
+  "登录页-底部导航-中铁快运股份有限公司.png": {
+    "originalSize": {
+      "width": 400,
+      "height": 68
+    },
+    "displaySize": {
+      "width": 200,
+      "height": 34
+    },
+    "scale": "0.500",
+    "cssStrategy": "width: 200px; height: 34px; object-fit: contain;"
+  }
+}

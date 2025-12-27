@@ -1,0 +1,95 @@
+/* ========================================
+   登录页面容器样式
+   UI-LOGIN-PAGE Component Styles
+   ======================================== */
+
+/* ========== 1. 页面容器 ========== */
+.login-page-container {
+  width: 1185px !important;
+  min-height: 954px !important;
+  margin: 0 auto !important;
+  background-color: #f5f5f5 !important;
+  position: relative !important;
+}
+
+/* ========== 2. 顶部导航Slot ========== */
+.top-navigation-slot {
+  width: 100% !important;
+  height: 80px !important;
+}
+
+/* ========== 3. 中间内容区域 ========== */
+.main-content-area {
+  width: 100% !important;
+  height: 600px !important;
+  position: relative !important;
+  
+  /* 背景图片 - 登录页-背景-新.jpg */
+  background-image: url('/images/登录页-背景-新.jpg') !important;
+  background-size: auto !important;
+  background-position: 50% 50% !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 图片信息注释 */
+/* 原始尺寸: 1185px × 600px */
+/* 显示尺寸: 1185px × 600px */
+/* 缩放比例: 1.000 */
+
+/* ========== 4. 登录表单Slot（位于中间内容区域右侧） ========== */
+.login-form-slot {
+  /* 登录表单将使用绝对定位放置在右侧 */
+  /* 具体样式由LoginForm组件自身定义 */
+}
+
+/* ========== 5. 底部导航Slot ========== */
+.bottom-navigation-slot {
+  width: 100% !important;
+  min-height: 274px !important;
+}
+
+/* ========== 6. 短信验证模态框Slot ========== */
+.sms-verification-slot {
+  /* 模态框使用fixed定位，由SMSVerification组件自身定义 */
+}
+
+/* ========== 临时占位符样式（实际组件会替换这些） ========== */
+.placeholder-top-nav,
+.placeholder-login-form,
+.placeholder-bottom-nav,
+.placeholder-sms-modal {
+  padding: 20px !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 2px dashed #cccccc !important;
+  text-align: center !important;
+  color: #666666 !important;
+}
+
+.placeholder-top-nav {
+  height: 40px !important;
+  line-height: 40px !important;
+}
+
+.placeholder-login-form {
+  position: absolute !important;
+  right: 0 !important;
+  top: 19px !important;
+  width: 380px !important;
+  min-height: 373px !important;
+}
+
+.placeholder-bottom-nav {
+  min-height: 200px !important;
+}
+
+.placeholder-sms-modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 700px !important;
+  background-color: #ffffff !important;
+  border: 2px solid #2d8cf0 !important;
+  border-radius: 8px !important;
+  z-index: 1001 !important;
+}

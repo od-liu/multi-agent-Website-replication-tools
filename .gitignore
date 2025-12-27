@@ -1,0 +1,48 @@
+# 环境变量和凭证文件（⚠️ 切勿删除此部分）
+credentials.env
+.env
+*.env
+!.env.example
+!credentials.example.env
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+database.db
+test_database.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 测试覆盖率
+coverage/
+.nyc_output/
+
+# 构建输出
+dist/
+build/
+*.log
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 操作系统
+Thumbs.db
+.DS_Store
+

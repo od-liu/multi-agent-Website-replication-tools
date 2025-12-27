@@ -1,0 +1,45 @@
+/* ========================================
+   顶部导航样式
+   UI-TOP-NAV Component Styles
+   ======================================== */
+
+/* ========== 1. 顶部导航容器 ========== */
+.top-navigation {
+  width: 100% !important;
+  height: 80px !important;
+  background-color: #ffffff !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0 40px !important;
+  box-sizing: border-box !important;
+}
+
+/* ========== 2. Logo区域 ========== */
+.top-navigation-logo {
+  width: 200px !important;
+  height: 50px !important;
+  background-image: url('/images/登录页-顶部导航-Logo.png') !important;
+  background-size: auto !important;
+  background-position: 0% 0% !important;
+  background-repeat: no-repeat !important;
+  cursor: pointer !important;
+}
+
+/* 图片信息注释 */
+/* 原始尺寸: 200px × 50px */
+/* 显示尺寸: 200px × 50px */
+/* 缩放比例: 1.000 */
+
+/* Logo 悬停效果 */
+.top-navigation-logo:hover {
+  opacity: 0.9 !important;
+}
+
+/* ========== 3. 欢迎文字 ========== */
+.top-navigation-welcome {
+  font-size: 14px !important;
+  color: #333333 !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+}

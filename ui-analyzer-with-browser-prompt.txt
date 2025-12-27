@@ -700,6 +700,7 @@ mcp_cursor-browser-extension_browser_evaluate({
 - 内部结构
 - 网页资源（带尺寸信息）
 - 参考图片路径
+- **交互状态截图**（如果 Phase 7 执行了交互场景）
 
 **示例输出**：
 
@@ -822,6 +823,122 @@ mcp_cursor-browser-extension_browser_evaluate({
       
       dependencies: []
       scenarios: []
+      children: []
+    
+    - id: REQ-LOGIN-FORM
+      name: 登录表单
+      description: |
+        用户输入凭据进行登录的表单。
+        
+        **位置信息**:
+        - 父容器: .main-content-area
+        - 位置: 右侧，绝对定位
+        - 尺寸: 380px × 373px
+        - 坐标: right=0, top=19px
+        
+        **在 JSX 中的位置**:
+        ```tsx
+        <div className="main-content-area">
+          <div className="left-promotion">...</div>
+          <LoginForm />                {/* ← 右侧登录表单 */}
+        </div>
+        ```
+        
+        **CSS 布局方式**:
+        ```css
+        .login-form {
+          position: absolute;
+          right: 0;
+          top: 19px;
+          width: 380px;
+          min-height: 373px;
+          background-color: #ffffff;
+          padding: 30px;
+          box-sizing: border-box;
+        }
+        ```
+        
+        **内部结构（从上到下）**:
+        1. 标签切换 - "账号登录" / "扫码登录"
+        2. 用户名输入框 - 占位符"用户名/邮箱/手机号"
+        3. 密码输入框 - 占位符"密码"
+        4. 登录按钮 - 橙色背景#FF7518
+        5. 底部链接 - "注册12306账号" | "忘记密码？"
+        
+        **交互状态截图**（由 Phase 7 自动生成）:
+        - 错误状态 - 用户名为空: "./images/交互状态截图/登录表单-错误-用户名为空.png"
+          * 场景: 用户不输入用户名直接点击登录
+          * 展示内容: 红色错误提示"请输入用户名！"
+          * 用途: 展示前端验证的错误提示样式
+        
+        - 错误状态 - 密码为空: "./images/交互状态截图/登录表单-错误-密码为空.png"
+          * 场景: 用户只输入用户名不输入密码
+          * 展示内容: 红色错误提示"请输入密码！"
+          * 用途: 展示不同字段的错误提示
+        
+        - 错误状态 - 密码过短: "./images/交互状态截图/登录表单-错误-密码过短.png"
+          * 场景: 用户输入少于6位的密码
+          * 展示内容: 红色错误提示"密码长度不能少于6位！"
+          * 用途: 展示密码长度验证的错误提示
+        
+        参考图片: "./images/组件特写截图/登录表单.png"
+      
+      dependencies: []
+      scenarios: [...]
+      children: []
+    
+    - id: REQ-SMS-VERIFICATION
+      name: 短信验证
+      description: |
+        登录成功后的短信验证流程弹窗。
+        
+        **位置信息**:
+        - 父容器: body（模态弹窗层）
+        - 位置: 固定定位，屏幕居中
+        - 尺寸: 约700px宽度
+        
+        **CSS 布局方式**:
+        ```css
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 1000;
+        }
+        ```
+        
+        **交互状态截图**（由 Phase 7 自动生成，需要先登录触发）:
+        - 初始状态: "./images/交互状态截图/短信验证-初始状态.png"
+          * 场景: 登录成功后自动弹出的验证窗口
+          * 展示内容: 证件号输入框、验证码输入框、获取验证码按钮
+          * 用途: 展示弹窗的初始状态和布局
+          * **注意**: 此截图通过自动登录获取
+        
+        - 错误状态 - 证件号为空: "./images/交互状态截图/短信验证-错误-证件号为空.png"
+          * 场景: 不输入证件号直接点击确定
+          * 展示内容: 红色错误提示"请输入登录账号绑定的证件号后4位"
+          * 用途: 展示证件号为空时的错误提示
+        
+        - 错误状态 - 证件号错误: "./images/交互状态截图/短信验证-错误-证件号错误.png"
+          * 场景: 输入错误的证件号后4位
+          * 展示内容: 红色错误提示"请输入正确的用户信息！"，获取验证码按钮进入倒计时
+          * 用途: 展示证件号错误时的错误提示和按钮禁用状态
+        
+        - 成功状态 - 验证码已发送: "./images/交互状态截图/短信验证-成功-验证码已发送.png"
+          * 场景: 输入正确证件号成功获取验证码
+          * 展示内容: 绿色成功提示，获取验证码按钮进入倒计时（60秒）
+          * 用途: 展示成功状态的提示样式和倒计时效果
+        
+        参考图片: 无（需要登录后触发，仅有交互截图）
+      
+      dependencies: [REQ-LOGIN-FORM]
+      scenarios: [...]
       children: []
 ```
 
@@ -957,7 +1074,153 @@ mcp_cursor-browser-extension_browser_evaluate({
 /* 缩放比例: 63% (45/71) */
 \```
 
-## 4. 使用说明
+## 4. 登录表单 (LoginForm)
+
+### 4.1 文件路径
+- 组件: `frontend/src/components/LoginForm.tsx`
+- 样式: `frontend/src/components/LoginForm.css`
+
+### 4.2 组件位置说明
+
+**在页面中的位置**:
+- 父容器: `.main-content-area`
+- 位置: 右侧，绝对定位
+- 尺寸: 380px × 373px
+
+### 4.3 完整样式代码
+
+\```css
+/* ========== 4.1 登录表单容器 ========== */
+.login-form {
+  position: absolute !important;
+  right: 0 !important;
+  top: 19px !important;
+  width: 380px !important;
+  min-height: 373px !important;
+  background-color: #ffffff !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+}
+
+/* ========== 4.2 错误提示（参考交互截图）========== */
+/* 参考: requirements/images/交互状态截图/登录表单-错误-用户名为空.png */
+/* 参考: requirements/images/交互状态截图/登录表单-错误-密码为空.png */
+/* 参考: requirements/images/交互状态截图/登录表单-错误-密码过短.png */
+.login-form-error {
+  padding: 10px 15px !important;
+  margin-bottom: 15px !important;
+  background-color: #fff1f0 !important;
+  color: #f44336 !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+  border: 1px solid #ffccc7 !important;
+}
+
+/* ========== 4.3 输入框 ========== */
+.login-form-input {
+  width: 100% !important;
+  height: 45px !important;
+  padding: 0 15px !important;
+  font-size: 14px !important;
+  color: #333333 !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+}
+
+/* 错误状态 - 参考交互截图中的红色边框 */
+.login-form-input.error {
+  border-color: #f44336 !important;
+}
+\```
+
+**交互状态参考图片**:
+- 错误提示样式: 参考 `交互状态截图/登录表单-错误-*.png` 系列截图
+- 错误边框颜色: #f44336（从交互截图中提取）
+- 错误背景色: #fff1f0（从交互截图中提取）
+
+---
+
+## 5. 短信验证模态框 (SMSVerification)
+
+### 5.1 文件路径
+- 组件: `frontend/src/components/SMSVerification.tsx`
+- 样式: `frontend/src/components/SMSVerification.css`
+
+### 5.2 组件位置说明
+
+**在页面中的位置**:
+- 父容器: `body`（全局模态层）
+- 位置: 固定定位，屏幕居中
+- 尺寸: 700px宽度
+
+**参考截图**: `交互状态截图/短信验证-初始状态.png`（展示完整布局）
+
+### 5.3 完整样式代码
+
+\```css
+/* ========== 5.1 模态遮罩层 ========== */
+/* 参考: requirements/images/交互状态截图/短信验证-初始状态.png */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+}
+
+/* ========== 5.2 错误状态（参考交互截图）========== */
+/* 参考: requirements/images/交互状态截图/短信验证-错误-证件号为空.png */
+/* 参考: requirements/images/交互状态截图/短信验证-错误-证件号错误.png */
+.sms-verification-error {
+  padding: 10px 15px !important;
+  margin-bottom: 15px !important;
+  background-color: #fff1f0 !important;
+  color: #f44336 !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+}
+
+/* ========== 5.3 成功状态（参考交互截图）========== */
+/* 参考: requirements/images/交互状态截图/短信验证-成功-验证码已发送.png */
+.sms-verification-success {
+  padding: 10px 15px !important;
+  margin-bottom: 15px !important;
+  background-color: #f0f9ff !important;
+  color: #4caf50 !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+}
+
+/* ========== 5.4 倒计时按钮（参考交互截图）========== */
+/* 参考: requirements/images/交互状态截图/短信验证-错误-证件号错误.png */
+/* 参考: requirements/images/交互状态截图/短信验证-成功-验证码已发送.png */
+.sms-verification-get-code-button:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed !important;
+}
+\```
+
+**交互状态参考图片**:
+- 初始布局: `交互状态截图/短信验证-初始状态.png`
+- 错误提示样式: `交互状态截图/短信验证-错误-*.png` 系列
+- 成功提示和倒计时: `交互状态截图/短信验证-成功-验证码已发送.png`
+
+**颜色提取（从交互截图）**:
+- 错误背景: #fff1f0
+- 错误文字: #f44336
+- 成功背景: #f0f9ff
+- 成功文字: #4caf50
+- 按钮禁用: #cccccc
+
+---
+
+## 6. 使用说明
 
 ### 4.1 在组件中使用
 
@@ -999,6 +1262,611 @@ write({
 
 ---
 
+### Phase 7: 交互场景截图（可选，基于需求文档）
+
+**触发条件**：
+- 初始需求文档中某个组件的 description 包含 `**交互场景截图**:` 字段
+
+**任务清单**：
+0. **读取登录凭证**（如果需要交互场景）
+1. 解析所有包含交互场景定义的组件
+2. 检查前置条件（如需要先登录）
+3. 按顺序执行每个场景的 steps
+4. 保存截图到 `images/交互状态截图/`
+5. 更新 metadata.json 记录截图信息
+
+---
+
+**步骤0: 读取登录凭证（安全方式）** 🔒
+
+**⚠️ 安全原则**：
+- ❌ **禁止**在需求文档中存储真实的用户名和密码
+- ✅ **必须**从环境变量文件 `credentials.env` 中读取凭证
+- ✅ 如果 `credentials.env` 不存在，给出明确的提示信息
+
+**实现步骤**：
+
+```javascript
+// 1. 检查 credentials.env 是否存在
+const credentialsPath = `${project_root}/credentials.env`;
+
+if (!fileExists(credentialsPath)) {
+  console.error(`
+❌ 错误：未找到凭证文件 credentials.env
+
+📋 解决步骤：
+1. 复制模板文件：
+   cp credentials.example.env credentials.env
+
+2. 编辑 credentials.env 文件，填入真实测试账户：
+   LOGIN_USERNAME=your_username
+   LOGIN_PASSWORD=your_password
+   LOGIN_ID_CARD_LAST4=1234
+
+3. 确认 credentials.env 已被 .gitignore 忽略
+
+⚠️ 安全提示：
+- 切勿将 credentials.env 提交到 Git
+- 建议使用专门的测试账户
+  `);
+  
+  throw new Error("缺少登录凭证文件");
+}
+
+// 2. 读取并解析 credentials.env
+const credentialsContent = read_file(credentialsPath);
+const credentials = parseEnvFile(credentialsContent);
+
+// 3. 验证必需的凭证字段
+const requiredFields = ['LOGIN_USERNAME', 'LOGIN_PASSWORD', 'LOGIN_ID_CARD_LAST4'];
+const missingFields = requiredFields.filter(field => !credentials[field]);
+
+if (missingFields.length > 0) {
+  console.error(`
+❌ 错误：credentials.env 缺少必需字段：${missingFields.join(', ')}
+
+请在 credentials.env 中添加：
+${missingFields.map(f => `${f}=your_value_here`).join('\n')}
+  `);
+  
+  throw new Error("凭证文件缺少必需字段");
+}
+
+console.log("✅ 成功加载登录凭证");
+
+// 4. 创建凭证对象供后续使用
+const LOGIN_CREDENTIALS = {
+  username: credentials.LOGIN_USERNAME,
+  password: credentials.LOGIN_PASSWORD,
+  id_card_last4: credentials.LOGIN_ID_CARD_LAST4
+};
+```
+
+**辅助函数 - 解析 .env 文件**：
+
+```javascript
+function parseEnvFile(content) {
+  const env = {};
+  
+  content.split('\n').forEach(line => {
+    // 跳过注释和空行
+    if (line.startsWith('#') || !line.trim()) {
+      return;
+    }
+    
+    // 解析 KEY=VALUE 格式
+    const match = line.match(/^([A-Z_]+)=(.*)$/);
+    if (match) {
+      const [, key, value] = match;
+      env[key] = value.trim();
+    }
+  });
+  
+  return env;
+}
+```
+
+**变量替换规则**：
+
+在执行交互场景时，steps 中的 value 字段支持变量替换：
+
+| 变量格式 | 替换值 | 示例 |
+|---------|--------|------|
+| `${LOGIN_CREDENTIALS.username}` | credentials.env 中的 LOGIN_USERNAME | `test_user` |
+| `${LOGIN_CREDENTIALS.password}` | credentials.env 中的 LOGIN_PASSWORD | `password123` |
+| `${LOGIN_CREDENTIALS.id_card_last4}` | credentials.env 中的 LOGIN_ID_CARD_LAST4 | `1234` |
+
+**示例**：
+
+```yaml
+steps:
+  - action: type
+    target: "用户名输入框"
+    value: "${LOGIN_CREDENTIALS.username}"  # ← 会被替换为真实用户名
+  - action: type
+    target: "密码输入框"
+    value: "${LOGIN_CREDENTIALS.password}"  # ← 会被替换为真实密码
+```
+
+**变量替换实现**：
+
+```javascript
+function replaceVariables(value, credentials) {
+  if (typeof value !== 'string') {
+    return value;
+  }
+  
+  return value.replace(/\$\{LOGIN_CREDENTIALS\.(\w+)\}/g, (match, key) => {
+    if (credentials[key]) {
+      return credentials[key];
+    } else {
+      console.warn(`⚠️ 警告：未找到凭证字段 ${key}`);
+      return match; // 保留原始变量
+    }
+  });
+}
+
+// 使用示例
+const inputValue = replaceVariables(
+  "${LOGIN_CREDENTIALS.username}",
+  LOGIN_CREDENTIALS
+);
+// 结果: "test_user"
+```
+
+---
+
+**目录结构扩展**：
+```
+requirements/images/
+├── 整体页面截图/
+├── 组件特写截图/
+├── 交互状态截图/        ← 新增目录
+│   ├── 登录表单-错误-用户名为空.png
+│   ├── 登录表单-错误-密码为空.png
+│   ├── 短信验证-初始状态.png
+│   ├── 短信验证-错误-证件号为空.png
+│   └── ...
+└── (其他资源图片)
+```
+
+**支持的 action 类型**：
+
+| action 类型 | 必需参数 | 可选参数 | 说明 | Browser MCP 工具映射 |
+|------------|---------|---------|------|---------------------|
+| `type` | target, target_hint, value | slowly, submit | 输入文本到表单字段 | `browser_type` |
+| `click` | target, target_hint | button(left/right/middle) | 点击元素 | `browser_click` |
+| `wait` | duration | - | 等待指定秒数 | `browser_wait_for(time=N)` |
+| `wait_for_element` | target_hint | timeout | 等待元素出现在页面上 | `browser_wait_for(text=...)` |
+| `wait_for_text` | text | timeout | 等待特定文本出现 | `browser_wait_for(text=...)` |
+| `wait_for_text_gone` | text | timeout | 等待特定文本消失 | `browser_wait_for(textGone=...)` |
+| `screenshot` | filename | element, element_hint | 截取全页或特定元素 | `browser_take_screenshot` |
+| `evaluate` | script | - | 执行任意 JavaScript 代码 | `browser_evaluate` |
+| `console_log` | - | extract | 读取浏览器控制台日志 | `browser_console_messages` |
+| `fill_form` | fields | - | 批量填写多个表单字段 | `browser_fill_form` |
+| `press_key` | key | - | 按下键盘按键（Enter, Escape等）| `browser_press_key` |
+| `hover` | target, target_hint | - | 鼠标悬停到元素上 | `browser_hover` |
+
+**步骤1: 解析交互场景**
+
+```javascript
+// 读取需求文档
+const requirements = read_file("requirements/initial-requirements.yaml");
+
+// 查找包含交互场景的组件
+const componentsWithInteraction = requirements.children.filter(
+  child => child.description.includes('**交互场景截图**')
+);
+
+// 解析交互场景
+for (const component of componentsWithInteraction) {
+  console.log(`发现组件 ${component.id} 需要交互场景截图`);
+  
+  // 提取交互场景定义
+  const scenarios = parseInteractionScenarios(component.description);
+  const credentials = parseCredentials(component.description);
+  const prerequisites = parsePrerequisites(component.description);
+  
+  // 记录到执行计划
+  executionPlan.push({
+    componentId: component.id,
+    componentName: component.name,
+    prerequisites: prerequisites,
+    credentials: credentials,
+    scenarios: scenarios
+  });
+}
+```
+
+**步骤2: 执行前置条件**
+
+如果某个组件需要先登录或完成其他操作：
+
+```javascript
+// 示例：需要先登录才能看到短信验证弹窗
+if (component.prerequisites) {
+  console.log(`执行前置条件: ${component.prerequisites}`);
+  
+  // 1. 获取页面快照，查找表单元素
+  const snapshot = await browser_snapshot();
+  
+  // 2. 填写登录表单
+  const usernameRef = findElementRef(snapshot, "input[placeholder*='用户名']");
+  const passwordRef = findElementRef(snapshot, "input[type='password']");
+  const loginButtonRef = findElementRef(snapshot, "button:has-text('立即登录')");
+  
+  await browser_type({
+    element: "用户名输入框",
+    ref: usernameRef,
+    text: credentials.username
+  });
+  
+  await browser_type({
+    element: "密码输入框",
+    ref: passwordRef,
+    text: credentials.password
+  });
+  
+  await browser_click({
+    element: "立即登录按钮",
+    ref: loginButtonRef
+  });
+  
+  // 3. 等待跳转/弹窗
+  await browser_wait_for({ time: 2 });
+}
+```
+
+**步骤3: 执行交互场景**
+
+对于每个交互场景，按顺序执行所有 steps：
+
+```javascript
+for (const scenario of component.scenarios) {
+  console.log(`\n执行场景: ${scenario.name}`);
+  console.log(`描述: ${scenario.description}`);
+  
+  try {
+    for (let i = 0; i < scenario.steps.length; i++) {
+      const step = scenario.steps[i];
+      console.log(`  步骤 ${i + 1}/${scenario.steps.length}: ${step.action}`);
+      
+      await executeStep(step, credentials);
+    }
+    
+    console.log(`✅ 场景 "${scenario.name}" 执行成功`);
+    
+  } catch (error) {
+    console.error(`❌ 场景 "${scenario.name}" 执行失败: ${error.message}`);
+    
+    // 截图当前状态用于调试
+    await browser_take_screenshot({
+      filename: `${scenario.name}-失败-调试截图.png`
+    });
+    
+    // 继续执行下一个场景（不中断整个流程）
+    continue;
+  }
+}
+```
+
+**步骤4: 执行单个 step**
+
+```javascript
+async function executeStep(step, credentials) {
+  // 替换变量（如 ${LOGIN_CREDENTIALS.username}）
+  const processedValue = replaceVariables(step.value, credentials);
+  
+  switch (step.action) {
+    case 'type':
+      // 获取页面快照
+      const snapshot = await browser_snapshot();
+      
+      // 根据 target_hint 查找元素 ref
+      const ref = findElementRef(snapshot, step.target_hint);
+      
+      if (!ref) {
+        throw new Error(`找不到元素: ${step.target_hint}`);
+      }
+      
+      await browser_type({
+        element: step.target,
+        ref: ref,
+        text: processedValue,
+        slowly: step.slowly || false,
+        submit: step.submit || false
+      });
+      break;
+      
+    case 'click':
+      const snapshot2 = await browser_snapshot();
+      const clickRef = findElementRef(snapshot2, step.target_hint);
+      
+      if (!clickRef) {
+        throw new Error(`找不到元素: ${step.target_hint}`);
+      }
+      
+      await browser_click({
+        element: step.target,
+        ref: clickRef,
+        button: step.button || 'left'
+      });
+      break;
+      
+    case 'wait':
+      await browser_wait_for({ 
+        time: step.duration 
+      });
+      break;
+      
+    case 'wait_for_element':
+      await browser_wait_for({ 
+        text: step.target,
+        timeout: step.timeout || 5
+      });
+      break;
+      
+    case 'wait_for_text':
+      await browser_wait_for({ 
+        text: step.text,
+        timeout: step.timeout || 5
+      });
+      break;
+      
+    case 'wait_for_text_gone':
+      await browser_wait_for({ 
+        textGone: step.text,
+        timeout: step.timeout || 5
+      });
+      break;
+      
+    case 'screenshot':
+      let screenshotPath;
+      
+      if (step.element_hint) {
+        // 截取特定元素
+        const snapshot3 = await browser_snapshot();
+        const elementRef = findElementRef(snapshot3, step.element_hint);
+        
+        screenshotPath = await browser_take_screenshot({
+          element: step.element || "指定元素",
+          ref: elementRef,
+          filename: step.filename
+        });
+      } else {
+        // 截取全页
+        screenshotPath = await browser_take_screenshot({
+          fullPage: true,
+          filename: step.filename
+        });
+      }
+      
+      // 移动到交互状态截图目录
+      await run_terminal_cmd({
+        command: `mv "${screenshotPath}" requirements/images/交互状态截图/`,
+        is_background: false
+      });
+      break;
+      
+    case 'evaluate':
+      await browser_evaluate({
+        function: `() => { ${step.script} }`
+      });
+      break;
+      
+    case 'console_log':
+      const logs = await browser_console_messages();
+      
+      if (step.extract) {
+        // 从日志中提取特定信息（如验证码）
+        const extracted = extractFromLogs(logs, step.extract);
+        console.log(`📋 提取到 ${step.extract}: ${extracted}`);
+        
+        // 保存到 credentials 供后续使用
+        credentials[`extracted_${step.extract}`] = extracted;
+      } else {
+        // 输出所有日志
+        console.log("📋 控制台日志:", logs);
+      }
+      break;
+      
+    case 'fill_form':
+      const snapshot4 = await browser_snapshot();
+      
+      const fields = step.fields.map(field => {
+        const fieldRef = findElementRef(snapshot4, field.hint);
+        return {
+          name: field.name,
+          ref: fieldRef,
+          type: field.type,
+          value: replaceVariables(field.value, credentials)
+        };
+      });
+      
+      await browser_fill_form({ fields });
+      break;
+      
+    case 'press_key':
+      await browser_press_key({
+        key: step.key
+      });
+      break;
+      
+    case 'hover':
+      const snapshot5 = await browser_snapshot();
+      const hoverRef = findElementRef(snapshot5, step.target_hint);
+      
+      await browser_hover({
+        element: step.target,
+        ref: hoverRef
+      });
+      break;
+      
+    default:
+      console.warn(`⚠️ 未知的 action 类型: ${step.action}`);
+  }
+}
+```
+
+**步骤5: 辅助函数**
+
+```javascript
+// 变量替换函数
+function replaceVariables(value, credentials) {
+  if (!value || typeof value !== 'string') return value;
+  if (!value.includes('${')) return value;
+  
+  // 替换 ${LOGIN_CREDENTIALS.username} 等变量
+  return value.replace(/\$\{LOGIN_CREDENTIALS\.(\w+)\}/g, (match, key) => {
+    const replacement = credentials[key];
+    if (replacement === undefined) {
+      console.warn(`⚠️ 未找到变量: ${match}`);
+      return match;
+    }
+    return replacement;
+  });
+}
+
+// 从快照中查找元素 ref
+function findElementRef(snapshot, hint) {
+  // hint 可能是：
+  // - CSS 选择器: "input[type='password']"
+  // - 文本匹配: "button:has-text('立即登录')"
+  // - 组合: "[role='button']:has-text('确定')"
+  
+  // 简化实现：直接使用 hint 作为 CSS 选择器
+  // 实际实现需要解析 :has-text() 等伪类
+  
+  // 从 snapshot 中搜索匹配的元素
+  // 这里返回找到的第一个匹配元素的 ref
+  
+  // 注意：实际实现中需要递归遍历 snapshot 树结构
+  // 这里仅作示例
+  return hint; // 简化处理，直接返回 hint 作为 ref
+}
+
+// 从控制台日志中提取信息
+function extractFromLogs(logs, keyword) {
+  // 示例：从 "验证码: 123456" 中提取 "123456"
+  for (const log of logs) {
+    if (log.text && log.text.includes(keyword)) {
+      // 尝试提取数字验证码
+      const match = log.text.match(/\d{4,6}/);
+      if (match) {
+        return match[0];
+      }
+    }
+  }
+  return null;
+}
+```
+
+**关键点**：
+- 每个场景独立执行，失败不影响其他场景
+- 使用 `target_hint` 辅助定位元素（CSS 选择器 + 文本匹配）
+- 支持变量替换（`${LOGIN_CREDENTIALS.xxx}`）
+- 截图自动保存到 `交互状态截图/` 目录
+- 记录详细的执行日志，便于调试
+- 如果找不到元素，抛出明确的错误信息
+
+**错误处理策略**：
+
+| 错误类型 | 处理方式 | 影响范围 |
+|---------|---------|---------|
+| 元素找不到 | 记录警告，截图当前状态，跳过该场景 | 该场景失败，继续下一个 |
+| 等待超时 | 记录警告，截图当前状态，跳过该场景 | 该场景失败，继续下一个 |
+| 前置条件失败 | 记录错误，跳过该组件的所有场景 | 该组件所有场景跳过 |
+| JavaScript 执行失败 | 记录错误，跳过该步骤 | 该步骤失败，继续下一步 |
+
+**日志输出示例**：
+
+```
+执行 Phase 7: 交互场景截图
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+组件: REQ-LOGIN-FORM (登录表单)
+场景数量: 3
+
+执行场景 1/3: 前端验证-用户名为空
+  步骤 1/3: click (点击"立即登录按钮")
+  步骤 2/3: wait (等待 0.5 秒)
+  步骤 3/3: screenshot (保存截图)
+✅ 场景 "前端验证-用户名为空" 执行成功
+
+执行场景 2/3: 前端验证-密码为空
+  步骤 1/4: type (输入用户名)
+  步骤 2/4: click (点击"立即登录按钮")
+  步骤 3/4: wait (等待 0.5 秒)
+  步骤 4/4: screenshot (保存截图)
+✅ 场景 "前端验证-密码为空" 执行成功
+
+执行场景 3/3: 前端验证-密码过短
+  步骤 1/5: evaluate (清空密码输入框)
+  步骤 2/5: type (输入 "123")
+  步骤 3/5: click (点击"立即登录按钮")
+  步骤 4/5: wait (等待 0.5 秒)
+  步骤 5/5: screenshot (保存截图)
+✅ 场景 "前端验证-密码过短" 执行成功
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+组件: REQ-SMS-VERIFICATION (短信验证)
+前置条件: 需要先登录
+场景数量: 4
+
+执行前置条件: 登录
+  填写用户名: test_user_12306
+  填写密码: ********
+  点击登录按钮
+  等待弹窗出现...
+✅ 前置条件执行成功
+
+执行场景 1/4: 弹窗初始状态
+  步骤 1/2: wait_for_element (等待弹窗出现)
+  步骤 2/2: screenshot (保存截图)
+✅ 场景 "弹窗初始状态" 执行成功
+
+执行场景 2/4: 证件号为空
+  步骤 1/3: click (点击"确定按钮")
+  步骤 2/3: wait (等待 0.5 秒)
+  步骤 3/3: screenshot (保存截图)
+✅ 场景 "证件号为空" 执行成功
+
+... (继续执行其他场景)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Phase 7 完成！
+交互场景截图: 7 个成功, 0 个失败
+保存位置: requirements/images/交互状态截图/
+```
+
+**更新 metadata.json**：
+
+在 Phase 7 完成后，更新 metadata.json 记录交互截图信息：
+
+```json
+{
+  "interaction_screenshots": {
+    "登录表单-错误-用户名为空.png": {
+      "component": "REQ-LOGIN-FORM",
+      "scenario": "前端验证-用户名为空",
+      "description": "测试不输入用户名直接点击登录",
+      "timestamp": "2024-12-27T10:30:00Z"
+    },
+    "短信验证-初始状态.png": {
+      "component": "REQ-SMS-VERIFICATION",
+      "scenario": "弹窗初始状态",
+      "description": "登录成功后弹出的验证窗口",
+      "timestamp": "2024-12-27T10:31:00Z",
+      "requires_login": true
+    }
+    // ... 其他截图
+  }
+}
+```
+
+---
+
 ## 📤 输出文档格式总结
 
 ### 输出1: ui-requirements.yaml
@@ -1035,6 +1903,13 @@ requirements/images/
 │   ├── 顶部导航.png
 │   ├── 登录表单.png
 │   └── 底部导航.png
+├── 交互状态截图/                              ← 新增（如果有交互场景）
+│   ├── 登录表单-错误-用户名为空.png
+│   ├── 登录表单-错误-密码为空.png
+│   ├── 登录表单-错误-密码过短.png
+│   ├── 短信验证-初始状态.png
+│   ├── 短信验证-错误-证件号为空.png
+│   └── 短信验证-错误-证件号错误.png
 ├── 登录页-背景-新.jpg
 ├── 登录页-顶部导航-Logo.png
 ├── 登录页-底部导航-中国铁路官方微信二维码.png
@@ -1195,7 +2070,21 @@ Phase 6: 文档生成
 ✅ 生成 ui-requirements.yaml
 ✅ 生成 ui-style-guide.md
 
-完成！总耗时: 约2-3分钟
+Phase 7: 交互场景截图（可选）
+✅ 检测到 2 个组件需要交互场景截图
+✅ 执行 REQ-LOGIN-FORM 的 3 个场景
+   - 前端验证-用户名为空 ✅
+   - 前端验证-密码为空 ✅
+   - 前端验证-密码过短 ✅
+✅ 执行前置条件：登录
+✅ 执行 REQ-SMS-VERIFICATION 的 4 个场景
+   - 弹窗初始状态 ✅
+   - 证件号为空 ✅
+   - 证件号错误 ✅
+   - 获取验证码成功 ✅
+✅ 更新 metadata.json
+
+完成！总耗时: 约3-5分钟（包含交互场景）
 ```
 
 ---

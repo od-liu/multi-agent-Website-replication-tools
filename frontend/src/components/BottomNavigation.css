@@ -1,0 +1,122 @@
+/* ========================================
+   底部导航样式
+   UI-BOTTOM-NAV Component Styles
+   ======================================== */
+
+/* ========== 1. 底部导航容器 ========== */
+.bottom-navigation {
+  width: 100% !important;
+  min-height: 274px !important;
+  background-color: #ffffff !important;
+  padding: 30px 40px !important;
+  box-sizing: border-box !important;
+}
+
+/* ========== 2. 友情链接区域 ========== */
+.bottom-navigation-partnerships {
+  margin-bottom: 30px !important;
+}
+
+.bottom-navigation-title {
+  font-size: 16px !important;
+  color: #333333 !important;
+  font-weight: 500 !important;
+  margin-bottom: 20px !important;
+}
+
+.bottom-navigation-partnership-list {
+  display: flex !important;
+  gap: 20px !important;
+  align-items: center !important;
+}
+
+.bottom-navigation-partnership-link {
+  display: inline-block !important;
+  cursor: pointer !important;
+  transition: opacity 0.3s ease !important;
+  text-decoration: none !important;
+}
+
+.bottom-navigation-partnership-link:hover {
+  opacity: 0.8 !important;
+}
+
+.bottom-navigation-partnership-img {
+  width: 200px !important;
+  height: 34px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+/* 图片信息注释 */
+/* 所有友情链接图片统一显示为: 200px × 34px */
+/* 原始尺寸各不相同，通过 object-fit: contain 保持比例 */
+/* 
+  - 中国国家铁路集团有限公司: 原始 300×51, 缩放 0.667
+  - 中国铁路财产保险自保有限公司: 原始 400×68, 缩放 0.500
+  - 中国铁路95306网: 原始 800×136, 缩放 0.250
+  - 中铁快运股份有限公司: 原始 400×68, 缩放 0.500
+*/
+
+/* ========== 3. 二维码区域 ========== */
+.bottom-navigation-qrcodes {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 80px !important;
+  padding: 30px 0 !important;
+}
+
+.bottom-navigation-qrcode-item {
+  text-align: center !important;
+}
+
+.bottom-navigation-qrcode-title {
+  font-size: 14px !important;
+  color: #333333 !important;
+  margin-bottom: 10px !important;
+}
+
+.bottom-navigation-qrcode-img {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* 图片信息注释 */
+/* 所有二维码图片统一显示为: 80px × 80px */
+/* 原始尺寸从 258px 到 800px 不等 */
+/*
+  - 中国铁路官方微信二维码: 原始 344×344, 缩放 0.233
+  - 中国铁路官方微博二维码: 原始 800×800, 缩放 0.100
+  - 12306公众号二维码: 原始 258×258, 缩放 0.310
+  - 铁路12306二维码: 原始 258×258, 缩放 0.310
+*/
+
+/* ========== 4. 版权信息区域 ========== */
+.bottom-navigation-copyright {
+  background-color: #666666 !important;
+  color: #ffffff !important;
+  padding: 20px 40px !important;
+  margin: 0 -40px -30px -40px !important;
+  text-align: center !important;
+}
+
+.bottom-navigation-copyright-text {
+  font-size: 12px !important;
+  line-height: 1.8 !important;
+  margin: 5px 0 !important;
+}
+
+.bottom-navigation-copyright-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+  margin: 0 5px !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.bottom-navigation-copyright-link:hover {
+  text-decoration: underline !important;
+  opacity: 0.9 !important;
+}

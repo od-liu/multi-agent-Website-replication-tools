@@ -1,0 +1,24 @@
+API-LOGIN:
+  related_req_id: REQ-LOGIN-FORM
+  path: backend/src/routes/api.js
+  signature: POST /api/auth/login
+  upstream_ids:
+    - UI-LOGIN-FORM
+  downstream_ids:
+    - FUNC-AUTHENTICATE-USER
+API-SEND-SMS:
+  related_req_id: REQ-SMS-VERIFICATION
+  path: backend/src/routes/api.js
+  signature: POST /api/auth/send-sms
+  upstream_ids:
+    - UI-SMS-VERIFICATION
+  downstream_ids:
+    - FUNC-GENERATE-CODE
+API-VERIFY-SMS:
+  related_req_id: REQ-SMS-VERIFICATION
+  path: backend/src/routes/api.js
+  signature: POST /api/auth/verify-sms
+  upstream_ids:
+    - UI-SMS-VERIFICATION
+  downstream_ids:
+    - FUNC-VERIFY-CODE

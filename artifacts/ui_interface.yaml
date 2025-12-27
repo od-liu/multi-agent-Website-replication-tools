@@ -1,0 +1,33 @@
+UI-LOGIN-PAGE:
+  related_req_id: REQ-LOGIN-PAGE
+  path: frontend/src/pages/LoginPage.tsx
+  description: 登录页面容器组件，采用上中下三段式布局（1185px×954px），包含顶部导航、登录表单、底部导航和短信验证模态框的Slots
+  upstream_ids: []
+  downstream_ids: []
+UI-TOP-NAV:
+  related_req_id: REQ-TOP-NAV
+  path: frontend/src/components/TopNavigation.tsx
+  description: 顶部导航栏组件，包含品牌Logo（200px×50px）和欢迎文字"欢迎登录12306"
+  upstream_ids: []
+  downstream_ids: []
+UI-LOGIN-FORM:
+  related_req_id: REQ-LOGIN-FORM
+  path: frontend/src/components/LoginForm.tsx
+  description: 登录表单组件，支持账号登录和扫码登录，包含完整的客户端验证逻辑和6个场景覆盖
+  upstream_ids: []
+  downstream_ids:
+    - API-LOGIN
+UI-BOTTOM-NAV:
+  related_req_id: REQ-BOTTOM-NAV
+  path: frontend/src/components/BottomNavigation.tsx
+  description: 底部导航栏组件，包含友情链接（4个Logo）、二维码区域（4个二维码）和版权信息
+  upstream_ids: []
+  downstream_ids: []
+UI-SMS-VERIFICATION:
+  related_req_id: REQ-SMS-VERIFICATION
+  path: frontend/src/components/SMSVerification.tsx
+  description: 短信验证模态框组件，包含证件号验证、验证码发送和验证的完整流程，覆盖9个场景
+  upstream_ids: []
+  downstream_ids:
+    - API-SEND-SMS
+    - API-VERIFY-SMS

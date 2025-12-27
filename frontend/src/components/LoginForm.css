@@ -1,0 +1,192 @@
+/* ========================================
+   登录表单样式
+   UI-LOGIN-FORM Component Styles
+   ======================================== */
+
+/* ========== 1. 登录表单容器 ========== */
+.login-form {
+  position: absolute !important;
+  right: 0 !important;
+  top: 19px !important;
+  width: 380px !important;
+  min-height: 373px !important;
+  background-color: #ffffff !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ========== 2. 标签切换 ========== */
+.login-form-tabs {
+  display: flex !important;
+  margin-bottom: 30px !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.login-form-tab {
+  flex: 1 !important;
+  padding: 12px 0 !important;
+  text-align: center !important;
+  font-size: 16px !important;
+  color: #666666 !important;
+  cursor: pointer !important;
+  border-bottom: 2px solid transparent !important;
+  transition: all 0.3s ease !important;
+  user-select: none !important;
+}
+
+.login-form-tab:hover {
+  color: #2d8cf0 !important;
+}
+
+.login-form-tab.active {
+  color: #2d8cf0 !important;
+  border-bottom-color: #2d8cf0 !important;
+  font-weight: 500 !important;
+}
+
+/* ========== 3. 输入框组 ========== */
+.login-form-input-group {
+  margin-bottom: 20px !important;
+}
+
+.login-form-input {
+  width: 100% !important;
+  height: 45px !important;
+  padding: 0 15px !important;
+  font-size: 14px !important;
+  color: #333333 !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.3s ease !important;
+}
+
+.login-form-input::placeholder {
+  color: #cccccc !important;
+}
+
+.login-form-input:focus {
+  outline: none !important;
+  border-color: #2d8cf0 !important;
+}
+
+.login-form-input:hover:not(:disabled) {
+  border-color: #b3b3b3 !important;
+}
+
+.login-form-input:disabled {
+  background-color: #f5f5f5 !important;
+  cursor: not-allowed !important;
+}
+
+/* 错误状态 */
+.login-form-input.error {
+  border-color: #f44336 !important;
+}
+
+/* ========== 4. 登录按钮 ========== */
+.login-form-button {
+  width: 100% !important;
+  height: 45px !important;
+  background-color: #ff7518 !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+  margin-top: 10px !important;
+}
+
+.login-form-button:hover:not(:disabled) {
+  background-color: #e66900 !important;
+}
+
+.login-form-button:active:not(:disabled) {
+  background-color: #cc5c00 !important;
+}
+
+.login-form-button:disabled {
+  background-color: #cccccc !important;
+  cursor: not-allowed !important;
+}
+
+/* ========== 5. 底部链接 ========== */
+.login-form-links {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-top: 20px !important;
+  font-size: 14px !important;
+}
+
+.login-form-link {
+  color: #2d8cf0 !important;
+  cursor: pointer !important;
+  transition: color 0.3s ease !important;
+  user-select: none !important;
+}
+
+.login-form-link:hover {
+  color: #1976d2 !important;
+  text-decoration: underline !important;
+}
+
+.login-form-links .separator {
+  margin: 0 8px !important;
+  color: #cccccc !important;
+}
+
+/* ========== 6. 提示文字 ========== */
+.login-form-tips {
+  margin-top: 20px !important;
+  font-size: 12px !important;
+  color: #999999 !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+}
+
+/* ========== 7. 错误提示 ========== */
+.login-form-error {
+  padding: 10px 15px !important;
+  margin-bottom: 15px !important;
+  background-color: #fff1f0 !important;
+  color: #f44336 !important;
+  font-size: 13px !important;
+  border-radius: 4px !important;
+  border: 1px solid #ffccc7 !important;
+  line-height: 1.5 !important;
+}
+
+/* ========== 8. 二维码登录区域 ========== */
+.qr-login-area {
+  padding: 40px 0 !important;
+  text-align: center !important;
+}
+
+.qr-code-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.qr-code-image {
+  width: 200px !important;
+  height: 200px !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #f5f5f5 !important;
+}
+
+.qr-code-placeholder {
+  padding: 20px !important;
+  color: #666666 !important;
+  font-size: 14px !important;
+  text-align: center !important;
+}
