@@ -1,33 +1,47 @@
-import React, { useState } from 'react';
-import './LoginForm.css';
-
 /**
  * @component UI-LOGIN-FORM
- * @description 用户输入凭据进行登录的表单
- * @calls API-LOGIN - 明确写出将要调用的 API ID
- * @children_slots UI-SMS-MODAL - 登录成功后弹出短信验证窗口
+ * @description 用户输入凭据进行登录的表单，包含轮播图背景和右侧浮动的登录卡片
+ * @calls API-LOGIN - 用户登录API
+ * @children_slots REQ-SMS-VERIFICATION - 短信验证弹窗（登录成功后显示）
  * 
- * ============ 功能实现清单（必填）============
- * @scenarios_covered: (必须列出所有 scenarios，标记实现状态)
+ * ============ 功能实现清单 ============
+ * @scenarios_covered:
  *   ✅ SCENARIO-001: 校验用户名为空
  *   ✅ SCENARIO-002: 校验密码为空
  *   ✅ SCENARIO-003: 校验密码长度
+ *   ✅ SCENARIO-004: 登录成功
  * 
- * @features_implemented: (必须列出所有功能点)
+ * @features_implemented:
  *   ✅ 支持账号登录和扫码登录两种模式
  *   ✅ 提供"注册12306账号"和"忘记密码"链接
- *   ✅ 完整的表单验证逻辑
- *   ✅ 错误提示显示（红色背景提示框）
+ *   ✅ 轮播图背景展示（2张图片自动轮播）
+ *   ✅ 服务时间说明文字
  * 
  * @implementation_status:
- *   - Scenarios Coverage: 3/3 (100%)
- *   - Features Coverage: 4/4 (100%)
+ *   - Scenarios: 4/4 (100%)
+ *   - Features: 4/4 (100%)
  *   - UI Visual: 像素级精确
  * 
- * @layout_position "主内容区域右侧，绝对定位居中偏右"
- * @dimensions "宽度380px，高度auto"
- * ================================================
+ * @layout_position:
+ *   - 位置: 页面主内容区域，横向占据整个页面宽度
+ *   - 尺寸: 100% × 600px
+ *   - 登录卡片位置: 页面中心右侧215px，垂直居中
+ * 
+ * @resources:
+ *   images: [
+ *     "/images/登录页面-主内容-背景图1.jpg",
+ *     "/images/登录页面-主内容-背景图2.jpg"
+ *   ]
+ *   fonts: [
+ *     "/fonts/iconfont.woff2",
+ *     "/fonts/iconfont.woff",
+ *     "/fonts/iconfont.ttf"
+ *   ]
+ * ==========================================
  */
+
+import React, { useState, useEffect } from 'react';
+import './LoginForm.css';
 
 interface LoginFormProps {
   onLoginSuccess?: (data: any) => void;
@@ -39,6 +53,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loginMode, setLoginMode] = useState<'account' | 'qrcode'>('account');
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // ========== Carousel Logic ==========
+  /**
+   * @feature "轮播图背景展示"
+   * 自动轮播逻辑：每5秒切换一次
+   */
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === 0 ? 1 : 0));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   // ========== Scenario Implementations ==========
   
@@ -85,22 +112,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   /**
-   * @feature "登录逻辑"
-   * @given 用户输入了正确的用户名和密码
+   * @scenario SCENARIO-004 "登录成功"
+   * @given 用户在登录页面输入了已注册的用户名/邮箱/手机号和正确密码
    * @when 用户点击"立即登录"
-   * @then 调用 API-LOGIN，成功后触发onLoginSuccess回调
+   * @then 弹出短信验证窗口
    * @calls API-LOGIN
    */
   const handleLogin = async () => {
     setError('');
     
-    // 执行所有验证
+    // 执行所有验证（按顺序）
     if (!validateUsername()) return;
     if (!validatePassword()) return;
     if (!validatePasswordLength()) return;
 
     try {
-      // 调用 API-LOGIN (骨架代码，实际API将在backend实现)
+      // 调用 API-LOGIN
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -110,7 +137,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       const data = await response.json();
       
       if (data.success) {
-        // 登录成功，触发回调（会打开SMS验证弹窗）
+        // 登录成功，触发短信验证弹窗
         if (onLoginSuccess) {
           onLoginSuccess(data);
         }
@@ -118,7 +145,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         setError(data.message || '用户名或密码错误！');
         setPassword(''); // 清空密码
       }
-    } catch (error) {
+    } catch (err) {
       setError('网络请求失败，请稍后再试。');
     }
   };
@@ -137,128 +164,152 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   /**
-   * @feature "提供注册和忘记密码链接"
+   * @feature "轮播图背景展示"
+   * 手动切换轮播图
    */
-  const handleRegister = () => {
-    window.location.href = 'https://kyfw.12306.cn/otn/regist/init';
-  };
-
-  const handleForgotPassword = () => {
-    window.location.href = 'https://kyfw.12306.cn/otn/view/find_my_password.html';
+  const handleSlideChange = (index: number) => {
+    setCurrentSlide(index);
   };
 
   // ========== UI Render ==========
   return (
-    <div className="login-box">
-      {/* 标签页 - 实现 @feature "两种登录模式" */}
-      <ul className="login-hd">
-        <li className={`login-hd-code ${loginMode === 'account' ? 'active' : ''}`}>
-          <a href="javascript:;" onClick={() => handleTabChange('account')}>
-            账号登录
-          </a>
-        </li>
-        <li className={`login-hd-account ${loginMode === 'qrcode' ? 'active' : ''}`}>
-          <a href="javascript:;" onClick={() => handleTabChange('qrcode')}>
-            扫码登录
-          </a>
-        </li>
-      </ul>
+    <div className="login-panel" role="complementary">
+      {/* 轮播图背景 */}
+      <div className="loginSlide">
+        <div className="bd">
+          <div className="tempWrap">
+            <ul style={{ 
+              width: '200%', 
+              left: currentSlide === 0 ? '0%' : '-100%',
+              transition: 'left 0.5s ease'
+            }}>
+              <li style={{ 
+                backgroundImage: 'url(/images/登录页面-主内容-背景图1.jpg)',
+                width: '50%'
+              }}></li>
+              <li style={{ 
+                backgroundImage: 'url(/images/登录页面-主内容-背景图2.jpg)',
+                width: '50%'
+              }}></li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* 轮播图指示器 */}
+        <div className="hd">
+          <ul>
+            <li 
+              className={currentSlide === 0 ? 'on' : ''}
+              onClick={() => handleSlideChange(0)}
+            >
+              1
+            </li>
+            <li 
+              className={currentSlide === 1 ? 'on' : ''}
+              onClick={() => handleSlideChange(1)}
+            >
+              2
+            </li>
+          </ul>
+        </div>
+      </div>
 
-      {/* 表单内容 */}
-      <div className="login-bd">
-        {loginMode === 'account' && (
-          <div className="login-account">
-            {/* 用户名输入框 */}
-            <div className="login-item">
-              <label htmlFor="user" className="item-label">
-                <i className="icon icon-user"></i>
-              </label>
-              <input
-                type="text"
-                className="input"
-                id="J-userName"
-                placeholder="用户名/邮箱/手机号"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                autoComplete="off"
-              />
-            </div>
+      {/* 登录卡片（右侧浮动） */}
+      <div className="login-box">
+        {/* 登录方式Tab - 实现 @feature "两种登录模式" */}
+        <ul className="login-hd">
+          <li className={loginMode === 'account' ? 'active' : ''}>
+            <a href="javascript:;" onClick={() => handleTabChange('account')}>
+              账号登录
+            </a>
+          </li>
+          <li className={loginMode === 'qrcode' ? 'active' : ''}>
+            <a href="javascript:;" onClick={() => handleTabChange('qrcode')}>
+              扫码登录
+            </a>
+          </li>
+        </ul>
 
-            {/* 密码输入框 */}
-            <div className="login-item">
-              <label htmlFor="pwd" className="item-label">
-                <i className="icon icon-pwd"></i>
-              </label>
-              <input
-                type="password"
-                className="input"
-                id="J-password"
-                placeholder="密码"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-              />
-            </div>
-
-            {/* 错误提示 - 支持所有 scenarios 的错误显示 */}
-            {error && (
-              <div
-                className="login-error show"
-                id="J-login-error"
-                role="alertdialog"
-                tabIndex={-1}
-              >
-                <i className="icon icon-plaint-fill"></i>
-                <span>{error}</span>
+        <div className="login-bd">
+          {loginMode === 'account' && (
+            <div className="login-account">
+              {/* 用户名输入框 */}
+              <div className="login-item">
+                <label htmlFor="J-userName" className="item-label">
+                  <i className="icon icon-user"></i>
+                </label>
+                <input
+                  type="text"
+                  className="input"
+                  id="J-userName"
+                  placeholder="用户名/邮箱/手机号"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                />
               </div>
-            )}
 
-            {/* 登录按钮 - 触发所有 scenarios */}
-            <div className="login-btn">
+              {/* 密码输入框 */}
+              <div className="login-item">
+                <label htmlFor="J-password" className="item-label">
+                  <i className="icon icon-pwd"></i>
+                </label>
+                <input
+                  type="password"
+                  className="input"
+                  id="J-password"
+                  placeholder="密码"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                />
+              </div>
+
+              {/* 错误提示区域 - 支持所有 scenarios 的错误显示 */}
+              {error && (
+                <div className="login-error show">{error}</div>
+              )}
+
+              {/* 登录按钮 - 触发所有 scenarios */}
               <a
-                id="J-login"
                 href="javascript:;"
-                className="btn btn-primary form-block"
+                className="login-btn"
                 onClick={handleLogin}
               >
                 立即登录
               </a>
-            </div>
 
-            {/* @feature "提供注册和忘记密码链接" */}
-            <div className="login-txt">
-              <a
-                href="javascript:;"
-                className="txt-primary"
-                onClick={handleRegister}
-              >
-                注册12306账号
-              </a>
-              <span> | </span>
-              <a
-                href="javascript:;"
-                className="txt-lighter"
-                onClick={handleForgotPassword}
-              >
-                忘记密码？
-              </a>
+              {/* @feature "提供注册和忘记密码链接" */}
+              <div className="login-other">
+                <a href="https://kyfw.12306.cn/otn/regist/init" target="_blank" rel="noopener noreferrer">
+                  注册12306账号
+                </a>
+                {' | '}
+                <a href="https://kyfw.12306.cn/otn/view/find_my_password.html" target="_blank" rel="noopener noreferrer">
+                  忘记密码？
+                </a>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {loginMode === 'qrcode' && (
-          <div className="login-qrcode">
-            <div className="qr-code-container">
-              <div className="qr-code-image">
-                {/* 二维码占位 - 骨架代码 */}
-                <div className="qr-placeholder">
-                  请使用12306手机客户端扫码登录
+          {loginMode === 'qrcode' && (
+            <div className="login-code">
+              <div className="qr-login-area">
+                <div className="qr-code-container">
+                  <div className="qr-code-placeholder">
+                    <p>请使用12306手机客户端扫码登录</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {/* @feature "服务时间说明文字" */}
+      <p className="login-tips">
+        铁路12306每日5:00至次日1:00（周二为5:00至24:00）提供购票、改签、变更到站业务办理， 全天均可办理退票等其他服务。
+      </p>
     </div>
   );
 };

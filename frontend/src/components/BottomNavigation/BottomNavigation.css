@@ -1,0 +1,139 @@
+/* ========== 底部导航容器 ========== */
+/* 📸 参考截图: requirements/images/组件特写截图/底部导航.png */
+.bottom-navigation-footer {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  background-color: #FFFFFF !important;
+  padding: 30px 0 0 0 !important;
+}
+
+.bottom-navigation-footer .bottom-navigation-wrapper {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 20px !important;
+}
+
+.bottom-navigation-footer-con {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding-bottom: 30px !important;
+}
+
+/* ========== 友情链接区域 ========== */
+.bottom-navigation-foot-links {
+  flex: 0 0 auto !important;
+}
+
+.bottom-navigation-foot-con-tit {
+  margin: 0 0 15px 0 !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #333333 !important;
+}
+
+.bottom-navigation-foot-links-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, 200px) !important;
+  grid-template-rows: repeat(2, auto) !important;
+  gap: 15px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.bottom-navigation-foot-links-list li {
+  display: block !important;
+}
+
+.bottom-navigation-foot-links-list li a {
+  display: block !important;
+  text-decoration: none !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.bottom-navigation-foot-links-list li a:hover {
+  opacity: 0.8 !important;
+}
+
+.bottom-navigation-foot-links-list li img {
+  display: block !important;
+  width: 200px !important;
+  height: 34px !important;
+  object-fit: contain !important;
+}
+
+/* ========== 二维码区域 ========== */
+.bottom-navigation-foot-code {
+  display: flex !important;
+  gap: 30px !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.bottom-navigation-foot-code li {
+  text-align: center !important;
+}
+
+.bottom-navigation-code-pic {
+  margin-top: 10px !important;
+}
+
+.bottom-navigation-code-pic img {
+  display: block !important;
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+}
+
+.bottom-navigation-code-tips {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+  color: #999999 !important;
+  line-height: 1.5 !important;
+  max-width: 150px !important;
+  text-align: center !important;
+}
+
+/* ========== 版权信息区域 ========== */
+.bottom-navigation-footer-txt {
+  background-color: #5A5A5A !important;
+  padding: 20px 0 !important;
+  text-align: center !important;
+}
+
+.bottom-navigation-footer-txt p {
+  margin: 0 0 10px 0 !important;
+  font-size: 12px !important;
+  color: #C1C1C1 !important;
+  line-height: 1.8 !important;
+}
+
+.bottom-navigation-footer-txt p:last-of-type {
+  margin-bottom: 15px !important;
+}
+
+.bottom-navigation-footer-txt span {
+  margin: 0 10px !important;
+}
+
+.bottom-navigation-footer-txt a {
+  color: #C1C1C1 !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+}
+
+.bottom-navigation-footer-txt a:hover {
+  color: #FFFFFF !important;
+}
+
+.bottom-navigation-footer-txt > img {
+  display: block !important;
+  width: 130px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  margin: 0 auto !important;
+}
+

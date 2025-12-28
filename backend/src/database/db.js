@@ -1,29 +1,71 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-
 /**
- * @description SQLite数据库连接配置
- * 使用sqlite3驱动连接到database.db文件
- * 在测试环境中使用test_database.db
+ * Database Connection
+ * SQLite3 database connection setup with test/production environment support
  */
 
-// 根据环境选择数据库文件路径
-const isTestEnv = process.env.NODE_ENV === 'test' || process.env.VITEST === 'true';
-const DB_PATH = isTestEnv 
-  ? path.join(__dirname, '../../test_database.db')
-  : path.join(__dirname, '../../database.db');
+import sqlite3 from 'sqlite3';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { promisify } from 'util';
 
-// 创建数据库连接
-const db = new sqlite3.Database(DB_PATH, (err) => {
-  if (err) {
-    console.error('❌ 数据库连接失败:', err.message);
-    process.exit(1);
-  } else {
-    console.log('✅ 数据库连接成功:', DB_PATH);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Choose database based on environment
+const isTest = process.env.NODE_ENV === 'test';
+const dbFilename = isTest ? 'test_database.db' : 'database.db';
+const dbPath = path.resolve(__dirname, '../../', dbFilename);
+
+let db = null;
+
+/**
+ * Get database connection (singleton pattern)
+ * Returns a sqlite3 database with promisified methods
+ */
+export function getDb() {
+  if (!db) {
+    db = new sqlite3.Database(dbPath, (err) => {
+      if (err) {
+        console.error('Error opening database:', err.message);
+        throw err;
+      } else {
+        console.log(`Connected to SQLite database: ${dbFilename}`);
+        // Enable foreign key constraints
+        db.run('PRAGMA foreign_keys = ON');
+      }
+    });
+    
+    // Promisify common methods
+    db.runAsync = promisify(db.run.bind(db));
+    db.getAsync = promisify(db.get.bind(db));
+    db.allAsync = promisify(db.all.bind(db));
+    db.execAsync = promisify(db.exec.bind(db));
   }
-});
+  return db;
+}
 
-// 启用外键约束
-db.run('PRAGMA foreign_keys = ON');
+/**
+ * Close database connection
+ */
+export function closeDb() {
+  return new Promise((resolve, reject) => {
+    if (db) {
+      db.close((err) => {
+        if (err) {
+          console.error('Error closing database:', err.message);
+          reject(err);
+        } else {
+          console.log('Database connection closed');
+          db = null;
+          resolve();
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
+}
 
-module.exports = db;
+// Default export for backward compatibility
+export default getDb();
+

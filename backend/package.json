@@ -1,26 +1,28 @@
 {
   "name": "12306-login-backend",
   "version": "1.0.0",
-  "description": "12306登录页面后端 - Express + SQLite3",
+  "description": "Backend API for 12306 login page",
   "main": "src/index.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "init-db": "node src/database/init_db.js",
     "test": "vitest"
   },
+  "keywords": ["12306", "login", "express", "sqlite"],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "sqlite3": "^5.1.6",
     "cors": "^2.8.5",
     "body-parser": "^1.20.2",
-    "express-session": "^1.17.3",
-    "dotenv": "^16.3.1"
+    "sqlite3": "^5.1.6",
+    "bcrypt": "^5.1.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
+    "nodemon": "^3.0.1",
     "vitest": "^1.0.0",
     "supertest": "^6.3.3"
   }
 }
+

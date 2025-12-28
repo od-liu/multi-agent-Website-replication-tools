@@ -1,102 +1,103 @@
-import React, { useState } from 'react';
-import Header from '../components/Header/Header';
-import LoginForm from '../components/LoginForm/LoginForm';
-import SmsVerificationModal from '../components/SmsVerificationModal/SmsVerificationModal';
-import Footer from '../components/Footer/Footer';
-import './LoginPage.css';
-
 /**
  * @component UI-LOGIN-PAGE
- * @description 用户登录主页面，包含登录表单和短信验证功能
- * @calls None - 页面组装组件
- * @children_slots UI-TOP-NAV, UI-LOGIN-FORM, UI-SMS-MODAL, UI-BOTTOM-NAV
+ * @description 12306登录页面容器，整合顶部导航、登录表单和底部导航
+ * @children_slots REQ-TOP-NAV, REQ-LOGIN-FORM, REQ-BOTTOM-NAV
  * 
- * ============ 功能实现清单（必填）============
- * @scenarios_covered: (无自身scenarios，由子组件实现)
- *   N/A - 页面组装组件
+ * ============ 功能实现清单 ============
+ * @scenarios_covered:
+ *   N/A - 此为容器组件，无独立scenarios
  * 
- * @features_implemented: (所有功能点)
- *   ✅ 顶部导航区域（Header）
- *   ✅ 主内容区域（带背景图）
- *   ✅ 登录表单区域（LoginForm）
- *   ✅ 短信验证弹窗（SmsVerificationModal）
- *   ✅ 底部导航区域（Footer）
- *   ✅ 登录成功后打开SMS验证弹窗的逻辑
+ * @features_implemented:
+ *   ✅ 整合三个子组件形成完整登录页面
+ *   ✅ 提供页面级布局容器
+ *   ✅ 设置页面背景色
  * 
  * @implementation_status:
- *   - Scenarios Coverage: N/A (组装组件)
- *   - Features Coverage: 6/6 (100%)
+ *   - Scenarios: N/A (容器组件)
+ *   - Features: 3/3 (100%)
  *   - UI Visual: 像素级精确
  * 
- * @layout_position "整个页面布局"
- * @dimensions "100% × 100%"
- * @background_images ["/images/登录页面-主内容区域-背景图片1.jpg"]
- * ================================================
+ * @layout_structure:
+ *   - 页面宽度: 100% (最小1497px)
+ *   - 页面高度: auto (最小954px)
+ *   - 布局方式: 垂直堆叠 (flex-direction: column)
+ *   - 背景色: #F5F5F5
+ * ==========================================
  */
+
+import React, { useState } from 'react';
+import './LoginPage.css';
+import TopNavigation from '../components/TopNavigation/TopNavigation';
+import LoginForm from '../components/LoginForm/LoginForm';
+import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
+import SmsVerificationModal from '../components/SmsVerification/SmsVerification';
+
 const LoginPage: React.FC = () => {
   // ========== State Management ==========
   const [showSmsModal, setShowSmsModal] = useState(false);
-  const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   // ========== Event Handlers ==========
   
   /**
-   * @feature "登录成功后打开SMS验证弹窗"
-   * 当LoginForm登录成功时调用
+   * @feature "登录成功后自动触发短信验证"
+   * 处理登录成功事件
    */
   const handleLoginSuccess = (data: any) => {
-    if (data.requireSms && data.userId) {
-      setUserId(data.userId);
-      setShowSmsModal(true);
+    console.log('登录成功:', data);
+    setCurrentUserId(data.userId);
+    setShowSmsModal(true);
+  };
+
+  /**
+   * @feature "短信验证成功后跳转主页"
+   * 处理短信验证成功事件
+   */
+  const handleVerificationSuccess = (data: any) => {
+    console.log('验证成功:', data);
+    // 保存token到localStorage
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token);
     }
-  };
-
-  /**
-   * @feature "SMS验证成功后的处理"
-   * 当SmsVerificationModal验证成功时调用
-   */
-  const handleSmsSuccess = (token: string) => {
-    console.log('SMS验证成功，Token:', token);
-    // 骨架代码：实际项目中应该保存token到localStorage，然后跳转到首页
-    // localStorage.setItem('token', token);
-    // window.location.href = '/';
-    
-    // 临时处理：关闭弹窗并显示成功消息
+    // 关闭弹窗
     setShowSmsModal(false);
+    // 显示成功消息
     alert('登录成功！');
+    // 实际项目中应该跳转到主页
+    // window.location.href = '/home';
   };
 
   /**
-   * @feature "关闭SMS验证弹窗"
+   * 关闭短信验证弹窗
    */
-  const handleCloseSmsModal = () => {
+  const handleCloseModal = () => {
     setShowSmsModal(false);
   };
 
   // ========== UI Render ==========
   return (
-    <div className="login-page">
-      {/* 顶部导航 */}
-      <Header />
+    <div className="page-login">
+      {/* @children_slot REQ-TOP-NAV - 顶部导航 (80px高) */}
+      <TopNavigation />
 
-      {/* 主内容区域 */}
-      <div className="main-content">
-        {/* 登录表单 */}
-        <LoginForm onLoginSuccess={handleLoginSuccess} />
-      </div>
+      {/* @children_slot REQ-LOGIN-FORM - 登录表单区域 (600px高) */}
+      <LoginForm onLoginSuccess={handleLoginSuccess} />
 
-      {/* 底部导航 */}
-      <Footer />
+      {/* @children_slot REQ-BOTTOM-NAV - 底部导航 (274px高) */}
+      <BottomNavigation />
 
-      {/* 短信验证弹窗 */}
-      <SmsVerificationModal
-        visible={showSmsModal}
-        userId={userId}
-        onClose={handleCloseSmsModal}
-        onSuccess={handleSmsSuccess}
-      />
+      {/* @children_slot REQ-SMS-VERIFICATION - 短信验证弹窗 */}
+      {currentUserId && (
+        <SmsVerificationModal
+          isOpen={showSmsModal}
+          userId={currentUserId}
+          onVerificationSuccess={handleVerificationSuccess}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };
 
 export default LoginPage;
+

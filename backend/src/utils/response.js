@@ -1,15 +1,12 @@
 /**
- * @description 统一响应格式工具函数
- * 提供成功和失败响应的标准格式
+ * Response Utilities
+ * Helper functions for API responses
  */
 
 /**
- * 成功响应
- * @param {Object} res - Express response对象
- * @param {Object} data - 响应数据
- * @param {string} message - 提示信息
+ * Send success response
  */
-function successResponse(res, data = {}, message = '操作成功') {
+export function sendSuccess(res, data, message = 'Success') {
   return res.json({
     success: true,
     message,
@@ -18,19 +15,23 @@ function successResponse(res, data = {}, message = '操作成功') {
 }
 
 /**
- * 失败响应
- * @param {Object} res - Express response对象
- * @param {string} message - 错误信息
- * @param {number} statusCode - HTTP状态码
+ * Send error response
  */
-function errorResponse(res, message = '操作失败', statusCode = 400) {
+export function sendError(res, message = 'Error', statusCode = 400) {
   return res.status(statusCode).json({
     success: false,
     message
   });
 }
 
-module.exports = {
-  successResponse,
-  errorResponse
-};
+/**
+ * Send validation error response
+ */
+export function sendValidationError(res, errors) {
+  return res.status(400).json({
+    success: false,
+    message: 'Validation failed',
+    errors
+  });
+}
+

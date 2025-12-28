@@ -1,188 +1,249 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
+/**
+ * API Routes Integration Tests
+ * Test API endpoints for authentication and verification
+ */
 
-const request = require('supertest');
-const express = require('express');
-const session = require('express-session');
-const apiRouter = require('../../src/routes/api');
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
+import request from 'supertest';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import apiRouter from '../../src/routes/api.js';
+import { getDb } from '../../src/database/db.js';
 
-// 创建测试应用
-function createTestApp() {
-  const app = express();
-  app.use(express.json());
-  app.use(session({
-    secret: 'test-secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-  }));
-  app.use('/api', apiRouter);
-  return app;
-}
+// Create test app
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/', apiRouter);
 
-describe('API Routes - Login Flow', () => {
-  let app;
+let testUserId;
 
-  beforeAll(() => {
-    app = createTestApp();
+describe('API Integration Tests', () => {
+  beforeAll(async () => {
+    // Ensure test database is ready
+    const db = getDb();
+    const user = await db.getAsync('SELECT id FROM users WHERE username = ?', 'testuser');
+    testUserId = user.id;
   });
 
-  /**
-   * API-LOGIN: 测试登录接口
-   */
-  describe('POST /api/auth/login', () => {
-    /**
-     * SCENARIO-001: 校验用户名为空
-     */
-    it('should return error when username is empty', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({ username: '', password: 'password123' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('不能为空');
-    });
+  beforeEach(async () => {
+    // Clean up verification_codes and sessions
+    const db = getDb();
+    await db.runAsync('DELETE FROM sessions');
+    await db.runAsync('DELETE FROM verification_codes');
+  });
 
-    /**
-     * SCENARIO-002: 校验密码为空
-     */
-    it('should return error when password is empty', async () => {
+  describe('API-LOGIN: POST /api/auth/login', () => {
+    it('应该接受有效的用户名和密码', async () => {
       const response = await request(app)
         .post('/api/auth/login')
-        .send({ username: 'testuser', password: '' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('不能为空');
-    });
+        .send({
+          username: 'testuser',
+          password: 'password123'
+        });
 
-    /**
-     * SCENARIO-003: 测试用户名或密码错误
-     */
-    it('should return error when credentials are invalid', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({ username: 'testuser', password: 'wrongpassword' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('错误');
-    });
-
-    /**
-     * 测试登录成功
-     */
-    it('should return success with requireSms when credentials are valid', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({ username: 'testuser', password: 'test123456' });
-      
+      expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.requireSms).toBe(true);
       expect(response.body.userId).toBeDefined();
+      expect(typeof response.body.userId).toBe('number');
+    });
+
+    it('应该接受邮箱登录', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: 'test@12306.cn',
+          password: 'password123'
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+
+    it('应该接受手机号登录', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: '13800138000',
+          password: 'password123'
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+    });
+
+    it('应该拒绝错误的用户名', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: 'nonexistent',
+          password: 'password123'
+        });
+
+      expect(response.status).toBe(401);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('用户名或密码错误！');
+    });
+
+    it('应该拒绝错误的密码', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: 'testuser',
+          password: 'wrongpassword'
+        });
+
+      expect(response.status).toBe(401);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('用户名或密码错误！');
+    });
+
+    it('应该拒绝空用户名', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: '',
+          password: 'password123'
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('用户名');
+    });
+
+    it('应该拒绝空密码', async () => {
+      const response = await request(app)
+        .post('/api/auth/login')
+        .send({
+          username: 'testuser',
+          password: ''
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('密码');
     });
   });
 
-  /**
-   * API-GET-VERIFICATION-CODE: 测试发送验证码接口
-   */
-  describe('POST /api/auth/send-verification-code', () => {
-    let userId;
-
-    beforeAll(async () => {
-      // 先登录获取userId
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({ username: 'testuser', password: 'test123456' });
-      userId = response.body.userId;
-    });
-
-    /**
-     * 测试参数错误
-     */
-    it('should return error when parameters are missing', async () => {
+  describe('API-SEND-VERIFICATION-CODE: POST /api/auth/send-verification-code', () => {
+    it('应该为有效用户发送验证码', async () => {
       const response = await request(app)
         .post('/api/auth/send-verification-code')
-        .send({ userId: null, idCardLast4: '' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('参数错误');
-    });
+        .send({
+          userId: testUserId,
+          idCardLast4: '1234'
+        });
 
-    /**
-     * 测试证件号错误
-     */
-    it('should return error when idCardLast4 is incorrect', async () => {
-      const response = await request(app)
-        .post('/api/auth/send-verification-code')
-        .send({ userId, idCardLast4: '9999' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('请输入正确的用户信息');
-    });
-
-    /**
-     * 测试发送成功
-     */
-    it('should return success when idCardLast4 is correct', async () => {
-      const response = await request(app)
-        .post('/api/auth/send-verification-code')
-        .send({ userId, idCardLast4: '1234' });
-      
+      expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('成功');
     });
+
+    it('应该拒绝错误的证件号', async () => {
+      const response = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          userId: testUserId,
+          idCardLast4: '9999'
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe('请输入正确的用户信息！');
+    });
+
+    it('应该拒绝缺少userId', async () => {
+      const response = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          idCardLast4: '1234'
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('应该拒绝缺少idCardLast4', async () => {
+      const response = await request(app)
+        .post('/api/auth/send-verification-code')
+        .send({
+          userId: testUserId
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
   });
 
-  /**
-   * API-VERIFY-SMS: 测试验证验证码接口
-   */
-  describe('POST /api/auth/verify-sms', () => {
-    let userId;
-    let agent;
+  describe('API-VERIFY-CODE: POST /api/auth/verify-code', () => {
+    let verificationCode;
 
-    beforeAll(async () => {
-      // 使用agent保持session
-      agent = request.agent(app);
-      
-      // 登录
-      const loginResponse = await agent
-        .post('/api/auth/login')
-        .send({ username: 'testuser', password: 'test123456' });
-      userId = loginResponse.body.userId;
-      
-      // 获取验证码
-      await agent
+    beforeEach(async () => {
+      // Generate a verification code first
+      const response = await request(app)
         .post('/api/auth/send-verification-code')
-        .send({ userId, idCardLast4: '1234' });
+        .send({
+          userId: testUserId,
+          idCardLast4: '1234'
+        });
+
+      // Extract code from database
+      const db = getDb();
+      const codeRecord = await db.getAsync(
+        'SELECT code FROM verification_codes WHERE user_id = ?',
+        testUserId
+      );
+      verificationCode = codeRecord.code;
     });
 
-    /**
-     * 测试参数错误
-     */
-    it('should return error when parameters are missing', async () => {
-      const response = await agent
-        .post('/api/auth/verify-sms')
-        .send({ userId: null, code: '' });
-      
-      expect(response.body.success).toBe(false);
-      expect(response.body.message).toContain('参数错误');
+    it('应该接受正确的验证码', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-code')
+        .send({
+          userId: testUserId,
+          code: verificationCode
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.token).toBeDefined();
     });
 
-    /**
-     * 测试验证码错误
-     */
-    it('should return error when code is incorrect', async () => {
-      const response = await agent
-        .post('/api/auth/verify-sms')
-        .send({ userId, code: '000000' });
-      
+    it('应该拒绝错误的验证码', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-code')
+        .send({
+          userId: testUserId,
+          code: '000000'
+        });
+
+      expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
       expect(response.body.message).toContain('错误');
     });
 
-    /**
-     * 注意：由于验证码是随机生成的，这个测试需要Mock或者在实际环境中获取真实验证码
-     * 这里仅测试基本流程，实际验证码验证在集成测试中完成
-     */
+    it('应该拒绝缺少userId', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-code')
+        .send({
+          code: verificationCode
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
+
+    it('应该拒绝缺少code', async () => {
+      const response = await request(app)
+        .post('/api/auth/verify-code')
+        .send({
+          userId: testUserId
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+    });
   });
 });
+

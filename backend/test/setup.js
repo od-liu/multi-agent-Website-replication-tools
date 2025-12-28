@@ -1,89 +1,35 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-
 /**
- * @description 测试数据库初始化脚本
- * 为测试环境创建独立的test_database.db
+ * Test Setup
+ * Configure test environment to use test database
  */
 
-const TEST_DB_PATH = path.join(__dirname, '../test_database.db');
+import { beforeAll, afterAll, beforeEach } from 'vitest';
+import { getDb, closeDb } from '../src/database/db.js';
+import { initDatabase, clearDatabase, insertDemoData } from '../src/database/init_db.js';
 
-function initTestDatabase() {
-  return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(TEST_DB_PATH, (err) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-    });
+// Set environment to test
+process.env.NODE_ENV = 'test';
 
-    const createUsersTable = `
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      id_card TEXT NOT NULL,
-      phone TEXT,
-      email TEXT,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    `;
+// Initialize test database before all tests
+beforeAll(async () => {
+  console.log('🧪 Setting up test database...');
+  await initDatabase();
+  await insertDemoData();
+  console.log('✅ Test database ready');
+});
 
-    db.serialize(() => {
-      // 删除现有表（清空数据）
-      db.run('DROP TABLE IF EXISTS users', (err) => {
-        if (err) console.error('Drop table error:', err);
-      });
+// Clean up before each test
+beforeEach(async () => {
+  // Clear all data except demo users
+  const db = getDb();
+  await db.runAsync('DELETE FROM sessions');
+  await db.runAsync('DELETE FROM verification_codes');
+});
 
-      // 创建表
-      db.run(createUsersTable, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-      });
-
-      // 插入测试数据
-      const insertTestUser = `
-        INSERT INTO users (username, password, id_card, phone, email)
-        VALUES 
-          ('testuser', 'test123456', '110101199001011234', '13800138000', 'test@example.com'),
-          ('admin', 'admin123456', '110101199001014028', '13800138001', 'admin@example.com');
-      `;
-
-      db.run(insertTestUser, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        db.close((err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
-    });
-  });
-}
-
-// 如果直接运行此脚本
-if (require.main === module) {
-  console.log('初始化测试数据库...');
-  console.log('测试数据库路径:', TEST_DB_PATH);
-  
-  initTestDatabase()
-    .then(() => {
-      console.log('✅ 测试数据库初始化成功');
-      console.log('📝 测试账号：');
-      console.log('   testuser / test123456 (证件号后4位: 1234)');
-      console.log('   admin / admin123456 (证件号后4位: 4028)');
-    })
-    .catch((err) => {
-      console.error('❌ 测试数据库初始化失败:', err);
-      process.exit(1);
-    });
-}
-
-module.exports = { initTestDatabase, TEST_DB_PATH };
+// Close database after all tests
+afterAll(async () => {
+  console.log('🧹 Cleaning up test database...');
+  await closeDb();
+  console.log('✅ Cleanup complete');
+});
 

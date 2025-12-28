@@ -1,0 +1,53 @@
+/* ========== 顶部导航容器 ========== */
+/* 📸 参考截图: requirements/images/组件特写截图/顶部导航.png */
+/* ⚠️ CSS命名空间：所有类名使用 top-navigation- 前缀，防止全局样式冲突 */
+.top-navigation-header {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 80px !important;
+  background-color: #FFFFFF !important;
+  z-index: 2000 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+.top-navigation-wrapper {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 20px !important;
+}
+
+.top-navigation-header-con {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  height: 80px !important;
+}
+
+/* ========== Logo区域 ========== */
+/* 使用CSS背景图实现Logo */
+.top-navigation-logo {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.top-navigation-logo a {
+  display: block !important;
+  width: 200px !important;
+  height: 50px !important;
+  background-image: url('/images/登录页面-顶部导航-Logo.png') !important;
+  background-size: auto !important;
+  background-position: 0% 0% !important;
+  background-repeat: no-repeat !important;
+  text-indent: -9999px !important; /* 隐藏文字，保留用于SEO */
+  overflow: hidden !important;
+}
+
+/* ========== 欢迎文字 ========== */
+.top-navigation-header-welcome {
+  font-size: 18px !important;
+  color: #333333 !important;
+  font-weight: 400 !important;
+  letter-spacing: 1px !important;
+}
+

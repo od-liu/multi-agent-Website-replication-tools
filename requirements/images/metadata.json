@@ -1,146 +1,183 @@
 {
-  "pageUrl": "https://kyfw.12306.cn/otn/resources/login.html",
-  "captureDate": "2025-12-28T13:26:15.385024",
-  "resources": [
+  "generatedAt": "2025-12-28T16:51:00Z",
+  "sourceUrl": "https://kyfw.12306.cn/otn/resources/login.html",
+  
+  "iconFonts": [
+    {
+      "fontFamily": "icon",
+      "files": [
+        "iconfont.woff2",
+        "iconfont.woff",
+        "iconfont.ttf"
+      ],
+      "downloaded": true,
+      "downloadPath": "requirements/images/fonts/",
+      "usage": "用于输入框前的图标（用户名图标、密码图标）以及其他UI图标",
+      "classes": ["icon-user", "icon-pwd", "icon-plaint-fill", "icon-scan", "icon-quick", "icon-safe", "icon-close"]
+    }
+  ],
+  
+  "images": [
     {
       "filename": "登录页面-顶部导航-Logo.png",
-      "type": "logo",
-      "component": "顶部导航",
+      "category": "Logo",
+      "location": "顶部导航",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/logo.png",
       "usage": "CSS background-image",
-      "naturalWidth": 200,
-      "naturalHeight": 50,
       "displayWidth": 200,
       "displayHeight": 50,
-      "scaleX": 1.0,
-      "scaleY": 1.0,
-      "fileSize": 7156,
-      "cssStrategy": "background-size: contain; background-repeat: no-repeat;"
+      "cssStrategy": "background-size: auto; background-position: 0% 0%"
     },
     {
-      "filename": "登录页面-主内容区域-背景图片1.jpg",
-      "type": "background",
-      "component": "主内容区域",
-      "usage": "CSS background-image",
-      "naturalWidth": 2560,
-      "naturalHeight": 600,
+      "filename": "登录页面-主内容-背景图1.jpg",
+      "category": "背景图片",
+      "location": "主内容区域轮播图",
+      "originalUrl": "https://www.12306.cn/index/images/pic/banner-login-20200924.jpg",
+      "usage": "CSS background-image (轮播图项目)",
       "displayWidth": 1497,
       "displayHeight": 600,
-      "scaleX": 1.71,
-      "scaleY": 1.0,
-      "fileSize": 182489,
-      "cssStrategy": "background-size: cover; background-position: center;"
+      "cssStrategy": "background-size: auto; background-position: 50% 50%; background-repeat: no-repeat",
+      "note": "轮播图背景图之一，包含手机App推广内容"
     },
     {
-      "filename": "登录页面-底部导航-中国国家铁路集团.png",
-      "type": "partner_logo",
-      "component": "底部导航",
-      "usage": "<img> tag",
-      "naturalWidth": 300,
-      "naturalHeight": 51,
-      "displayWidth": 200,
-      "displayHeight": 34,
-      "scaleX": 1.5,
-      "scaleY": 1.5,
-      "fileSize": 9240,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
-    },
-    {
-      "filename": "登录页面-底部导航-中国铁路财产保险.png",
-      "type": "partner_logo",
-      "component": "底部导航",
-      "usage": "<img> tag",
-      "naturalWidth": 400,
-      "naturalHeight": 68,
-      "displayWidth": 200,
-      "displayHeight": 34,
-      "scaleX": 2.0,
-      "scaleY": 2.0,
-      "fileSize": 17605,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
-    },
-    {
-      "filename": "登录页面-底部导航-中国铁路95306网.png",
-      "type": "partner_logo",
-      "component": "底部导航",
-      "usage": "<img> tag",
-      "naturalWidth": 800,
-      "naturalHeight": 136,
-      "displayWidth": 200,
-      "displayHeight": 34,
-      "scaleX": 4.0,
-      "scaleY": 4.0,
-      "fileSize": 19177,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
-    },
-    {
-      "filename": "登录页面-底部导航-中铁快运.png",
-      "type": "partner_logo",
-      "component": "底部导航",
-      "usage": "<img> tag",
-      "naturalWidth": 400,
-      "naturalHeight": 68,
-      "displayWidth": 200,
-      "displayHeight": 34,
-      "scaleX": 2.0,
-      "scaleY": 2.0,
-      "fileSize": 16372,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
+      "filename": "登录页面-主内容-背景图2.jpg",
+      "category": "背景图片",
+      "location": "主内容区域轮播图",
+      "originalUrl": "https://www.12306.cn/index/images/pic/banner-login-20200629.jpg",
+      "usage": "CSS background-image (轮播图项目)",
+      "displayWidth": 1497,
+      "displayHeight": 600,
+      "cssStrategy": "background-size: auto; background-position: 50% 50%; background-repeat: no-repeat",
+      "note": "轮播图背景图之二"
     },
     {
       "filename": "登录页面-底部导航-中国铁路官方微信二维码.png",
-      "type": "qrcode",
-      "component": "底部导航",
-      "usage": "<img> tag",
+      "category": "二维码",
+      "location": "底部导航-二维码区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/zgtlwb.png",
+      "usage": "<img> 标签",
+      "alt": "中国铁路官方微信",
       "naturalWidth": 344,
       "naturalHeight": 344,
       "displayWidth": 80,
       "displayHeight": 80,
-      "scaleX": 4.3,
-      "scaleY": 4.3,
-      "fileSize": 29640,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
+      "cssStrategy": "object-fit: contain"
     },
     {
       "filename": "登录页面-底部导航-中国铁路官方微博二维码.png",
-      "type": "qrcode",
-      "component": "底部导航",
-      "usage": "<img> tag",
+      "category": "二维码",
+      "location": "底部导航-二维码区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/zgtlwx.png",
+      "usage": "<img> 标签",
+      "alt": "中国铁路官方微博",
       "naturalWidth": 800,
       "naturalHeight": 800,
       "displayWidth": 80,
       "displayHeight": 80,
-      "scaleX": 10.0,
-      "scaleY": 10.0,
-      "fileSize": 159513,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
+      "cssStrategy": "object-fit: contain"
     },
     {
       "filename": "登录页面-底部导航-12306公众号二维码.png",
-      "type": "qrcode",
-      "component": "底部导航",
-      "usage": "<img> tag",
+      "category": "二维码",
+      "location": "底部导航-二维码区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/public.png",
+      "usage": "<img> 标签",
+      "alt": "12306 公众号",
       "naturalWidth": 258,
       "naturalHeight": 258,
       "displayWidth": 80,
       "displayHeight": 80,
-      "scaleX": 3.23,
-      "scaleY": 3.23,
-      "fileSize": 32189,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
+      "cssStrategy": "object-fit: contain"
     },
     {
-      "filename": "登录页面-底部导航-铁路12306APP二维码.png",
-      "type": "qrcode",
-      "component": "底部导航",
-      "usage": "<img> tag",
+      "filename": "登录页面-底部导航-铁路12306二维码.png",
+      "category": "二维码",
+      "location": "底部导航-二维码区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/download.png",
+      "usage": "<img> 标签",
+      "alt": "铁路12306",
       "naturalWidth": 258,
       "naturalHeight": 258,
       "displayWidth": 80,
       "displayHeight": 80,
-      "scaleX": 3.23,
-      "scaleY": 3.23,
-      "fileSize": 37113,
-      "cssStrategy": "width: auto; height: auto; max-width: 100%;"
+      "cssStrategy": "object-fit: contain"
+    },
+    {
+      "filename": "登录页面-底部导航-中国国家铁路集团Logo.png",
+      "category": "友情链接Logo",
+      "location": "底部导航-友情链接区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/link05.png",
+      "usage": "<img> 标签",
+      "alt": "中国国家铁路集团有限公司",
+      "naturalWidth": 300,
+      "naturalHeight": 51,
+      "displayWidth": 200,
+      "displayHeight": 34,
+      "cssStrategy": "object-fit: contain"
+    },
+    {
+      "filename": "登录页面-底部导航-中国铁路财产保险Logo.png",
+      "category": "友情链接Logo",
+      "location": "底部导航-友情链接区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/link02.png",
+      "usage": "<img> 标签",
+      "alt": "中国铁路财产保险自保有限公司",
+      "naturalWidth": 400,
+      "naturalHeight": 68,
+      "displayWidth": 200,
+      "displayHeight": 34,
+      "cssStrategy": "object-fit: contain"
+    },
+    {
+      "filename": "登录页面-底部导航-中国铁路95306网Logo.png",
+      "category": "友情链接Logo",
+      "location": "底部导航-友情链接区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/link03.png",
+      "usage": "<img> 标签",
+      "alt": "中国铁路95306网",
+      "naturalWidth": 800,
+      "naturalHeight": 136,
+      "displayWidth": 200,
+      "displayHeight": 34,
+      "cssStrategy": "object-fit: contain"
+    },
+    {
+      "filename": "登录页面-底部导航-中铁快运Logo.png",
+      "category": "友情链接Logo",
+      "location": "底部导航-友情链接区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/link04.png",
+      "usage": "<img> 标签",
+      "alt": "中铁快运股份有限公司",
+      "naturalWidth": 400,
+      "naturalHeight": 68,
+      "displayWidth": 200,
+      "displayHeight": 34,
+      "cssStrategy": "object-fit: contain"
+    },
+    {
+      "filename": "登录页面-底部导航-无障碍服务Logo.jpg",
+      "category": "功能Logo",
+      "location": "底部导航-版权信息区域",
+      "originalUrl": "https://kyfw.12306.cn/otn/resources/images/footer-slh.jpg",
+      "usage": "<img> 标签",
+      "alt": "中国国家铁路集团有限公司",
+      "naturalWidth": 131,
+      "naturalHeight": 47,
+      "displayWidth": 130,
+      "displayHeight": 46,
+      "cssStrategy": "object-fit: contain"
     }
-  ]
+  ],
+  
+  "summary": {
+    "totalIconFonts": 1,
+    "totalImages": 12,
+    "categories": {
+      "Logo": 1,
+      "背景图片": 2,
+      "二维码": 4,
+      "友情链接Logo": 4,
+      "功能Logo": 1
+    }
+  }
 }

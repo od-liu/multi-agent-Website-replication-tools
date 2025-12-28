@@ -1,55 +1,39 @@
-/* ========== 全局样式重置 ========== */
+/* Global Reset and Base Styles */
+:root {
+  /* Color System */
+  --primary-color: #0066CC;
+  --accent-color: #FF7700;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --text-placeholder: #CCCCCC;
+  --color-error: #FF4D4F;
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --bg-page: #F5F5F5;
+  --bg-white: #FFFFFF;
+  --border-color: #E5E5E5;
+  --divider-color: #D9D9D9;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html,
 body {
-  width: 100%;
-  height: 100%;
+  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-page);
 }
 
-#root {
-  width: 100%;
-  height: 100%;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-/* ========== 全局CSS变量 ========== */
-:root {
-  /* 主品牌色 - 橙色 */
-  --color-primary: #FF7200;
-  --color-primary-hover: #FF8A33;
-  --color-primary-active: #E66600;
-  
-  /* 强调色 - 蓝色 */
-  --color-accent: #0066CC;
-  --color-accent-hover: #0052A3;
-  
-  /* 文本色 */
-  --color-text-primary: #333333;
-  --color-text-secondary: #999999;
-  --color-text-tertiary: #C1C1C1;
-  --color-text-placeholder: rgba(0, 0, 0, 0.3);
-  --color-text-link: #0066CC;
-  
-  /* 状态色 */
-  --color-error: #FF4D4F;
-  --color-success: #52C41A;
-  --color-warning: #FAAD14;
-  
-  /* 背景色 */
-  --color-bg-page: #FFFFFF;
-  --color-bg-container: #FFFFFF;
-  --color-bg-disabled: #F5F5F5;
-  
-  /* 边框色 */
-  --color-border: #DEDEDE;
-  --color-border-light: #EEEEEE;
-}

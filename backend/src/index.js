@@ -1,75 +1,53 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const apiRoutes = require('./routes/api');
-
 /**
- * @description Express服务器入口文件
- * 配置中间件、路由和服务器启动
+ * Backend Server Entry Point
+ * Express.js server for 12306 login API
  */
 
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import apiRoutes from './routes/api.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-// ========== 中间件配置 ==========
-
-// CORS配置 - 允许前端跨域访问
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173'],
-  credentials: true
-}));
-
-// Body解析中间件
+// Middleware
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session中间件 - 用于存储验证码
-app.use(session({
-  secret: 'your-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false, // 生产环境应设为true（需要HTTPS）
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24小时
-  }
-}));
+// 静态文件服务 - 提供前端 public 目录的访问
+app.use('/images', express.static(join(__dirname, '../../frontend/public/images')));
+app.use('/fonts', express.static(join(__dirname, '../../frontend/public/fonts')));
 
-// ========== 路由配置 ==========
+// Routes
+app.use(apiRoutes);
 
-// API路由
-app.use('/api', apiRoutes);
-
-// 健康检查路由
+// Health check
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: '服务器运行正常' });
+  res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// 404处理
+// 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: '请求的资源不存在'
-  });
+  res.status(404).json({ error: 'Not found' });
 });
 
-// 错误处理中间件
+// Error handler
 app.use((err, req, res, next) => {
-  console.error('Server error:', err);
-  res.status(500).json({
-    success: false,
-    message: '服务器内部错误'
-  });
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
-// ========== 启动服务器 ==========
-
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 服务器启动成功！`);
-  console.log(`📍 监听端口: ${PORT}`);
-  console.log(`🌐 访问地址: http://localhost:${PORT}`);
-  console.log(`💡 健康检查: http://localhost:${PORT}/health`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app;
+export default app;
+

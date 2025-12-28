@@ -1,30 +1,39 @@
-/* ========== 页面容器 ========== */
-.login-page {
-  min-height: 100vh !important;
+/* ========== 登录页面容器 ========== */
+/* 📸 参考: requirements/images/整体页面截图/登录页面.png */
+
+.page-login {
   display: flex !important;
   flex-direction: column !important;
-  background-color: #FFFFFF !important;
+  min-width: 1497px !important;
+  min-height: 954px !important;
+  background-color: #F5F5F5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* ========== 主内容区域 ========== */
-.main-content {
-  flex: 1 !important;
-  position: relative !important;
-  width: 100% !important;
-  min-height: 600px !important;
-  background-image: url('/images/登录页面-主内容区域-背景图片1.jpg') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+/* 临时占位样式 - 待子组件实现后删除 */
+.top-nav-placeholder,
+.login-form-placeholder,
+.bottom-nav-placeholder {
+  padding: 20px;
+  text-align: center;
+  border: 2px dashed #ccc;
+  background: rgba(255, 255, 255, 0.5);
+  color: #999;
 }
 
-/* ========== 响应式 ========== */
-@media (max-width: 768px) {
-  .main-content {
-    min-height: 400px !important;
-    padding: 20px 0 !important;
-  }
+.top-nav-placeholder {
+  height: 80px;
+  line-height: 40px;
 }
+
+.login-form-placeholder {
+  height: 600px;
+  line-height: 560px;
+}
+
+.bottom-nav-placeholder {
+  height: 274px;
+  line-height: 234px;
+}
+
