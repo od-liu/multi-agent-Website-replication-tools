@@ -13,15 +13,14 @@
   description: |
     用户注册主页面，包含注册表单和邮箱/手机验证功能。
     
-    **网站地址**: https://kyfw.12306.cn/otn/regist/init
+    **网站地址**: http://localhost:5174/register
     **页面宽度参考**: 1920px
-    **页面标识**: registration
     
-    **需要的图片资源**:
+    **需要的图片资源（可以直接复用login-page的相同资源，建议直接从/login目录下进行复制**:
     - Logo（顶部导航）
-    - 背景图片（主内容区域，如有）
     - 二维码（底部导航，4个：中国铁路官方微信、中国铁路官方微博、12306公众号、铁路12306）
     - 友情链接（底部导航，4个：2行2列布局）
+    - 如果页面有其他图片资源，请自行下载并正确命名
     
     **主要功能**：
     - 用户可以注册新账号
@@ -74,18 +73,7 @@
         - 提供"立即注册"按钮
         - 提供"已有账号？去登录"链接
         
-        **交互场景截图**:
-          - name: "前端验证-用户名为空"
-            description: "测试不输入用户名直接点击注册"
-            steps:
-              - action: click
-                target: "立即注册按钮"
-                target_hint: "button:has-text('立即注册'), a:has-text('立即注册')"
-              - action: wait
-                duration: 0.5
-              - action: screenshot
-                filename: "注册表单-错误-用户名为空.png"
-                
+        **交互场景截图**:    
           - name: "前端验证-密码为空"
             description: "测试只输入用户名不输入密码"
             steps:
@@ -96,10 +84,15 @@
               - action: type
                 target: "用户名输入框"
                 target_hint: "input[placeholder*='用户名'], input[name*='user']"
-                value: "testuser123"
-              - action: click
-                target: "立即注册按钮"
-                target_hint: "button:has-text('立即注册'), a:has-text('立即注册')"
+                value: "testuser123123"
+              - action: evaluate
+                script: |
+                  const confirmPasswordInput = document.querySelector("input[type='password']:last-of-type") || 
+                                               document.querySelector("input[placeholder*='确认']") ||
+                                               document.querySelector("input[placeholder*='再次']");
+                  if (confirmPasswordInput) {
+                    confirmPasswordInput.blur();
+                  }
               - action: wait
                 duration: 0.5
               - action: screenshot
@@ -124,9 +117,14 @@
                 target: "确认密码输入框"
                 target_hint: "input[type='password']:last-of-type, input[placeholder*='确认'], input[placeholder*='再次']"
                 value: "password456"
-              - action: click
-                target: "立即注册按钮"
-                target_hint: "button:has-text('立即注册'), a:has-text('立即注册')"
+              - action: evaluate
+                script: |
+                  const confirmPasswordInput = document.querySelector("input[type='password']:last-of-type") || 
+                                               document.querySelector("input[placeholder*='确认']") ||
+                                               document.querySelector("input[placeholder*='再次']");
+                  if (confirmPasswordInput) {
+                    confirmPasswordInput.blur();
+                  }
               - action: wait
                 duration: 0.5
               - action: screenshot
@@ -142,7 +140,7 @@
               - action: type
                 target: "用户名输入框"
                 target_hint: "input[placeholder*='用户名'], input[name*='user']"
-                value: "testuser123"
+                value: "testuser123123"
               - action: type
                 target: "密码输入框"
                 target_hint: "input[type='password']:first-of-type"
@@ -155,9 +153,14 @@
                 target: "手机号输入框"
                 target_hint: "input[placeholder*='手机'], input[name*='phone'], input[name*='mobile']"
                 value: "12345"
-              - action: click
-                target: "立即注册按钮"
-                target_hint: "button:has-text('立即注册'), a:has-text('立即注册')"
+              - action: evaluate
+                script: |
+                  const confirmPasswordInput = document.querySelector("input[type='password']:last-of-type") || 
+                                               document.querySelector("input[placeholder*='确认']") ||
+                                               document.querySelector("input[placeholder*='再次']");
+                  if (confirmPasswordInput) {
+                    confirmPasswordInput.blur();
+                  }
               - action: wait
                 duration: 0.5
               - action: screenshot
@@ -166,70 +169,255 @@
       dependencies: []
       
       scenarios:
-        - name: 校验用户名为空
-          given: 用户在注册页面未输入用户名
-          when: 用户点击"立即注册"
-          then: 显示错误提示"请输入用户名！"
-          
-        - name: 校验用户名格式
-          given: 用户在注册页面输入了不符合格式的用户名（少于6位或包含非法字符）
-          when: 用户点击"立即注册"
-          then: 显示错误提示"用户名格式不正确！"
-          
-        - name: 校验密码为空
-          given: 用户在注册页面输入了用户名但未输入密码
-          when: 用户点击"立即注册"
-          then: 显示错误提示"请输入密码！"
-          
-        - name: 校验密码长度
-          given: 用户在注册页面输入了用户名和小于6位的密码
-          when: 用户点击"立即注册"
-          then: 显示错误提示"密码长度不能少于6位！"
-          
-        - name: 校验密码强度
-          given: 用户在注册页面输入了不符合强度要求的密码（如纯数字或纯字母）
-          when: 用户点击"立即注册"
-          then: 显示错误提示"密码必须包含字母和数字！"
-          
-        - name: 校验两次密码不一致
-          given: 用户在注册页面输入的两次密码不一致
-          when: 用户点击"立即注册"
-          then: 显示错误提示"两次输入的密码不一致！"
-          
-        - name: 校验姓名为空
-          given: 用户在注册页面未输入真实姓名
-          when: 用户点击"立即注册"
-          then: 显示错误提示"请输入真实姓名！"
-          
-        - name: 校验证件号为空
-          given: 用户在注册页面未输入证件号
-          when: 用户点击"立即注册"
-          then: 显示错误提示"请输入证件号！"
-          
-        - name: 校验证件号格式
-          given: 用户在注册页面输入了不符合格式的证件号
-          when: 用户点击"立即注册"
-          then: 显示错误提示"证件号格式不正确！"
-          
-        - name: 校验手机号为空
-          given: 用户在注册页面未输入手机号
-          when: 用户点击"立即注册"
-          then: 显示错误提示"请输入手机号！"
-          
-        - name: 校验手机号格式
-          given: 用户在注册页面输入了不符合格式的手机号
-          when: 用户点击"立即注册"
-          then: 显示错误提示"手机号格式不正确！"
-          
-        - name: 用户名已存在
-          given: 用户在注册页面输入了已被注册的用户名
-          when: 用户点击"立即注册"
-          then: 显示错误提示"用户名已存在！"
-          
-        - name: 注册成功
-          given: 用户在注册页面输入了符合要求的所有信息
-          when: 用户点击"立即注册"
-          then: 弹出验证窗口或显示注册成功提示
+        # 用户名验证场景
+        - name: 用户名输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发用户名验证，如果验证通过，输入框右侧显示绿色勾勾（✓），如果验证失败，输入框下方显示红色错误提示文字
+        
+        - name: 用户名长度小于6位
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个长度小于6位的用户名并失去焦点
+          then: 输入框下方显示系统提示"用户名长度不能少于6个字符！"
+        
+        - name: 用户名长度大于30位
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个长度大于30位的用户名并失去焦点
+          then: 输入框下方显示系统提示"用户名长度不能超过30个字符！"
+        
+        - name: 用户名开头不是字母
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个以非字母开头的用户名并失去焦点
+          then: 输入框下方显示系统提示"用户名只能由字母、数字和_组成，须以字母开头！"
+        
+        - name: 用户名包含特殊字符
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个包含特殊字符（如@#$%^&*()等）的用户名并失去焦点
+          then: 输入框下方显示系统提示"用户名只能由字母、数字和_组成，须以字母开头！"
+        
+        - name: 用户输入合法且已注册的用户名
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个符合标准但已被注册的用户名（如"user_123"）并失去焦点
+          then: 输入框下方显示系统提示"该用户名已经占用，请重新选择用户名！"，输入框右侧不显示绿色勾勾
+        
+        - name: 用户输入合法且未注册的用户名
+          given: 用户在注册页面
+          when: 用户在"用户名"输入框中输入一个未被注册的合法用户名（如"new_user123"）并失去焦点
+          then: 用户名输入框的右侧出现一个绿色的勾勾（✓）表示用户名合法且可以被使用，输入框下方不显示错误提示
+        
+        # 密码验证场景
+        - name: 登录密码输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"登录密码"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发密码验证，密码强度指示器根据密码复杂度更新显示，如果验证通过显示绿色勾勾，如果验证失败显示红色错误提示
+        
+        - name: 登录密码长度小于6位
+          given: 用户在注册页面
+          when: 用户在"登录密码"输入框中输入一个长度小于6位的登录密码并失去焦点
+          then: 输入框下方显示系统提示"密码长度不能少于6个字符！"，密码强度指示器显示一个强度条（弱）
+        
+        - name: 登录密码包含特殊字符
+          given: 用户在注册页面
+          when: 用户在"登录密码"输入框中输入一个包含特殊字符（如@#$%^&*()等）的登录密码并失去焦点
+          then: 输入框下方显示系统提示"格式错误，必须且只能包含字母、数字和下划线中的两种或两种以上！"
+        
+        - name: 登录密码只包含单一字符类型
+          given: 用户在注册页面
+          when: 用户在"登录密码"输入框中输入的密码只包含数字或只包含字母或只包含下划线并失去焦点
+          then: 输入框下方显示系统提示"格式错误，必须且只能包含字母、数字和下划线中的两种或两种以上！"
+        
+        - name: 登录密码符合规范
+          given: 用户在注册页面
+          when: 用户在"登录密码"输入框中输入一个只包含字母、数字和下划线中两种或两种以上，长度大于等于6位的符合密码规范的登录密码并失去焦点
+          then: 登录密码输入框的右侧出现一个绿色的勾勾（✓）表示登录密码合法且可以被使用，密码强度指示器根据密码复杂度显示相应数量的强度条，输入框下方不显示错误提示
+        
+        # 确认密码验证场景
+        - name: 确认密码输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"确认密码"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发确认密码验证，如果验证通过显示绿色勾勾，如果验证失败显示红色错误提示
+        
+        - name: 确认密码与登录密码不一致
+          given: 用户在注册页面
+          when: 用户在"确认密码"输入框中输入的确认登录密码与登录密码不一致并失去焦点
+          then: 输入框下方显示系统提示"确认密码与密码不一致！"，输入框右侧不显示绿色勾勾
+        
+        - name: 确认密码与登录密码一致
+          given: 用户在注册页面且用户已输入一个登录密码
+          when: 用户在"确认密码"输入框中输入的确认登录密码与登录密码一致并失去焦点
+          then: 确认登录密码输入框的右侧出现一个绿色的勾勾（✓）表示确认密码与输入的登录密码一致，输入框下方不显示错误提示
+        
+        # 证件类型选择场景
+        - name: 证件类型默认选择
+          given: 用户在注册页面，未展开过选择证件类型的选项卡
+          when: 用户未选择任何证件类型或还没执行到选择证件类型这一步
+          then: 证件类型选择框内默认填入"居民身份证"
+        
+        - name: 证件类型手动选择
+          given: 用户在注册页面展开选择证件类型的选项卡
+          when: 用户选择某个选项卡中的证件类型
+          then: 证件类型选择框内填入该证件类型的名称，展开的选项卡自动收回
+        
+        # 姓名验证场景
+        - name: 姓名输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"姓名"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发姓名验证，如果验证通过显示绿色勾勾，如果验证失败显示红色错误提示
+        
+        - name: 姓名长度过短
+          given: 用户在注册页面
+          when: 用户输入的内容长度小于3个字符（1个汉字算2个字符）
+          then: 系统提示"允许输入的字符串在3-30个字符之间！"
+        
+        - name: 姓名长度过长
+          given: 用户在注册页面
+          when: 用户输入的内容长度大于30个字符（1个汉字算2个字符）
+          then: 系统提示"允许输入的字符串在3-30个字符之间！"
+        
+        - name: 姓名包含特殊字符
+          given: 用户在注册页面
+          when: 用户输入的姓名包含特殊字符（除了中文字符、英文字符、"."以及单空格之外的字符）
+          then: 系统提示"请输入姓名！"
+        
+        - name: 姓名符合规范
+          given: 用户在注册页面
+          when: 用户输入的姓名长度在3-30个字符之间，且不包含除了中英文字符、"."以及单空格之外的字符
+          then: 姓名输入框右侧出现一个绿色的勾勾表示输入内容合法
+        
+        # 证件号码验证场景
+        - name: 证件号码输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"证件号码"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发证件号码验证（包括格式验证和唯一性验证），如果验证通过显示绿色勾勾，如果验证失败显示红色错误提示
+        
+        - name: 证件号码长度过短
+          given: 用户在注册页面
+          when: 用户在"证件号码"输入框中输入的证件号码长度小于18个字符并失去焦点
+          then: 输入框下方显示系统提示"请正确输入18位证件号码！"
+        
+        - name: 证件号码长度过长
+          given: 用户在注册页面
+          when: 用户在"证件号码"输入框中输入的证件号码长度大于18个字符，系统自动截取前18个字符并失去焦点
+          then: 如果截取后的证件号码格式不正确或校验失败，输入框下方显示系统提示"请正确输入18位证件号码！"
+        
+        - name: 证件号码包含特殊字符
+          given: 用户在注册页面
+          when: 用户在"证件号码"输入框中输入的证件号码包含除了数字和字母以外的字符并失去焦点
+          then: 输入框下方显示系统提示"输入的证件编号中包含中文信息或特殊字符！"
+        
+        - name: 居民身份证号码校验失败
+          given: 用户在注册页面且用户选择的证件类型为"居民身份证"
+          when: 用户在"证件号码"输入框中输入的18位不包含特殊字符的证件号码不通过身份证校验码验证并失去焦点
+          then: 输入框下方显示系统提示"请正确输入18位证件号码！"
+        
+        - name: 证件号码符合规范
+          given: 用户在注册页面
+          when: 用户在"证件号码"输入框中输入的证件号码长度为18个字符，只包含数字和字母，且通过格式校验，并且该证件号码在数据库中未被注册过，用户失去焦点
+          then: 证件号码输入框右侧出现一个绿色的勾勾（✓）表示输入内容合法，输入框下方不显示错误提示
+        
+        # 优惠类型选择场景
+        - name: 优惠类型默认选择
+          given: 用户在注册页面，未展开过选择优惠类型的选项卡
+          when: 用户未选择任何优惠类型或还没执行到选择优惠类型这一步
+          then: 优惠类型选择框内默认填入"成人"
+        
+        - name: 优惠类型手动选择
+          given: 用户在注册页面展开选择优惠类型的选项卡
+          when: 用户选择某个选项卡中的优惠类型
+          then: 优惠类型选择框内填入该优惠类型的名称，展开的选项卡自动收回
+        
+        # 邮箱验证场景（选填）
+        - name: 邮箱输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"邮箱"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发邮箱格式验证，如果验证失败显示红色错误提示，邮箱为选填字段，验证通过时不显示绿色勾勾
+        
+        - name: 邮箱格式不正确
+          given: 用户在注册页面
+          when: 用户在"邮箱"输入框中输入的邮箱不包含"@"符号或不包含域名并失去焦点
+          then: 输入框下方显示系统提示"请输入有效的电子邮件地址！"
+        
+        - name: 邮箱格式正确
+          given: 用户在注册页面
+          when: 用户在"邮箱"输入框中输入了一个正确的邮箱格式（如"example@domain.com"）并失去焦点
+          then: 不出现系统提示，输入框下方不显示错误提示
+        
+        - name: 邮箱未填写（选填字段）
+          given: 用户在注册页面
+          when: 用户未在"邮箱"输入框中输入任何内容并失去焦点
+          then: 不出现系统提示，输入框下方不显示错误提示
+        
+        # 手机号验证场景
+        - name: 手机号输入后失去焦点触发验证
+          given: 用户在注册页面
+          when: 用户在"手机号码"输入框中输入内容并点击输入框外部使输入框失去焦点
+          then: 系统触发手机号码格式验证，如果验证失败显示红色错误提示
+        
+        - name: 手机号长度过短
+          given: 用户在注册页面
+          when: 用户在"手机号码"输入框中输入的手机号码长度小于11个字符并失去焦点
+          then: 输入框下方显示系统提示"您输入的手机号码不是有效的格式！"
+        
+        - name: 手机号长度过长自动截取
+          given: 用户在注册页面且用户已经在"手机号码"输入框中输入了一个11个字符的手机号码
+          when: 用户尝试在手机号码输入框中输入第12个字符
+          then: 系统自动截取前11个字符，仅保留用户最初输入的11个字符手机号码，输入框显示11位数字
+        
+        - name: 手机号包含非数字字符
+          given: 用户在注册页面
+          when: 用户在"手机号码"输入框中输入的手机号码包含除了数字以外的字符并失去焦点
+          then: 输入框下方显示系统提示"您输入的手机号码不是有效的格式！"
+        
+        - name: 手机号符合规范
+          given: 用户在注册页面
+          when: 用户在"手机号码"输入框中输入的手机号码长度为11个字符，且只包含数字并失去焦点
+          then: 不出现系统提示，输入框下方不显示错误提示
+        
+        # 提交注册场景
+        - name: 未勾选用户协议
+          given: 用户在注册页面
+          when: 用户未勾选"我已阅读并同意遵守《中国铁路客户服务中心网站服务条款》《隐私权政策》"复选框并点击"下一步"按钮
+          then: 表单顶部显示系统提示"请确认服务条款！"，字体大小14px，内边距10px 15px，文字颜色为#ff4d4f（红色），背景为#fff2f0（浅红色），边框为#ffccc7（浅红色边框）
+        
+        - name: 必填信息未完成填写
+          given: 用户在注册页面且有除了邮箱号以外的必填信息未填入（如用户名、密码、确认密码、姓名、证件号码、手机号码等）
+          when: 用户点击"下一步"按钮
+          then: 表单顶部显示系统提示"请填写完整信息！"，字体大小14px，内边距10px 15px，文字颜色为#ff4d4f（红色），背景为#fff2f0（浅红色），边框为#ffccc7（浅红色边框）
+        
+        - name: 填写信息不符合规范
+          given: 用户在注册页面且用户填写的信息中有部分还未通过规范认证
+          when: 用户点击"下一步"按钮
+          then: 如果未通过规范认证的内容已经有了对应的系统提示，直接保留之前的系统提示；如果某个字段有错误但未显示错误提示，系统在表单顶部显示通用错误提示
+        
+        - name: 证件号码已被注册
+          given: 用户在注册页面，所有信息填写完整且符合规范，用户勾选同意协议，但用户使用的证件类型+证件号码在数据库中已经被注册过
+          when: 用户点击"下一步"按钮
+          then: 系统弹出提示框（alert）显示"该证件号码已经被注册过，请确认是否您本人注册，'是'请使用原账号登录，'不是'请通过铁路12306App办理抢注或持该证件到就近的办理客运业务的铁路车站办理被抢注处理，完成后即可继续注册，或致电12306客服咨询。"
+        
+        - name: 手机号已被其他用户使用
+          given: 用户在注册页面，所有信息填写完整且符合规范，用户勾选同意协议，但用户输入的手机号码在数据库中已经被其他注册用户使用
+          when: 用户点击"下一步"按钮
+          then: 系统弹出提示框（alert）显示"您输入的手机号码已被其他注册用户使用，请确认是否本人注册。如果此手机号是本人注册，您可使用此手机号进行登录，或返回登录页点击忘记密码进行重置密码；如果手机号不是您注册的，您可更换手机号码或致电12306客服协助处理。"
+        
+        - name: 邮箱已被其他用户使用
+          given: 用户在注册页面，所有信息填写完整且符合规范，用户勾选同意协议，用户填写了邮箱，但用户输入的邮箱在数据库中已经被其他注册用户使用
+          when: 用户点击"下一步"按钮
+          then: 系统弹出提示框（alert）显示"您输入的邮箱已被其他注册用户使用，请确认是否本人注册。如果此邮箱是本人注册，您可使用此邮箱进行登录，或返回登录页点击忘记密码进行重置密码；如果邮箱不是您注册的，您可更换邮箱或致电12306客服协助处理。"
+        
+        - name: 点击服务条款链接
+          given: 用户在注册页面
+          when: 用户点击"《中国铁路客户服务中心网站服务条款》"文本超链接
+          then: 跳转到"《中国铁路客户服务中心网站服务条款》"页面
+        
+        - name: 点击隐私权政策链接
+          given: 用户在注册页面
+          when: 用户点击"《隐私权政策》"文本超链接
+          then: 跳转到"《隐私权政策》"页面
+        
+        - name: 注册信息提交成功
+          given: 用户在注册页面，已填写所有必填信息（用户名、登录密码、确认密码、证件类型、姓名、证件号码、优惠类型、手机号码），所有必填信息都通过格式验证（显示绿色勾勾），如果填写了邮箱号则邮箱号格式正确，用户勾选"我已阅读并同意遵守《中国铁路客户服务中心网站服务条款》《隐私权政策》"复选框
+          when: 用户点击"下一步"按钮
+          then: 系统提交注册信息到后端，后端创建会话（session）并返回sessionId，系统自动发送验证码到用户填写的手机号码，控制台显示验证码信息（开发环境），出现验证弹窗（RegistrationVerificationModal），验证弹窗显示"验证码已发送至[手机号]"，将手机号及验证码记录在注册所用的数据库中（有效期5分钟）
       
       children: []
     
@@ -276,30 +464,156 @@
         
         **前置条件**:
           - 完成 REQ-REG-FORM 的成功注册
+        
+        **交互场景截图**:
+          - name: "注册验证弹窗-初始状态"
+            description: "填写完整注册信息后点击下一步，触发手机验证弹窗"
+            steps:
+              # 第一步：清空所有输入框
+              - action: evaluate
+                script: |
+                  const inputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="tel"], input[type="email"]');
+                  inputs.forEach(input => input.value = '');
+                  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                  checkboxes.forEach(checkbox => checkbox.checked = false);
+              
+              # 第二步：填写用户名
+              - action: type
+                target: "用户名输入框"
+                target_hint: "input[placeholder*='用户名'], input[name*='username'], input[id*='username']"
+                value: "testuser123123"
+              
+              # 第三步：填写密码
+              - action: type
+                target: "密码输入框"
+                target_hint: "input[type='password']:first-of-type, input[placeholder*='密码']:first-of-type, input[name*='password']:first-of-type"
+                value: "password123"
+              
+              # 第四步：填写确认密码
+              - action: type
+                target: "确认密码输入框"
+                target_hint: "input[type='password']:last-of-type, input[placeholder*='确认'], input[placeholder*='再次']"
+                value: "password123"
+              
+              # 第五步：选择证件类型（如果需要）
+              - action: evaluate
+                script: |
+                  const idTypeSelect = document.querySelector('select[name*="idType"], select[name*="证件"], [class*="id-type"] select');
+                  if (idTypeSelect) {
+                    idTypeSelect.value = '1'; // 假设1代表身份证
+                    idTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                  }
+              
+              # 第六步：填写姓名
+              - action: type
+                target: "姓名输入框"
+                target_hint: "input[placeholder*='姓名'], input[name*='name'], input[name*='realName']"
+                value: "武大"
+              
+              # 第七步：填写证件号码
+              - action: type
+                target: "证件号码输入框"
+                target_hint: "input[placeholder*='证件'], input[name*='idCard'], input[name*='idNumber']"
+                value: "430602196211261431"
+              
+              # 第八步：选择优待类型（如果需要）
+              - action: evaluate
+                script: |
+                  const passengerTypeSelect = document.querySelector('select[name*="passengerType"], select[name*="优待"], [class*="passenger-type"] select');
+                  if (passengerTypeSelect) {
+                    passengerTypeSelect.value = '1'; // 假设1代表成人
+                    passengerTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                  }
+              
+              # 第九步：邮箱输入框不填写（跳过）
+              
+              # 第十步：填写手机号码
+              - action: type
+                target: "手机号码输入框"
+                target_hint: "input[placeholder*='手机'], input[name*='phone'], input[name*='mobile'], input[type='tel']"
+                value: "13325883925"
+              
+              # 第十一步：勾选用户协议
+              - action: evaluate
+                script: |
+                  const agreementCheckbox = document.querySelector('input[type="checkbox"][name*="agreement"], input[type="checkbox"][name*="agree"], input[type="checkbox"] + label:has-text("服务条款")');
+                  if (agreementCheckbox && agreementCheckbox.type === 'checkbox') {
+                    agreementCheckbox.checked = true;
+                    agreementCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+                  } else {
+                    // 如果找不到，尝试直接点击复选框
+                    const checkbox = document.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                      checkbox.checked = true;
+                      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                  }
+              
+              # 第十二步：点击"下一步"按钮
+              - action: click
+                target: "下一步按钮"
+                target_hint: "button:has-text('下一步'), a:has-text('下一步'), button[type='submit'], .submit-btn"
+              
+              # 第十三步：等待弹窗出现
+              - action: wait
+                duration: 2
+              
+              # 第十四步：等待验证弹窗元素出现
+              - action: wait_for_element
+                target: "验证弹窗"
+                target_hint: "[role='dialog'], .modal, .verification-modal, [class*='modal'][class*='show']"
+                timeout: 5
+              
+              # 第十五步：截图保存
+              - action: screenshot
+                filename: "注册验证弹窗-初始状态.png"
       
       dependencies:
         - REQ-REG-FORM
       
       scenarios:
+        # 完成注册按钮场景
         - name: 验证码为空
-          given: 用户在验证页面未输入验证码
-          when: 用户点击"确定"或"验证"
-          then: 显示错误提示"请输入验证码"
+          given: 用户在验证弹窗且用户在"验证码"输入框中未输入任何内容
+          when: 用户点击"完成注册"按钮
+          then: 验证码输入框下方显示系统提示"请输入验证码"
+          
+        - name: 验证码长度不为6位
+          given: 用户在验证弹窗且用户在"验证码"输入框中输入的内容不为空且长度不为6位
+          when: 用户点击"完成注册"按钮
+          then: 验证码输入框下方显示系统提示"验证码应为6位数字"
+          
+        - name: 验证码正确且未过期
+          given: 用户在验证弹窗，用户在"验证码"输入框中输入了6位数字，该验证码与系统发送给该手机号的验证码一致，验证码未过期（在5分钟有效期内）
+          when: 用户点击"完成注册"按钮
+          then: 弹窗显示成功状态，弹窗内容区域显示成功图标（圆形，尺寸80px×80px，背景为#52c41a（绿色），白色"✓"标记），弹窗内容区域显示成功消息"恭喜您注册成功！正在跳转登录页..."，2秒后自动跳转到登录页面，将用户完整信息计入正式数据库中
           
         - name: 验证码错误
-          given: 用户在验证页面输入了错误的验证码
-          when: 用户点击"确定"或"验证"
-          then: 显示错误提示"验证码错误"
+          given: 用户在验证弹窗，用户在"验证码"输入框中输入了6位数字，但该验证码与系统发送给该手机号的验证码不一致
+          when: 用户点击"完成注册"按钮
+          then: 验证码输入框下方显示系统提示"验证码错误"
           
-        - name: 验证码过期
-          given: 用户在验证页面输入了已过期的验证码
-          when: 用户点击"确定"或"验证"
-          then: 显示错误提示"验证码已过期"
-          
-        - name: 验证成功
-          given: 用户在验证页面输入了正确且未过期的验证码
-          when: 用户点击"确定"或"验证"
-          then: 验证通过，跳转到登录页或首页，显示注册成功提示
+        - name: 验证码已过期
+          given: 用户在验证弹窗，用户在"验证码"输入框中输入了6位数字，该验证码与系统发送给该手机号的验证码一致，但验证码已过期（超过5分钟有效期）
+          when: 用户点击"完成注册"按钮
+          then: 验证码输入框下方显示系统提示"验证码错误"或"验证码已过期"
+        
+        # 返回修改按钮场景
+        - name: 点击返回修改按钮
+          given: 用户在验证弹窗
+          when: 用户点击"返回修改"按钮
+          then: 注册验证弹窗关闭，用户返回到注册表单页面，用户可以修改注册信息后重新提交
+        
+        # 关闭按钮场景
+        - name: 点击关闭按钮（未成功状态）
+          given: 用户在验证弹窗且用户尚未完成注册验证
+          when: 用户点击弹窗右上角的"×"关闭按钮
+          then: 系统弹出确认对话框"确定要关闭验证弹窗吗？关闭后需要重新提交注册信息。"，如果用户确认关闭，弹窗关闭，用户返回到注册表单页面；如果用户取消关闭，弹窗保持打开状态
+        
+        - name: 点击关闭按钮（已成功状态）
+          given: 用户在验证弹窗且用户已完成注册验证，弹窗显示成功状态
+          when: 用户点击弹窗右上角的"×"关闭按钮
+          then: 弹窗直接关闭，不显示确认对话框，用户返回到注册表单页面
       
       children: []
 
