@@ -69,6 +69,22 @@
 
 .foot-code li {
   text-align: center !important;
+  width: 140px !important;
+}
+
+/* 最后一个二维码项需要容纳“二维码 + 右侧说明框”，不能限制为 140px */
+.foot-code li:last-child {
+  width: 275px !important;
+}
+
+/* 二维码区域标题：固定宽度，避免换行（与目标一致） */
+.foot-code .foot-con-tit {
+  width: 140px !important;
+  height: 54px !important;
+  line-height: 54px !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
 }
 
 .code-pic {
@@ -108,11 +124,39 @@
   top: 95px !important;
 }
 
+/* ========== 目标页：最后一个二维码项右侧常显说明框 ========== */
+.foot-code li:last-child .code-pic {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.foot-code li:last-child .code-tips {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 180px !important;
+  height: 80px !important;
+  margin-left: 15px !important;
+  padding: 10px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #EEEEEE !important;
+  border-radius: 0 !important;
+  color: #666666 !important;
+  font-size: 12px !important;
+  line-height: 18px !important;
+  text-align: left !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* ========== 版权信息 ========== */
 .footer-txt {
   background-color: #4A4A4A !important;
   padding: 20px 0 !important;
   text-align: center !important;
+  position: relative !important;
 }
 
 .footer-txt p {
@@ -139,6 +183,21 @@
 .footer-txt img {
   vertical-align: middle !important;
   margin-right: 4px !important;
+}
+
+/* 底部右侧“适老化/无障碍服务”图片按钮 */
+.footer-a11y {
+  position: absolute !important;
+  right: 40px !important;
+  bottom: 12px !important;
+  width: 130px !important;
+  height: 46px !important;
+  margin-right: 0 !important;
+}
+
+.footer-beian-icon {
+  width: 13px !important;
+  height: 13px !important;
 }
 
 /* ========== 响应式 ========== */

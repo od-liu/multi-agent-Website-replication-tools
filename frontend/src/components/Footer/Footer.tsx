@@ -124,6 +124,11 @@ const Footer: React.FC = () => {
         </p>
         <p>
           <span>
+            <img
+              className="footer-beian-icon"
+              src="/images/gongan.png"
+              alt=""
+            />
             <a 
               href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802038392"
               target="_blank"
@@ -137,6 +142,13 @@ const Footer: React.FC = () => {
           <span>|</span>
           <span>ICP证：京B2-20202537</span>
         </p>
+
+        {/* 适老化/无障碍服务按钮（图片） */}
+        <img
+          className="footer-a11y"
+          src="/images/footer-slh.jpg"
+          alt="适老化无障碍服务"
+        />
       </div>
     </div>
   );

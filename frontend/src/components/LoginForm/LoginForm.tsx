@@ -259,6 +259,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           </div>
         )}
       </div>
+
+      {/* 登录框底部说明区（与目标页一致） */}
+      <div className="login-ft">
+        <p>
+          铁路12306每日5:00至次日1:00（周二为5:00至24:00）提供购票、改签、变更到站业务办理，
+          全天均可办理退票等其他服务。
+        </p>
+      </div>
     </div>
   );
 };

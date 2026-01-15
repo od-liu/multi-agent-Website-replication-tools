@@ -6,11 +6,11 @@
   margin-left: 215px !important;
   margin-top: -225px !important;
   width: 380px !important;
-  min-height: 450px !important;
+  height: 373px !important;
   background-color: #FFFFFF !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  padding: 30px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
   box-sizing: border-box !important;
 }
 
@@ -18,21 +18,25 @@
 .login-hd {
   display: flex !important;
   list-style: none !important;
-  margin: 0 0 30px 0 !important;
-  padding: 0 !important;
-  border-bottom: 2px solid #EEEEEE !important;
+  margin: 0 !important;
+  padding: 0 30px !important;
+  height: 78px !important;
+  border-bottom: none !important;
 }
 
 .login-hd li {
-  flex: 1 !important;
+  flex: 0 0 130px !important;
+  height: 78px !important;
   text-align: center !important;
 }
 
 .login-hd li a {
   display: block !important;
-  padding: 12px 0 !important;
+  height: 78px !important;
+  line-height: 78px !important;
+  padding: 0 !important;
   font-size: 16px !important;
-  color: #999999 !important;
+  color: #666666 !important;
   text-decoration: none !important;
   position: relative !important;
   transition: all 0.3s !important;
@@ -40,18 +44,27 @@
 
 /* 激活状态的标签 */
 .login-hd li.active a {
-  color: #0066CC !important;
-  font-weight: 500 !important;
+  color: #3B99FC !important;
+  font-weight: 400 !important;
 }
 
-.login-hd li.active a::after {
+/* 目标页没有 tab 下划线，这里取消 */
+.login-hd li.active a::after { content: none !important; }
+
+/* 竖向分隔线（来自第一个 li 的 ::after） */
+.login-hd-code {
+  position: relative !important;
+  margin-right: 60px !important;
+}
+
+.login-hd-code::after {
   content: '' !important;
   position: absolute !important;
-  bottom: -2px !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 2px !important;
-  background-color: #0066CC !important;
+  top: 27px !important;
+  left: 160px !important;
+  width: 1px !important;
+  height: 24px !important;
+  background-color: #DEDEDE !important;
 }
 
 /* Hover 状态 */
@@ -62,16 +75,30 @@
 /* ========== 表单主体 ========== */
 .login-bd {
   width: 100% !important;
+  padding: 0 30px !important;
 }
 
 .login-account {
   display: block !important;
 }
 
+/* ========== 登录框底部说明区（login-ft） ========== */
+.login-ft {
+  padding: 10px 20px 15px !important;
+  border-top: 1px solid #DEDEDE !important;
+}
+
+.login-ft p {
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #666666 !important;
+  line-height: 20px !important;
+}
+
 /* ========== 输入框容器 ========== */
 .login-item {
   position: relative !important;
-  margin-bottom: 20px !important;
+  margin-bottom: 16px !important;
   height: 44px !important;
 }
 
@@ -84,23 +111,21 @@
 
 .item-label .icon {
   display: inline-block !important;
-  width: 20px !important;
-  height: 20px !important;
+  width: 16px !important;
+  height: 16px !important;
   background-size: contain !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
 }
 
 .icon-user {
-  /* 用户图标 - 使用简单的圆形表示 */
-  background-color: #999999 !important;
-  border-radius: 50% !important;
+  /* 用户图标 - 细线轮廓（更接近 target 的线性 icon） */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21a8 8 0 0 0-16 0'/%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3C/svg%3E") !important;
 }
 
 .icon-pwd {
-  /* 密码图标 - 使用简单的方形表示 */
-  background-color: #999999 !important;
-  border-radius: 3px !important;
+  /* 密码图标 - 细线轮廓锁（更接近 target 的线性 icon） */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") !important;
 }
 
 /* ========== 输入框样式 ========== */
@@ -108,9 +133,9 @@
   width: 100% !important;
   height: 44px !important;
   line-height: 44px !important;
-  padding: 0 12px 0 42px !important;
+  padding: 4px 10px 4px 36px !important;
   border: 1px solid #DEDEDE !important;
-  border-radius: 4px !important;
+  border-radius: 0 !important;
   font-size: 14px !important;
   color: #333333 !important;
   box-sizing: border-box !important;
@@ -119,7 +144,7 @@
 }
 
 .input::placeholder {
-  color: rgba(0, 0, 0, 0.3) !important;
+  color: rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Focus 状态 */
@@ -172,19 +197,20 @@
 
 /* ========== 登录按钮 ========== */
 .login-btn {
-  margin: 30px 0 20px 0 !important;
+  margin: 0 0 10px 0 !important;
 }
 
 .btn {
   display: block !important;
   width: 100% !important;
   height: 44px !important;
-  line-height: 44px !important;
+  padding: 4px 10px !important;
+  line-height: 34px !important;
   text-align: center !important;
-  border: none !important;
-  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
   font-size: 16px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   text-decoration: none !important;
   cursor: pointer !important;
   transition: all 0.3s !important;
@@ -192,17 +218,18 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FF7200 0%, #FF8A33 100%) !important;
+  background: #FF8000 !important;
+  border-color: #FF8000 !important;
   color: #FFFFFF !important;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #FF8A33 0%, #FFA050 100%) !important;
-  box-shadow: 0 4px 8px rgba(255, 114, 0, 0.3) !important;
+  background: #FF8000 !important;
+  box-shadow: none !important;
 }
 
 .btn-primary:active {
-  background: linear-gradient(135deg, #E66600 0%, #FF7200 100%) !important;
+  background: #FF8000 !important;
 }
 
 /* Disabled 状态 */
@@ -217,8 +244,9 @@
 /* ========== 底部链接 ========== */
 .login-txt {
   text-align: center !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   color: #999999 !important;
+  line-height: 20px !important;
 }
 
 .login-txt a {
@@ -233,11 +261,12 @@
 }
 
 .txt-primary {
-  color: #0066CC !important;
+  color: #3B99FC !important;
 }
 
 .txt-lighter {
   color: #999999 !important;
+  margin: 0 5px !important;
 }
 
 .txt-lighter:hover {
