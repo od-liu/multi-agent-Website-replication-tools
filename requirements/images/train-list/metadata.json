@@ -1,0 +1,220 @@
+{
+  "pageInfo": {
+    "pageName": "车次列表页",
+    "pageUrl": "http://localhost:5173/trains",
+    "captureDate": "2026-01-16",
+    "referenceWidth": 1920
+  },
+  "images": {
+    "logo": {
+      "filename": "logo.png",
+      "source": "复用首页资源",
+      "homepagePath": "../homepage/首页-顶部导航-Logo.png",
+      "alt": "中国铁路12306",
+      "naturalSize": {
+        "width": 55,
+        "height": 63
+      },
+      "displaySize": {
+        "width": 60,
+        "height": 60
+      },
+      "usage": "顶部导航栏 Logo",
+      "cssStrategy": "width: 60px; height: 60px; object-fit: contain;"
+    },
+    "searchIcon": {
+      "filename": "search.svg",
+      "source": "复用首页资源",
+      "homepagePath": "../homepage/首页-顶部导航-搜索图标.svg",
+      "alt": "搜索",
+      "naturalSize": {
+        "width": 200,
+        "height": 200
+      },
+      "displaySize": {
+        "width": 30,
+        "height": 30
+      },
+      "usage": "顶部导航栏搜索按钮图标",
+      "cssStrategy": "width: 30px; height: 30px;"
+    },
+    "exchangeIcon": {
+      "filename": "车次列表页-查询条件栏-交换图标.svg",
+      "source": "本地下载",
+      "alt": "交换",
+      "url": "http://localhost:5173/images/%E8%BD%AC%E6%8D%A22.svg",
+      "naturalSize": {
+        "width": 200,
+        "height": 200
+      },
+      "displaySize": {
+        "width": 20,
+        "height": 20
+      },
+      "usage": "查询条件栏 - 出发城市和目的城市交换按钮",
+      "cssStrategy": "width: 20px; height: 20px;",
+      "note": "车次列表页特有资源，用于交换出发地和目的地"
+    },
+    "friendLinks": {
+      "leftTop": {
+        "filename": "友情链接-左上.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中国国家铁路集团Logo.png",
+        "alt": "中国国家铁路集团有限公司",
+        "naturalSize": {
+          "width": 300,
+          "height": 51
+        },
+        "displaySize": {
+          "width": 176,
+          "height": 30
+        },
+        "usage": "底部导航 - 友情链接（左上）",
+        "cssStrategy": "width: 176px; height: 30px; object-fit: contain;"
+      },
+      "rightTop": {
+        "filename": "友情链接-右上.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中国铁路客户保险Logo.png",
+        "alt": "中国铁路客户保险总公司",
+        "naturalSize": {
+          "width": 400,
+          "height": 68
+        },
+        "displaySize": {
+          "width": 176,
+          "height": 30
+        },
+        "usage": "底部导航 - 友情链接（右上）",
+        "cssStrategy": "width: 176px; height: 30px; object-fit: contain;"
+      },
+      "leftBottom": {
+        "filename": "友情链接-左下.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中铁银通支付Logo.png",
+        "alt": "中铁银通支付有限公司",
+        "naturalSize": {
+          "width": 800,
+          "height": 136
+        },
+        "displaySize": {
+          "width": 176,
+          "height": 30
+        },
+        "usage": "底部导航 - 友情链接（左下）",
+        "cssStrategy": "width: 176px; height: 30px; object-fit: contain;"
+      },
+      "rightBottom": {
+        "filename": "友情链接-右下.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中铁程科技Logo.png",
+        "alt": "中铁程科技有限责任公司",
+        "naturalSize": {
+          "width": 400,
+          "height": 68
+        },
+        "displaySize": {
+          "width": 176,
+          "height": 30
+        },
+        "usage": "底部导航 - 友情链接（右下）",
+        "cssStrategy": "width: 176px; height: 30px; object-fit: contain;"
+      }
+    },
+    "qrCodes": {
+      "wechat": {
+        "filename": "中国铁路官方微信二维码.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中国铁路官方微信二维码.png",
+        "alt": "中国铁路官方微信",
+        "naturalSize": {
+          "width": 344,
+          "height": 344
+        },
+        "displaySize": {
+          "width": 80,
+          "height": 80
+        },
+        "usage": "底部导航 - 二维码（中国铁路官方微信）",
+        "cssStrategy": "width: 80px; height: 80px; object-fit: cover;"
+      },
+      "weibo": {
+        "filename": "中国铁路官方微博二维码.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-中国铁路官方微博二维码.png",
+        "alt": "中国铁路官方微博",
+        "naturalSize": {
+          "width": 800,
+          "height": 800
+        },
+        "displaySize": {
+          "width": 80,
+          "height": 80
+        },
+        "usage": "底部导航 - 二维码（中国铁路官方微博）",
+        "cssStrategy": "width: 80px; height: 80px; object-fit: cover;"
+      },
+      "officialAccount": {
+        "filename": "12306公众号二维码.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-12306公众号二维码.png",
+        "alt": "12306 公众号",
+        "naturalSize": {
+          "width": 258,
+          "height": 258
+        },
+        "displaySize": {
+          "width": 80,
+          "height": 80
+        },
+        "usage": "底部导航 - 二维码（12306 公众号）",
+        "cssStrategy": "width: 80px; height: 80px; object-fit: cover;"
+      },
+      "railway12306": {
+        "filename": "铁路12306二维码.png",
+        "source": "复用首页资源",
+        "homepagePath": "../homepage/首页-底部导航-铁路12306二维码.png",
+        "alt": "铁路12306",
+        "naturalSize": {
+          "width": 258,
+          "height": 258
+        },
+        "displaySize": {
+          "width": 80,
+          "height": 80
+        },
+        "usage": "底部导航 - 二维码（铁路12306）",
+        "cssStrategy": "width: 80px; height: 80px; object-fit: cover;"
+      }
+    }
+  },
+  "iconFonts": {
+    "detected": true,
+    "iconCount": 8,
+    "fontFaces": [],
+    "note": "页面中检测到8个包含'icon'类名的元素，但未检测到@font-face规则，可能使用内联SVG或Unicode字符"
+  },
+  "cssBackgrounds": {
+    "detected": false,
+    "count": 0,
+    "note": "页面未使用CSS背景图片"
+  },
+  "screenshots": {
+    "fullPage": "整体页面截图/车次列表页.png",
+    "components": [
+      "组件特写截图/顶部导航栏.png",
+      "组件特写截图/主导航菜单.png",
+      "组件特写截图/查询条件栏.png",
+      "组件特写截图/筛选条件区域.png",
+      "组件特写截图/车次列表.png",
+      "组件特写截图/底部导航.png"
+    ]
+  },
+  "summary": {
+    "totalImages": 11,
+    "reusedFromHomepage": 10,
+    "newlyDownloaded": 1,
+    "iconFonts": 0,
+    "cssBackgrounds": 0
+  }
+}

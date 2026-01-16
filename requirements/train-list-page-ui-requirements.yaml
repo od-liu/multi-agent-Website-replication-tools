@@ -1,11 +1,6 @@
-# 车次列表页初始需求文档
-# 这是提供给 UI Analyzer Agent 的输入文档
-# Agent 会自动获取截图、图片资源和交互场景截图
-
-# ⚠️ 使用说明：
-# 1. 如果某个组件需要交互场景截图，请在 description 中添加 "**交互场景截图**:" 字段
-# 2. Agent 会按照 steps 中定义的步骤自动执行交互并截图
-# 3. 支持的 action 类型: type, click, wait, wait_for_element, screenshot, evaluate 等
+# 车次列表页 UI 需求文档（完整版）
+# 基于初始需求文档 + UI Analyzer 分析生成
+# 生成时间: 2026-01-16
 
 - id: REQ-TRAIN-LIST-PAGE
   name: 车次列表页
@@ -37,6 +32,79 @@
     - 支持多维度筛选（车次类型、出发时间段、车站、席别等）
     - 支持排序（出发时间、历时、票价等）
     - 点击车次可以预订
+    
+    --- 以下是 UI Analyzer 添加的详细分析 ---
+    
+    **页面尺寸信息**（从实际 DOM 测量）:
+    - 页面实际宽度: 1512px（内容居中）
+    - 页面高度: 1011px（滚动页面）
+    - 视口宽度: 1512px
+    - 视口高度: 805px
+    
+    **整体布局分析**:
+    
+    ```
+    ┌─────────────────────────────────────────────┐
+    │  顶部导航栏 (.train-list-top-bar)          │  85px
+    │  - Logo + 搜索栏 + 用户信息                 │
+    ├─────────────────────────────────────────────┤
+    │  主导航菜单 (.main-navigation)             │  46px
+    │  - 首页、车票、团购服务、会员服务...        │
+    ├─────────────────────────────────────────────┤
+    │                                             │  
+    │  ┌───────────────────────────────────────┐ │
+    │  │ 查询条件栏 (.train-search-bar)        │ │  82px
+    │  │ - 单程/往返 + 城市 + 日期 + 查询      │ │
+    │  └───────────────────────────────────────┘ │
+    │  ┌───────────────────────────────────────┐ │
+    │  │ 筛选条件区域 (.train-filter-panel)    │ │  283px
+    │  │ - 日期快捷选择（15个日期按钮）        │ │
+    │  │ - 车次类型筛选（8个复选框）           │ │
+    │  │ - 发车时间下拉选择                     │ │
+    │  │ - 出发车站筛选（4个复选框）           │ │
+    │  │ - 到达车站筛选（3个复选框）           │ │
+    │  │ - 车次席别筛选（9个复选框）           │ │
+    │  └───────────────────────────────────────┘ │
+    │  ┌───────────────────────────────────────┐ │
+    │  │ 车次列表 (.train-list)                │ │  自适应
+    │  │ - 表头（车次、站、时间、席别...）     │ │
+    │  │ - 车次行（G12、D9、D8...）            │ │
+    │  └───────────────────────────────────────┘ │
+    │                                             │
+    ├─────────────────────────────────────────────┤
+    │  底部导航 (.bottom-navigation)             │  197px
+    │  - 友情链接 (2x2 网格)                      │
+    │  - 二维码 (1x4 横排)                        │
+    └─────────────────────────────────────────────┘
+    ```
+    
+    **颜色体系**:
+    - 主导航背景色: rgb(59, 153, 252) - #3B99FC (蓝色)
+    - 查询栏背景色: rgb(239, 241, 249) - #EFF1F9 (淡蓝色)
+    - 白色背景: rgb(255, 255, 255) - #FFFFFF
+    - 浅灰背景: rgb(245, 245, 245) - #F5F5F5 (底部导航)
+    - 主要文本: rgb(51, 51, 51) - #333333
+    - 次要文本: rgb(102, 102, 102) - #666666
+    - 禁用文本: rgb(153, 153, 153) - #999999
+    - 有票绿色: rgb(82, 196, 26) - #52C41A
+    - 错误红色: rgb(211, 47, 47) - #D32F2F
+    - 警告橙色: rgb(255, 102, 0) - #FF6600
+    
+    **CSS 布局方式**:
+    - 整体: 垂直布局（从上到下堆叠）
+    - 查询条件栏: Flexbox 横向布局，间距16px
+    - 筛选条件: 多行 Flexbox，每行独立
+    - 车次列表: Grid 布局（17列）
+    - 底部导航: Flexbox，左右分布
+    
+    **网页资源**:
+    - Logo: "../homepage/首页-顶部导航-Logo.png" (60×60px，复用首页)
+    - 搜索图标: "../homepage/首页-顶部导航-搜索图标.svg" (30×30px，复用首页)
+    - 交换图标: "./train-list/车次列表页-查询条件栏-交换图标.svg" (20×20px，新下载)
+    - 友情链接: 4个，复用首页资源（详见 metadata.json）
+    - 二维码: 4个，复用首页资源（详见 metadata.json）
+    
+    参考图片: "./images/train-list/整体页面截图/车次列表页.png"
   
   dependencies: []
   scenarios: []
@@ -56,6 +124,64 @@
         - 显示主导航菜单
         - 显示用户登录状态
         - Logo点击返回首页
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .train-list-page（页面根容器）
+        - 位置: 页面最顶部
+        - 坐标: (0, 0)
+        - 尺寸: 1512px × 85px
+        - 布局: Flexbox 横向，space-between
+        
+        **HTML 结构** (简化):
+        
+        > ⚠️ 实际 class 名称: `.train-list-top-bar`
+        
+        ```html
+        <div class="train-list-top-bar">
+          <!-- Logo 区域 -->
+          <div class="logo-section">
+            <img src="/images/logo.png" alt="中国铁路12306" />
+            <div class="logo-text">
+              <div class="logo-text-main">中国铁路12306</div>
+              <div class="logo-text-sub">12306 CHINA RAILWAY</div>
+            </div>
+          </div>
+          
+          <!-- 搜索栏 -->
+          <div class="search-bar">
+            <input type="text" placeholder="搜索车票、餐饮、常旅客、相关规章" />
+            <button><img src="/images/search.svg" alt="搜索" /></button>
+          </div>
+          
+          <!-- 右侧功能链接 -->
+          <div class="action-links">
+            <a href="#">无障碍</a>
+            <a href="#">敬老版</a>
+            <a href="#">English</a>
+            <a href="#">我的12306</a>
+            <div class="user-info">
+              您好，请 <a href="/login">登录</a>
+            </div>
+            <a href="/register">注册</a>
+          </div>
+        </div>
+        ```
+        
+        **关键样式参数**:
+        - 背景色: rgb(255, 255, 255)
+        - 阴影: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px
+        - 内边距: 0 176px（左右边距）
+        - Logo 尺寸: 60×60px
+        - 搜索框宽度: 240px，高度36px
+        - 字体大小: Logo标题20px，英文副标题12px，链接14px
+        
+        **网页资源**:
+        - Logo: "../homepage/首页-顶部导航-Logo.png" (原始55×63px，显示60×60px)
+        - 搜索图标: "../homepage/首页-顶部导航-搜索图标.svg" (原始200×200px，显示30×30px)
+        
+        参考图片: "./images/train-list/组件特写截图/顶部导航栏.png"
       
       dependencies: []
       scenarios: []
@@ -89,10 +215,108 @@
               - action: screenshot
                 filename: "查询条件栏-修改出发地.png"
               - action: 在需求文档中注明出发城市下拉框的详细参数
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .train-list-content
+        - 位置: 主导航菜单下方，页面内容区域第一个组件
+        - 坐标: (176, 151) - 居中对齐
+        - 尺寸: 1160px × 82px
+        - 布局: Flexbox 横向，gap: 16px
+        
+        **HTML 结构** (简化):
+        
+        > ⚠️ 实际 class 名称: `.train-search-bar`
+        
+        ```html
+        <div class="train-search-bar">
+          <!-- 单程/往返选择 -->
+          <div class="trip-type-selector">
+            <label class="trip-type-option">
+              <input type="radio" name="tripType" value="single" checked />
+              <span>单程</span>
+            </label>
+            <label class="trip-type-option">
+              <input type="radio" name="tripType" value="round" />
+              <span>往返</span>
+            </label>
+          </div>
+          
+          <!-- 出发城市 -->
+          <div class="station-input">
+            <label>出发城市</label>
+            <input type="text" placeholder="请选择城市" value="北京" />
+          </div>
+          
+          <!-- 交换按钮 -->
+          <button class="exchange-button">
+            <img src="/images/转换2.svg" alt="交换" />
+          </button>
+          
+          <!-- 目的城市 -->
+          <div class="station-input">
+            <label>目的城市</label>
+            <input type="text" placeholder="请选择城市" value="上海" />
+          </div>
+          
+          <!-- 出发日期 -->
+          <div class="date-input">
+            <label>出发日</label>
+            <div class="date-field">
+              <input type="text" placeholder="请选择日期" value="1月16日 周五" />
+              <img src="/images/calendar-icon.svg" alt="日历" />
+            </div>
+          </div>
+          
+          <!-- 返程日期 -->
+          <div class="date-input">
+            <label>返程日</label>
+            <div class="date-field">
+              <input type="text" placeholder="请选择日期" value="1月16日 周五" disabled />
+              <img src="/images/calendar-icon.svg" alt="日历" />
+            </div>
+          </div>
+          
+          <!-- 普通/学生选择 -->
+          <div class="passenger-type-selector">
+            <label class="passenger-type-option">
+              <input type="radio" name="passengerType" value="normal" checked />
+              <span>普通</span>
+            </label>
+            <label class="passenger-type-option">
+              <input type="radio" name="passengerType" value="student" />
+              <span>学生</span>
+            </label>
+          </div>
+          
+          <!-- 查询按钮 -->
+          <button class="search-button">查询</button>
+        </div>
+        ```
+        
+        **关键样式参数**:
+        - 背景色: rgb(239, 241, 249) - 淡蓝色
+        - 内边距: 16px
+        - 圆角: 4px
+        - 元素间距: 16px (gap)
+        - 输入框宽度: 140px (城市), 160px (日期)
+        - 输入框高度: 36px
+        - 交换按钮: 32×32px，圆形
+        - 查询按钮: 100×40px，蓝色背景
+        
+        **网页资源**:
+        - 交换图标: "./train-list/车次列表页-查询条件栏-交换图标.svg" (原始200×200px，显示20×20px)
+          * 实现方式: <img> 标签
+          * CSS策略: width: 20px; height: 20px;
+        
+        参考图片: "./images/train-list/组件特写截图/查询条件栏.png"
       
       dependencies: []
       
       scenarios:
+        # ✅ 以下 scenarios 完整保留自初始需求文档
+        
         # 4.3.1 用户未输入出发地或到达地或出发日期时，系统自动填充默认值
         - name: 用户未输入出发地自动填充默认值
           given: 用户在车票查询页面
@@ -329,10 +553,127 @@
             - 内边距: 60px 20px
             - 背景: #fafafa或白色
             - 对齐方式: 垂直水平居中（display: flex, justify-content: center, align-items: center）
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .train-list-content
+        - 位置: 查询条件栏下方
+        - 坐标: (176, 249)
+        - 尺寸: 1160px × 283px
+        - 布局: 垂直堆叠，包含多行筛选项
+        
+        **HTML 结构** (简化):
+        
+        > ⚠️ 实际 class 名称: `.train-filter-panel`
+        
+        ```html
+        <div class="train-filter-panel">
+          <!-- 日期快捷选择 -->
+          <div class="date-shortcuts">
+            <button class="date-button active">1-16</button>
+            <button class="date-button">1-17</button>
+            <button class="date-button">1-18</button>
+            <!-- ... 共15个日期按钮 -->
+          </div>
+          
+          <!-- 筛选行容器 -->
+          <div class="filter-rows">
+            <!-- 第一行：车次类型 + 发车时间 -->
+            <div class="filter-row">
+              <div class="filter-section">
+                <span class="filter-label">车次类型：</span>
+                <button class="all-button">全部</button>
+                <div class="filter-options">
+                  <label class="filter-option">
+                    <input type="checkbox" />
+                    <span>GC-高铁/城际</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" />
+                    <span>D-动车</span>
+                  </label>
+                  <!-- ... 共8个车次类型 -->
+                </div>
+              </div>
+              
+              <div class="filter-section time-section">
+                <span class="filter-label">发车时间：</span>
+                <select class="time-selector">
+                  <option selected>00:00--24:00</option>
+                  <option>00:00--06:00</option>
+                  <option>06:00--12:00</option>
+                  <option>12:00--18:00</option>
+                  <option>18:00--24:00</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- 第二行：出发车站 -->
+            <div class="filter-row">
+              <span class="filter-label">出发车站：</span>
+              <button class="all-button">全部</button>
+              <div class="filter-options">
+                <label class="filter-option">
+                  <input type="checkbox" />
+                  <span>北京南</span>
+                </label>
+                <!-- ... 共4个车站 -->
+              </div>
+            </div>
+            
+            <!-- 第三行：到达车站 -->
+            <div class="filter-row">
+              <span class="filter-label">到达车站：</span>
+              <button class="all-button">全部</button>
+              <div class="filter-options">
+                <label class="filter-option">
+                  <input type="checkbox" />
+                  <span>上海虹桥</span>
+                </label>
+                <!-- ... 共3个车站 -->
+              </div>
+            </div>
+            
+            <!-- 第四行：车次席别 -->
+            <div class="filter-row">
+              <span class="filter-label">车次席别：</span>
+              <button class="all-button">全部</button>
+              <div class="filter-options">
+                <label class="filter-option">
+                  <input type="checkbox" />
+                  <span>商务座</span>
+                </label>
+                <!-- ... 共9个席别 -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- 筛选按钮 -->
+          <button class="filter-submit-button">
+            <span>↻</span>
+            <span>筛选</span>
+          </button>
+        </div>
+        ```
+        
+        **关键样式参数**:
+        - 背景色: rgb(255, 255, 255)
+        - 圆角: 4px
+        - 阴影: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px
+        - 内边距: 16px
+        - 日期按钮: 宽度自适应，高度32px
+        - 筛选标签: 宽度100px，字体14px
+        - 复选框: 16×16px
+        - 筛选按钮: 100×36px，橙色背景
+        
+        参考图片: "./images/train-list/组件特写截图/筛选条件区域.png"
       
       dependencies: []
       
       scenarios:
+        # ✅ 以下 scenarios 完整保留自初始需求文档
+        
         # 4.5.1 用户通过勾选复选框筛选车次
         - name: 用户筛选某个车次类型
           given: 用户在车票查询页面，车次列表区域已显示
@@ -409,10 +750,110 @@
                 duration: 2
               - action: screenshot
                 filename: "车次列表-正常显示.png"
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .train-list-content
+        - 位置: 筛选条件区域下方
+        - 坐标: (176, 552)
+        - 尺寸: 1160px × 243px（示例显示3个车次）
+        - 布局: Grid 布局（17列表格结构）
+        
+        **HTML 结构** (简化):
+        
+        > ⚠️ 实际 class 名称: `.train-list`
+        
+        ```html
+        <div class="train-list">
+          <!-- 顶部信息栏 -->
+          <div class="list-header-info">
+            <div>
+              <span class="route-info">北京 → 上海</span>
+              <span class="date-info">(1月16日 周五)</span>
+              <span class="train-count">共3个车次</span>
+              <span class="transfer-tip">您可使用中转换乘功能，查询途中换乘一次的部分列车余票情况。</span>
+            </div>
+            <div class="display-options">
+              <label><input type="checkbox" />显示折扣车次</label>
+              <label><input type="checkbox" />显示积分兑换车次</label>
+              <label><input type="checkbox" />显示全部可预订车次</label>
+            </div>
+          </div>
+          
+          <!-- 表头 -->
+          <div class="list-header">
+            <div class="header-cell">车次</div>
+            <div class="header-cell">出发站<br>到达站</div>
+            <div class="header-cell sortable">出发时间 ▲<br>到达时间 ▼</div>
+            <div class="header-cell sortable">历时 ▲</div>
+            <div class="header-cell">商务座<br>特等座</div>
+            <div class="header-cell">优选<br>一等座</div>
+            <div class="header-cell">一等座</div>
+            <div class="header-cell">二等座<br>二等包座</div>
+            <div class="header-cell">高级<br>软卧</div>
+            <div class="header-cell">软卧/动卧<br>一等卧</div>
+            <div class="header-cell">硬卧<br>二等卧</div>
+            <div class="header-cell">软座</div>
+            <div class="header-cell">硬座</div>
+            <div class="header-cell">无座</div>
+            <div class="header-cell">其他</div>
+            <div class="header-cell">备注</div>
+          </div>
+          
+          <!-- 车次数据行（示例：G12） -->
+          <div class="train-row">
+            <div class="train-number">
+              <span class="number">G12</span>
+              <span class="train-type-badge">高</span>
+            </div>
+            <div class="station-info">
+              <div><span class="station-label">始</span> 北京南</div>
+              <div><span class="station-label">终</span> 上海虹桥</div>
+            </div>
+            <div class="time-info">
+              <div class="departure-time">14:10</div>
+              <div class="arrival-time">18:41</div>
+            </div>
+            <div class="duration-info">
+              <div class="duration">04:31</div>
+              <div class="arrival-day">当日到达</div>
+            </div>
+            <div class="seat-availability">"10"</div>
+            <div class="seat-availability not-available">--</div>
+            <div class="seat-availability has-tickets">有</div>
+            <div class="seat-availability has-tickets">有</div>
+            <!-- ... 更多席别 -->
+            <button class="book-button">预订</button>
+          </div>
+          
+          <!-- 更多车次行... -->
+        </div>
+        ```
+        
+        **关键样式参数**:
+        - 背景色: 白色
+        - 表头背景: rgb(245, 245, 245)
+        - Grid 列宽: 100px, 180px, 140px, 120px, 然后11个自适应列, 最后80px
+        - 行高: 约60-70px
+        - 车次号: 16px，蓝色，加粗
+        - 时间: 18px，黑色，加粗
+        - 余票文字: 13px，根据状态变色（绿色"有"，黑色数字，灰色"无"/"--"）
+        - 预订按钮: 60×32px，橙色背景
+        
+        **余票显示规则**:
+        - 余票 < 20: 显示具体数字，黑色，font-weight: 800
+        - 余票 >= 20: 显示"有"，绿色(#52c41a)，font-weight: 600
+        - 余票 = 0: 显示"无"，灰色(#999999)，font-weight: 500
+        - 无此席别: 显示"--"，灰色(#999999)，font-weight: 500
+        
+        参考图片: "./images/train-list/组件特写截图/车次列表.png"
       
       dependencies: []
       
       scenarios:
+        # ✅ 以下 scenarios 完整保留自初始需求文档
+        
         # 4.2.1 首页通过点击"车票"快捷页面入口进入车票查询页面
         - name: 从首页进入车票查询页面采用默认搜索栏内容
           given: 用户在首页通过点击"车票"快捷页面入口
@@ -525,6 +966,73 @@
         - 显示友情链接
         - 显示二维码
         - 显示版权和备案信息
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .train-list-page
+        - 位置: 页面底部
+        - 坐标: (0, 814)
+        - 尺寸: 1512px × 197px
+        - 布局: Flexbox，左右分布
+        
+        **HTML 结构** (简化):
+        
+        > ⚠️ 实际 class 名称: `.bottom-navigation`
+        
+        ```html
+        <footer class="bottom-navigation">
+          <div class="footer-container">
+            <!-- 友情链接区域 -->
+            <div class="friend-links-section">
+              <h3>友情链接</h3>
+              <div class="friend-links-grid">
+                <img src="/images/友情链接-左上.png" alt="中国国家铁路集团有限公司" />
+                <img src="/images/友情链接-右上.png" alt="中国铁路客户保险总公司" />
+                <img src="/images/友情链接-左下.png" alt="中铁银通支付有限公司" />
+                <img src="/images/友情链接-右下.png" alt="中铁程科技有限责任公司" />
+              </div>
+            </div>
+            
+            <!-- 二维码区域 -->
+            <div class="qr-code-section">
+              <div class="qr-code-labels">
+                <span>中国铁路官方微信</span>
+                <span>中国铁路官方微博</span>
+                <span>12306 公众号</span>
+                <span>铁路12306</span>
+              </div>
+              <div class="qr-code-grid">
+                <img src="/images/中国铁路官方微信二维码.png" alt="中国铁路官方微信" />
+                <img src="/images/中国铁路官方微博二维码.png" alt="中国铁路官方微博" />
+                <img src="/images/12306公众号二维码.png" alt="12306 公众号" />
+                <img src="/images/铁路12306二维码.png" alt="铁路12306" />
+              </div>
+              <p class="disclaimer">官方APP下载，目前铁路未授权其他网站或APP开展类似服务内容，敬请广大用户注意。</p>
+            </div>
+          </div>
+        </footer>
+        ```
+        
+        **关键样式参数**:
+        - 背景色: rgb(245, 245, 245) - 浅灰色
+        - 内边距: 40px 0
+        - 友情链接: 2×2 Grid，每个176×30px
+        - 二维码: 1×4 Flexbox，每个80×80px
+        - 标题字体: 16px，font-weight: 500
+        - 免责声明: 12px，灰色
+        
+        **网页资源** (全部复用首页资源):
+        - 友情链接-左上: "../homepage/首页-底部导航-中国国家铁路集团Logo.png" (176×30px)
+        - 友情链接-右上: "../homepage/首页-底部导航-中国铁路客户保险Logo.png" (176×30px)
+        - 友情链接-左下: "../homepage/首页-底部导航-中铁银通支付Logo.png" (176×30px)
+        - 友情链接-右下: "../homepage/首页-底部导航-中铁程科技Logo.png" (176×30px)
+        - 微信二维码: "../homepage/首页-底部导航-中国铁路官方微信二维码.png" (80×80px)
+        - 微博二维码: "../homepage/首页-底部导航-中国铁路官方微博二维码.png" (80×80px)
+        - 公众号二维码: "../homepage/首页-底部导航-12306公众号二维码.png" (80×80px)
+        - 铁路12306二维码: "../homepage/首页-底部导航-铁路12306二维码.png" (80×80px)
+        
+        参考图片: "./images/train-list/组件特写截图/底部导航.png"
       
       dependencies: []
       scenarios: []
