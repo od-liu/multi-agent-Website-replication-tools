@@ -54,17 +54,17 @@
     - id: REQ-ORDER-TOP-NAV
       name: 顶部导航栏
       description: |
-        页面顶部导航栏（与其他页面共用）。
+        页面顶部导航栏，包含品牌Logo和欢迎文字。
         
         **需要截图**: 是
-        **组件定位**: 页面最上方，横向占据整个页面宽度
-        **定位提示**: header, nav, .header, [role="banner"]
+        **组件定位**: 页面最上方，横向占据整个页面宽度，高度约80px，白色背景
+        **定位提示**: header, nav, [role="banner"]
         
         **功能要求**：
-        - 显示12306品牌Logo
-        - 显示主导航菜单
+        - 显示12306品牌Logo和名称
+        - 显示欢迎文字"欢迎登录12306"
+        - Logo点击可跳转到首页
         - 显示用户登录状态
-        - Logo点击返回首页
       
       dependencies: []
       scenarios: []
@@ -97,16 +97,16 @@
         选择乘客和席别的区域。
         
         **需要截图**: 是
-        **组件定位**: 页面主内容区域上部，通常为列表或卡片形式
+        **组件定位**: 页面中部，位于列车信息区域下方，通常为列表或卡片形式
         **定位提示**: .passenger-select, .passenger-list, [class*="passenger"]
         
         **功能要求**：
-        - 显示常用乘客列表（姓名、证件类型、证件号部分信息）
+        - 显示常用乘客列表（姓名、证件类型、证件号码、票种部分信息）
         - 支持勾选乘客（复选框）
         - 支持为每位乘客选择席别（下拉框或单选按钮）
         - 显示每个席别的票价
-        - 支持添加新乘客（按钮）
-        - 显示乘客类型（成人/儿童/学生）
+        - 支持删除已添加的乘客（按钮或取消勾选复选框）
+        - 支持搜索乘客（输入框）
         - 限制乘客数量（最多5人，根据实际规则）
         
         **交互场景截图**:
@@ -131,17 +131,65 @@
                 duration: 0.5
               - action: screenshot
                 filename: "订单填写-选择乘客.png"
-                
-          - name: "添加新乘客弹窗"
-            description: "测试点击添加新乘客按钮"
+
+          - name: "选择多个乘客"
+            description: "测试选择前两个乘客"
             steps:
               - action: click
-                target: "添加新乘客按钮"
-                target_hint: "button:has-text('添加'), button:has-text('新增'), a:has-text('添加乘客')"
+                target: "第一个乘客复选框"
+                target_hint: ".passenger-item:first-child input[type='checkbox'], .passenger-list input[type='checkbox']:first-child"
               - action: wait
-                duration: 1
+                duration: 0.5
+              - action: click
+                target: "第二个乘客复选框"
+                target_hint: ".passenger-item:first-child input[type='checkbox'], .passenger-list input[type='checkbox']:first-child"
+              - action: wait
+                duration: 0.5
               - action: screenshot
-                filename: "订单填写-添加乘客弹窗.png"
+                filename: "订单填写-选择多个乘客.png"
+
+        - name: "取消选择乘客"
+            description: "测试取消选择第一个乘客"
+            steps:
+              - action: click
+                target: "第一个乘客复选框"
+                target_hint: ".passenger-item:first-child input[type='checkbox'], .passenger-list input[type='checkbox']:first-child"
+              - action: wait
+                duration: 0.5
+              - action: screenshot
+                filename: "订单填写-选择乘客.png"
+              - action: click
+                target: "第一个乘客取消勾选框"
+                target_hint: "button:has-text('取消')"
+              - action: wait
+                duration: 0.5
+              - action: screenshot
+                filename: "订单填写-取消选择乘客.png"
+
+        - name: "选择席别"
+            description: "测试点击席别下拉框按钮"
+            steps:
+              - action: click
+                target: "席别按钮"
+                target_hint: "input[placeholder*=\"席别\"]"
+              - action: wait
+                duration: 0.1
+              - action: screenshot
+                filename: "订单填写-选择席别.png"
+
+          - name: "搜索乘车人"
+            description: "测试乘车人搜索输入框"
+            steps:
+              - action: evaluate
+                target: "乘客输入框"
+                target_hint: "input[type='输入乘客姓名']"
+              - action: click
+                target: "搜索按钮"
+                target_hint: "button:has-text('搜索')"
+              - action: wait
+                duration: 0.5
+              - action: screenshot
+                filename: "订单填写-乘车人搜索.png"
       
       dependencies: []
       
@@ -149,57 +197,28 @@
         - name: 未选择乘客
           given: 用户在订单填写页未选择任何乘客
           when: 用户点击"提交订单"
-          then: 显示错误提示"请选择至少一位乘客！"
-          
-        - name: 未选择席别
-          given: 用户选择了乘客但未为其选择席别
-          when: 用户点击"提交订单"
-          then: 显示错误提示"请为乘客选择席别！"
+          then: 显示错误提示弹窗"请选择乘车人！"
           
         - name: 选择的席别无票
           given: 用户选择的席别已售罄
           when: 用户点击"提交订单"
-          then: 显示错误提示"所选席别余票不足！"或弹窗提示
-          
-        - name: 乘客信息不完整
-          given: 用户添加的新乘客信息不完整
-          when: 用户保存新乘客或提交订单
-          then: 显示错误提示"乘客信息不完整！"
+          then: 显示错误提示弹窗"余票不足弹窗.png"
       
-      children: []
-    
-    - id: REQ-ORDER-PRICE-INFO
-      name: 订单金额区域
-      description: |
-        显示订单总金额和明细。
-        
-        **需要截图**: 是
-        **组件定位**: 页面右侧或底部，通常为固定位置的卡片
-        **定位提示**: .price-info, .order-summary, [class*="price"], [class*="amount"]
-        
-        **功能要求**：
-        - 显示每位乘客的票价明细（姓名、席别、价格）
-        - 显示订单总金额（元）
-        - 金额自动计算
-        - 样式醒目，便于用户确认
-      
-      dependencies: []
-      scenarios: []
       children: []
     
     - id: REQ-ORDER-SUBMIT
-      name: 提交订单区域
+      name: 订单提交与温馨提示区域
       description: |
         提交订单按钮和温馨提示。
         
         **需要截图**: 是
-        **组件定位**: 页面底部或右侧，通常与价格信息相邻
+        **组件定位**: 页面底部，位于乘客信息区域下方
         **定位提示**: .submit-order, .order-actions, [class*="submit"]
         
         **功能要求**：
         - 显示"提交订单"按钮（醒目的橙色或蓝色）
-        - 显示温馨提示（如"请核对订单信息"）
-        - 显示购票须知（如退改签规则）
+        - 显示已阅读服务条款提示（"提交订单表示已阅读并同意《国铁集团铁路旅客运输规程》《服务条款》"）
+        - 显示温馨提示内容
         - 按钮点击后显示加载状态
         - 提交成功后跳转到支付页面
       
@@ -213,20 +232,21 @@
         提交订单前的信息核对弹窗。
         
         **需要截图**: 是（通过交互场景触发）
-        **组件定位**: 屏幕居中显示的模态弹窗，带半透明遮罩
+        **组件定位**: 屏幕居中显示的模态弹窗
         **定位提示**: .modal, [role="dialog"], .confirm-modal
         
-        **功能要求**：
+        **功能要求**:
         - 显示车次信息摘要
         - 显示乘客信息列表
-        - 显示订单总金额
-        - 提供"确认无误，提交订单"按钮
+        - 显示车次余票信息
+        - 提供"确认"按钮
         - 提供"返回修改"按钮
-        - 点击遮罩关闭弹窗
+        - 点击弹窗右上角的×关闭弹窗
         
         **前置条件**:
           - 完成 REQ-ORDER-PASSENGER-SELECT 的乘客选择
           - 需要登录状态
+          - 列车仍有充足余票
         
         **交互场景截图**:
           - name: "订单确认弹窗显示"
@@ -255,7 +275,7 @@
       scenarios:
         - name: 确认提交订单
           given: 用户在订单确认弹窗中查看信息无误
-          when: 用户点击"确认无误，提交订单"
+          when: 用户点击"确认"
           then: 提交订单，跳转到支付页面
           
         - name: 返回修改
@@ -266,31 +286,67 @@
       children: []
     
     - id: REQ-ORDER-ERROR-MODAL
-      name: 订单错误提示弹窗
+      name: 订单失败弹窗
       description: |
-        订单提交失败或余票不足时的提示弹窗。
+        订单提交失败时的提示弹窗。
         
         **需要截图**: 是（如能触发错误场景）
         **组件定位**: 屏幕居中显示的模态弹窗
         **定位提示**: .modal, [role="dialog"], .error-modal, .alert
         
         **功能要求**：
-        - 显示错误图标（红色感叹号或叉号）
-        - 显示错误信息（如"余票不足"、"订票失败"等）
-        - 提供"我知道了"或"关闭"按钮
+        - 显示错误图标（红色叉号）
+        - 显示错误信息（如"订票失败"等）
+        - 提供右上角叉号"关闭"按钮
         - 点击按钮或遮罩关闭弹窗
+      
+      dependencies: []
+      scenarios:          
+        - name: 订票失败
+          given: 用户多次提交并取消订单导致订票失败
+          when: 用户在订单填写页点击"提交订单"按钮
+          then: 跳出订单失败弹窗
+
+        - name: 关闭订票失败弹窗
+          given: 用户在订单失败弹窗
+          when: 用户点击右上角叉号"关闭"按钮
+          then: 关闭弹窗，返回订单填写页
+      
+      children: []
+
+    - id: REQ-ORDER-NO-TICKET-MODAL
+      name: 余票不足弹窗
+      description: |
+        余票不足时的提示弹窗。
+        
+        **需要截图**: 是（如能触发错误场景）
+        **组件定位**: 屏幕居中显示的模态弹窗
+        **定位提示**: .modal, [role="dialog"], .error-modal, .alert
+        
+        **功能要求**：
+        - 显示错误图标（橙色感叹号）
+        - 显示错误信息（如"很抱歉，无法提交您的订单"等）
+        - 显示乘车人和余票信息
+        - 提供右上角叉号"关闭"按钮
+        - 提供"确认"按钮
+        - 点击按钮关闭弹窗
       
       dependencies: []
       scenarios:
         - name: 余票不足
           given: 用户提交订单时所选席别余票已被抢光
-          when: 系统检测到余票不足
-          then: 显示"很抱歉，您选择的席别余票不足！"弹窗
+          when: 用户在订单填写页点击"提交订单"按钮
+          then: 跳出余票不足弹窗
           
-        - name: 订票失败
-          given: 用户提交订单时系统出现异常
-          when: 订单提交失败
-          then: 显示"订票失败，请稍后重试！"弹窗
+        - name: 关闭余票不足弹窗
+          given: 用户在余票不足弹窗
+          when: 用户点击右上角叉号"关闭"按钮
+          then: 关闭弹窗，返回订单填写页
+
+        - name: 确认余票不足信息
+          given: 用户在余票不足弹窗
+          when: 用户点击"确认"按钮
+          then: 关闭弹窗，返回订单填写页
       
       children: []
 
