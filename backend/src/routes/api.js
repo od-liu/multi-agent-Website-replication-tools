@@ -14,7 +14,10 @@ import {
   checkUsername,
   checkPhone,
   checkIdNumber,
-  checkEmail
+  checkEmail,
+  getCities,
+  searchTrains,
+  getTrainDetails
 } from '../database/operations.js';
 
 const router = express.Router();
@@ -388,31 +391,88 @@ router.post('/api/trains/search', async (req, res) => {
   }
   
   // 调用 FUNC-SEARCH-TRAINS 进行实际查询
-  // const result = await searchTrains(fromCity, toCity, departureDate, isStudent, isHighSpeed);
+  const result = await searchTrains(fromCity, toCity, departureDate, isStudent, isHighSpeed);
   
-  // 骨架实现：返回 501 Not Implemented 和模拟数据
-  return res.status(501).json({
-    success: false,
-    message: 'API尚未实现（骨架代码）',
-    mockData: {
-      fromCity,
-      toCity,
-      departureDate,
-      isStudent,
-      isHighSpeed,
-      trains: [
-        {
-          trainNumber: 'G1',
-          departureStation: fromCity,
-          arrivalStation: toCity,
-          departureTime: '08:00',
-          arrivalTime: '13:00',
-          duration: '5小时',
-          price: '553.5元'
-        }
-      ]
+  if (result.success) {
+    return res.status(200).json({
+      success: true,
+      trains: result.trains
+    });
+  } else {
+    return res.status(500).json({
+      success: false,
+      message: result.message || '查询失败，请稍后重试'
+    });
+  }
+});
+
+/**
+ * @api API-GET-CITIES GET /api/trains/cities
+ * @summary 获取所有城市列表（用于查询条件栏的城市推荐）
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {Array<string>} response.cities - 城市列表
+ * @calls FUNC-GET-CITIES - 委托给数据库查询函数
+ */
+router.get('/api/trains/cities', async (req, res) => {
+  try {
+    // 调用 FUNC-GET-CITIES 从数据库获取
+    const result = await getCities();
+    
+    if (result.success) {
+      return res.status(200).json({
+        success: true,
+        cities: result.cities
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: result.message || '获取城市列表失败'
+      });
     }
-  });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: '获取城市列表失败'
+    });
+  }
+});
+
+/**
+ * @api API-GET-TRAIN-DETAILS GET /api/trains/:trainNumber/details
+ * @summary 获取指定车次的详细信息（停靠站信息）
+ * @param {string} trainNumber - 车次号（如 G12）
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {Object} response.trainDetails - 车次详情
+ * @returns {string} response.trainDetails.trainNumber - 车次号
+ * @returns {Array<Object>} response.trainDetails.stops - 停靠站列表
+ * @calls FUNC-GET-TRAIN-DETAILS - 委托给数据库查询函数
+ */
+router.get('/api/trains/:trainNumber/details', async (req, res) => {
+  const { trainNumber } = req.params;
+  
+  try {
+    // 调用 FUNC-GET-TRAIN-DETAILS 从数据库获取
+    const result = await getTrainDetails(trainNumber);
+    
+    if (result.success) {
+      return res.status(200).json({
+        success: true,
+        trainDetails: result.trainDetails
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: result.message || '车次不存在'
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: '获取车次详情失败'
+    });
+  }
 });
 
 export default router;

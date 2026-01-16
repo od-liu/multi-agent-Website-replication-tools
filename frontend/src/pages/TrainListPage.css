@@ -1,0 +1,100 @@
+/* ========== 车次列表页面容器 ========== */
+/* 📸 参考截图: requirements/images/train-list/整体页面截图/车次列表页.png */
+
+.train-list-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #F0F2F5; /* 更接近参考图的浅灰背景 */
+  display: flex;
+  flex-direction: column;
+}
+
+.train-list-content {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  padding-bottom: 40px;
+}
+
+/* ========== 5分钟过期警告 ========== */
+.expire-warning {
+  width: 100%;
+  margin: 16px 0;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expire-warning-content {
+  background-color: #FFF7E6;
+  border: 1px solid #FFD591;
+  border-radius: 4px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.expire-warning-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.expire-warning-text {
+  flex: 1;
+  color: #AD6800;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.expire-warning-refresh {
+  padding: 6px 16px;
+  background-color: #FF6600;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.expire-warning-refresh:hover {
+  background-color: #E85A00;
+}
+
+.expire-warning-refresh:active {
+  transform: scale(0.98);
+}
+
+.expire-warning-close {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #AD6800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.expire-warning-close:hover {
+  background-color: rgba(255, 102, 0, 0.1);
+}

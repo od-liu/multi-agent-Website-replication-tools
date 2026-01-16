@@ -65,3 +65,20 @@ FUNC-SEARCH-TRAINS:
   db_tables:
     - trains
     - stations
+FUNC-GET-CITIES:
+  related_req_id: REQ-TRAIN-SEARCH-BAR
+  path: backend/src/database/operations.js
+  signature: getCities()
+  upstream_ids:
+    - API-GET-CITIES
+  db_tables:
+    - stations
+FUNC-GET-TRAIN-DETAILS:
+  related_req_id: REQ-TRAIN-LIST
+  path: backend/src/database/operations.js
+  signature: getTrainDetails(trainNumber)
+  upstream_ids:
+    - API-GET-TRAIN-DETAILS
+  db_tables:
+    - trains
+    - stations

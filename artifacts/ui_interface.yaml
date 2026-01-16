@@ -9,12 +9,13 @@ UI-TOP-NAV:
 UI-BOTTOM-NAV:
   related_req_id: REQ-BOTTOM-NAV
   path: frontend/src/components/BottomNavigation/BottomNavigation.tsx
-  description: 底部导航，包含友情链接、二维码和版权信息（登录页、注册页和首页共享）
+  description: 底部导航，包含友情链接、二维码和版权信息（跨页面共享组件）
   downstream_ids: []
   pages:
     - login
     - registration
     - homepage
+    - train-list
 UI-LOGIN-PAGE:
   related_req_id: REQ-LOGIN-PAGE
   path: frontend/src/pages/LoginPage.tsx
@@ -65,9 +66,12 @@ UI-HOME-PAGE:
 UI-HOME-TOP-NAV:
   related_req_id: REQ-HOME-TOP-NAV
   path: frontend/src/components/HomeTopBar/HomeTopBar.tsx
-  description: 首页顶部导航栏，包含Logo、搜索框和用户登录/注册入口
+  description: 顶部导航栏，包含Logo、搜索框和用户登录/注册入口（跨页面共享组件）
   upstream_ids: []
   downstream_ids: []
+  pages:
+    - homepage
+    - train-list
 UI-HOME-SEARCH-FORM:
   related_req_id: REQ-HOME-SEARCH-FORM
   path: frontend/src/components/TrainSearchForm/TrainSearchForm.tsx
@@ -79,5 +83,38 @@ UI-HOME-PROMOTION:
   related_req_id: REQ-HOME-PROMOTION
   path: frontend/src/components/PromoGrid/PromoGrid.tsx
   description: 首页宣传推广区域，显示4个快捷入口卡片（2行2列）
+  upstream_ids: []
+  downstream_ids: []
+UI-MAIN-NAV:
+  related_req_id: REQ-TRAIN-LIST-PAGE
+  path: frontend/src/components/MainNavigation/MainNavigation.tsx
+  description: 主导航菜单（蓝色横栏），显示主要导航项
+  upstream_ids: []
+  downstream_ids: []
+UI-TRAIN-SEARCH-BAR:
+  related_req_id: REQ-TRAIN-SEARCH-BAR
+  path: frontend/src/components/TrainSearchBar/TrainSearchBar.tsx
+  description: 查询条件栏，支持修改出发地、目的地、日期，并进行查询
+  upstream_ids: []
+  downstream_ids:
+    - API-SEARCH-TRAINS
+    - API-GET-CITIES
+UI-TRAIN-FILTER:
+  related_req_id: REQ-TRAIN-FILTER
+  path: frontend/src/components/TrainFilterPanel/TrainFilterPanel.tsx
+  description: 筛选条件区域，支持多维度筛选（车次类型、时间段、车站、席别）
+  upstream_ids: []
+  downstream_ids: []
+UI-TRAIN-LIST:
+  related_req_id: REQ-TRAIN-LIST
+  path: frontend/src/components/TrainList/TrainList.tsx
+  description: 车次列表，显示符合条件的车次信息（表格形式）
+  upstream_ids: []
+  downstream_ids:
+    - API-GET-TRAIN-DETAILS
+UI-TRAIN-LIST-PAGE:
+  related_req_id: REQ-TRAIN-LIST-PAGE
+  path: frontend/src/pages/TrainListPage.tsx
+  description: 车次列表页面容器组件，整合所有子组件
   upstream_ids: []
   downstream_ids: []

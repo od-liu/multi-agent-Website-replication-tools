@@ -60,3 +60,19 @@ API-SEARCH-TRAINS:
     - UI-HOME-SEARCH-FORM
   downstream_ids:
     - FUNC-SEARCH-TRAINS
+API-GET-CITIES:
+  related_req_id: REQ-TRAIN-SEARCH-BAR
+  path: backend/src/routes/api.js
+  signature: GET /api/trains/cities
+  upstream_ids:
+    - UI-TRAIN-SEARCH-BAR
+  downstream_ids:
+    - FUNC-GET-CITIES
+API-GET-TRAIN-DETAILS:
+  related_req_id: REQ-TRAIN-LIST
+  path: backend/src/routes/api.js
+  signature: GET /api/trains/:trainNumber/details
+  upstream_ids:
+    - UI-TRAIN-LIST
+  downstream_ids:
+    - FUNC-GET-TRAIN-DETAILS

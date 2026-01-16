@@ -1,0 +1,45 @@
+/* ========== 主导航菜单 ========== */
+/* 📸 参考截图: requirements/images/train-list/组件特写截图/主导航菜单.png */
+
+:root {
+  --primary-blue: rgb(59, 153, 252);      /* #3B99FC - 主导航背景色 */
+}
+
+.main-navigation {
+  width: 100% !important;
+  height: 46px !important;
+  background-color: var(--primary-blue) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.main-navigation .nav-container {
+  max-width: 1512px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 176px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 32px !important;
+}
+
+.main-navigation a {
+  color: white !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 0 4px !important;
+  white-space: nowrap !important;
+  transition: opacity 0.2s !important;
+}
+
+.main-navigation a:hover {
+  opacity: 0.9 !important;
+  text-decoration: underline !important;
+}
+
+/* 下拉箭头 */
+.main-navigation .dropdown-arrow {
+  font-size: 10px !important;
+  margin-left: 4px !important;
+}

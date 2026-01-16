@@ -1,0 +1,231 @@
+/* ========== 筛选条件区域 ========== */
+/* 📸 参考截图: requirements/images/train-list/组件特写截图/筛选条件区域.png */
+
+:root {
+  --primary-blue: rgb(59, 153, 252);      /* #3B99FC */
+  --bg-light-gray: rgb(245, 245, 245);    /* #F5F5F5 */
+  --text-primary: rgb(51, 51, 51);        /* #333333 */
+  --border-gray: rgb(224, 224, 224);      /* #E0E0E0 */
+  --warning-orange: rgb(255, 102, 0);     /* #FF6600 */
+}
+
+.train-filter-panel {
+  width: 1160px !important;
+  margin: 16px auto !important;
+  background-color: white !important;
+  border-radius: 4px !important;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 3px 0px !important;
+  padding: 16px !important;
+  position: relative !important;
+}
+
+/* 日期快捷选择 */
+.date-filter {
+  display: flex !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+
+.date-button {
+  padding: 6px 14px !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.date-button:hover {
+  border-color: var(--primary-blue) !important;
+  color: var(--primary-blue) !important;
+}
+
+.date-button.active {
+  background-color: var(--primary-blue) !important;
+  border-color: var(--primary-blue) !important;
+  color: white !important;
+}
+
+/* 筛选条件行 */
+.filter-row {
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px 0 !important;
+  border-bottom: 1px solid var(--bg-light-gray) !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
+
+.filter-row:first-child {
+  padding-top: 0 !important;
+}
+
+.filter-row:last-child {
+  border-bottom: none !important;
+}
+
+/* 筛选标签 */
+.filter-label {
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  min-width: 80px !important;
+}
+
+/* 全部按钮 */
+.all-button {
+  padding: 6px 16px !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.all-button:hover {
+  border-color: var(--primary-blue) !important;
+  color: var(--primary-blue) !important;
+}
+
+.all-button.active {
+  background-color: var(--primary-blue) !important;
+  border-color: var(--primary-blue) !important;
+  color: white !important;
+}
+
+/* 复选框样式 */
+.checkbox-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* 发车时间下拉选择器 */
+.time-filter {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-left: auto !important;
+}
+
+.time-dropdown-wrapper {
+  position: relative !important;
+}
+
+.time-dropdown-button {
+  width: 180px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  background-color: white !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  outline: none !important;
+  text-align: left !important;
+  transition: border-color 0.2s !important;
+}
+
+.time-dropdown-button:hover {
+  border-color: var(--primary-blue) !important;
+}
+
+/* 时间下拉菜单 */
+.time-dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  width: 200px !important;
+  margin-top: 4px !important;
+  background-color: white !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px 0px !important;
+  z-index: 1000 !important;
+  overflow: hidden !important;
+}
+
+.time-option {
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.time-option:hover {
+  background-color: var(--bg-light-gray) !important;
+}
+
+.time-option.active {
+  background-color: rgb(255, 247, 230) !important; /* #FFF7E6 */
+  color: var(--warning-orange) !important;
+}
+
+.time-option .check-icon {
+  color: var(--warning-orange) !important;
+  font-weight: bold !important;
+}
+
+/* 筛选确认按钮（下拉框底部） */
+.filter-confirm-button {
+  width: 100% !important;
+  height: 40px !important;
+  background-color: var(--warning-orange) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 0 0 4px 4px !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+}
+
+.filter-confirm-button:hover {
+  background-color: rgb(255, 133, 51) !important;
+}
+
+/* 筛选应用按钮（右下角） */
+.apply-filter-button {
+  position: absolute !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  width: 100px !important;
+  height: 36px !important;
+  background-color: var(--warning-orange) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.apply-filter-button:hover {
+  background-color: rgb(255, 133, 51) !important;
+}
+
+.apply-filter-button:active {
+  background-color: rgb(230, 92, 0) !important;
+}

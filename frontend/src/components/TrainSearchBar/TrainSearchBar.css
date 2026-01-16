@@ -1,0 +1,259 @@
+/**
+ * @visual_verification_result
+ * 
+ * 参考图片: requirements/images/train-list/组件特写截图/查询条件栏.png
+ * 
+ * ✅ 检测到严重不符（已自动修正）:
+ * 
+ * 1. 查询按钮颜色错误
+ * - 文档描述: background-color: var(--primary-blue) (蓝色 #3B99FC)
+ * - 图片实际: background-color: rgb(255, 102, 0) (橙色 #FF6600)
+ * - 修正方案: 使用图片中的橙色 #FF6600
+ * 
+ * 修正依据: 参考图片显示查询按钮明显为橙色，与文档描述的蓝色不符
+ * 修正时间: 2026-01-16
+ */
+
+/* ========== 查询条件栏 ========== */
+/* 📸 参考截图: requirements/images/train-list/组件特写截图/查询条件栏.png */
+
+:root {
+  --primary-blue: rgb(59, 153, 252);      /* #3B99FC */
+  --bg-light-blue: rgb(239, 241, 249);    /* #EFF1F9 */
+  --text-primary: rgb(51, 51, 51);        /* #333333 */
+  --text-secondary: rgb(102, 102, 102);   /* #666666 */
+  --text-disabled: rgb(153, 153, 153);    /* #999999 */
+  --border-gray: rgb(224, 224, 224);      /* #E0E0E0 */
+  --error-red: rgb(211, 47, 47);          /* #D32F2F */
+  --warning-orange: rgb(255, 102, 0);     /* #FF6600 - 查询按钮颜色 */
+}
+
+.train-search-bar {
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  margin-top: 0 !important;
+  padding: 20px 24px !important;
+  background-color: #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  position: relative !important;
+}
+
+/* 通用错误提示（Scenario 006-007, 012） */
+.train-search-bar-error-message {
+  position: absolute !important;
+  top: -40px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background-color: rgb(255, 235, 238) !important; /* #FFEBEE */
+  color: var(--error-red) !important;
+  font-size: 13px !important;
+  padding: 8px 20px !important;
+  border-radius: 4px !important;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px 0px !important;
+  z-index: 10 !important;
+}
+
+/* 单程/往返切换 */
+.trip-type-selector {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.trip-type-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+}
+
+.trip-type-option input[type="radio"] {
+  cursor: pointer !important;
+}
+
+/* 城市输入框 */
+.station-input {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  position: relative !important;
+}
+
+.station-input label {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+}
+
+.station-input .input-wrapper {
+  position: relative !important;
+}
+
+.station-input input {
+  width: 140px !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  background-color: white !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+}
+
+.station-input input:focus {
+  border-color: var(--primary-blue) !important;
+}
+
+/* 错误状态（Scenario 004-005） */
+.station-input input.error {
+  border-color: var(--error-red) !important;
+}
+
+.station-input .input-error {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  margin-top: 2px !important;
+  font-size: 12px !important;
+  color: var(--error-red) !important;
+  white-space: nowrap !important;
+}
+
+/* 城市下拉列表（Scenario 008-009） */
+.city-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  width: 200px !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  background-color: white !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px 0px !important;
+  z-index: 100 !important;
+  margin-top: 4px !important;
+}
+
+.city-option {
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+}
+
+.city-option:hover {
+  background-color: rgb(240, 248, 255) !important;
+}
+
+/* 交换按钮 */
+.exchange-button {
+  width: 32px !important;
+  height: 32px !important;
+  background-color: white !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s !important;
+  margin-top: 16px !important; /* 对齐到输入框 */
+}
+
+.exchange-button:hover {
+  border-color: var(--primary-blue) !important;
+  background-color: rgb(240, 248, 255) !important;
+}
+
+.exchange-button img {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* 日期选择器 */
+.date-input {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.date-input label {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+}
+
+.date-input input {
+  width: 160px !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--border-gray) !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  background-color: white !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: border-color 0.2s !important;
+}
+
+.date-input input:disabled {
+  background-color: rgb(250, 250, 250) !important;
+  color: var(--text-disabled) !important;
+  cursor: not-allowed !important;
+}
+
+.date-input input:not(:disabled):hover {
+  border-color: var(--primary-blue) !important;
+}
+
+/* 普通/学生选择 */
+.passenger-type-selector {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.passenger-type-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  color: var(--text-primary) !important;
+}
+
+.passenger-type-option input[type="radio"] {
+  cursor: pointer !important;
+}
+
+/* 查询按钮 */
+/* ⚠️ 修正：按钮颜色应为橙色 #FF6600（图片实际），而非蓝色（文档错误） */
+.search-button {
+  width: 100px !important;
+  height: 40px !important;
+  background-color: var(--warning-orange) !important; /* 修正：橙色 */
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s !important;
+  margin-left: auto !important;
+}
+
+.search-button:hover {
+  background-color: rgb(255, 120, 26) !important; /* 悬停：稍亮的橙色 */
+}
+
+.search-button:active {
+  background-color: rgb(230, 92, 0) !important; /* 按下：稍暗的橙色 */
+}

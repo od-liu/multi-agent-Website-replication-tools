@@ -1,0 +1,171 @@
+/**
+ * DatePicker 日期选择器样式
+ * 参考12306官方设计风格
+ */
+
+/* 遮罩层 */
+.date-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 日历容器 */
+.date-picker-container {
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  width: 340px;
+  max-width: 90vw;
+}
+
+/* 月份导航 */
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.date-picker-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333333;
+}
+
+.date-picker-nav-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: #666666;
+  cursor: pointer;
+  padding: 4px 12px;
+  transition: all 0.2s;
+}
+
+.date-picker-nav-btn:hover {
+  color: #3B99FC;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+/* 星期表头 */
+.date-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.date-picker-weekday {
+  text-align: center;
+  font-size: 14px;
+  color: #999999;
+  padding: 8px 0;
+  font-weight: 500;
+}
+
+/* 日期网格 */
+.date-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.date-picker-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.date-picker-day:not(.empty):not(.disabled):hover {
+  background-color: #e6f4ff;
+  color: #3B99FC;
+}
+
+.date-picker-day.empty {
+  cursor: default;
+  visibility: hidden;
+}
+
+.date-picker-day.disabled {
+  color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.date-picker-day.disabled:hover {
+  background-color: transparent;
+}
+
+/* 选中的日期 */
+.date-picker-day.selected {
+  background-color: #5B8FF9;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.date-picker-day.selected:hover {
+  background-color: #4080F0 !important;
+}
+
+/* 今天 */
+.date-picker-day.today:not(.selected) {
+  position: relative;
+}
+
+.date-picker-day.today:not(.selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background-color: #3B99FC;
+  border-radius: 50%;
+}
+
+/* 底部按钮区域 */
+.date-picker-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: center;
+}
+
+.date-picker-today-btn {
+  padding: 6px 24px;
+  background: transparent;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  color: #3B99FC;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.date-picker-today-btn:hover {
+  border-color: #3B99FC;
+  color: #3B99FC;
+  background-color: #e6f4ff;
+}
+
+.date-picker-today-btn:active {
+  transform: scale(0.98);
+}
