@@ -112,7 +112,8 @@ const RegistrationForm: React.FC = () => {
   
   // 计算密码强度
   const calculatePasswordStrength = (value: string): number => {
-    if (!value) return 0;
+    // 参考 12306：未输入时也显示“弱”(rank-a)的首段红条
+    if (!value) return 1;
     
     const hasLetter = /[a-zA-Z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
@@ -487,7 +488,7 @@ const RegistrationForm: React.FC = () => {
         <form className="registration-form" onSubmit={handleSubmit}>
           {/* 用户名 */}
           <div className="form-row">
-            <label className="form-label required">*用户名：</label>
+            <label className="form-label required">用 户 名：</label>
             <div className="form-input-wrapper">
               <input
                 type="text"
@@ -500,7 +501,7 @@ const RegistrationForm: React.FC = () => {
               {formData.username && !errors.username && (
                 <span className="validation-check">✓</span>
               )}
-              <div className="form-hint">6-30位字母、数字或"_"，字母开头</div>
+              <span className="form-hint hint-warning">6-30位字母、数字或“_”,字母开头</span>
               {errors.username && (
                 <div className="error-message">{errors.username}</div>
               )}
@@ -509,12 +510,12 @@ const RegistrationForm: React.FC = () => {
 
           {/* 登录密码 */}
           <div className="form-row">
-            <label className="form-label required">*登录密码：</label>
+            <label className="form-label required">登 录 密 码：</label>
             <div className="form-input-wrapper">
               <input
                 type="password"
                 className={`form-input ${errors.password ? 'error' : formData.password ? 'valid' : ''}`}
-                placeholder="6-20位字母、数字或下划线"
+                placeholder="6-20位字母、数字或符号"
                 value={formData.password}
                 onChange={(e) => handleChange('password', e.target.value)}
                 onBlur={() => handleBlur('password')}
@@ -522,21 +523,14 @@ const RegistrationForm: React.FC = () => {
               {formData.password && !errors.password && (
                 <span className="validation-check">✓</span>
               )}
-              {formData.password && (
-                <div className="password-strength">
-                  <span className="strength-label">密码强度：</span>
-                  <div className="strength-bars">
-                    <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 1 ? 'active' : ''}`}></span>
-                    <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 2 ? 'active' : ''}`}></span>
-                    <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 3 ? 'active' : ''}`}></span>
-                  </div>
-                  <span className="strength-text">
-                    {calculatePasswordStrength(formData.password) === 1 && '弱'}
-                    {calculatePasswordStrength(formData.password) === 2 && '中'}
-                    {calculatePasswordStrength(formData.password) === 3 && '强'}
-                  </span>
+              <div className="password-strength" aria-label="密码强度">
+                <span className="strength-label">密码强度</span>
+                <div className="strength-bars" aria-hidden="true">
+                  <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 1 ? 'active' : ''}`}></span>
+                  <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 2 ? 'active' : ''}`}></span>
+                  <span className={`strength-bar ${calculatePasswordStrength(formData.password) >= 3 ? 'active' : ''}`}></span>
                 </div>
-              )}
+              </div>
               {errors.password && (
                 <div className="error-message">{errors.password}</div>
               )}
@@ -545,7 +539,7 @@ const RegistrationForm: React.FC = () => {
 
           {/* 确认密码 */}
           <div className="form-row">
-            <label className="form-label required">*确认密码：</label>
+            <label className="form-label required">确 认 密 码：</label>
             <div className="form-input-wrapper">
               <input
                 type="password"
@@ -566,7 +560,7 @@ const RegistrationForm: React.FC = () => {
 
           {/* 证件类型 */}
           <div className="form-row">
-            <label className="form-label required">*证件类型：</label>
+            <label className="form-label required">证件类型：</label>
             <select
               className="form-select"
               value={formData.idType}
@@ -581,7 +575,7 @@ const RegistrationForm: React.FC = () => {
 
           {/* 姓名 */}
           <div className="form-row">
-            <label className="form-label required">*姓名：</label>
+            <label className="form-label required">姓 名：</label>
             <div className="form-input-wrapper">
               <input
                 type="text"
@@ -605,7 +599,7 @@ const RegistrationForm: React.FC = () => {
 
           {/* 证件号码 */}
           <div className="form-row">
-            <label className="form-label required">*证件号码：</label>
+            <label className="form-label required">证件号码：</label>
             <div className="form-input-wrapper">
               <input
                 type="text"
@@ -637,10 +631,14 @@ const RegistrationForm: React.FC = () => {
               onChange={(e) => handleChange('passengerType', e.target.value)}
             >
               <option value="1">成人</option>
-              <option value="2">学生</option>
               <option value="3">儿童</option>
+              <option value="2">学生</option>
+              <option value="4">残疾军人</option>
             </select>
           </div>
+
+          {/* 分隔线（对齐 12306 虚线） */}
+          <div className="form-separator" aria-hidden="true" />
 
           {/* 邮箱 */}
           <div className="form-row">
@@ -662,11 +660,14 @@ const RegistrationForm: React.FC = () => {
 
           {/* 手机号码 */}
           <div className="form-row">
-            <label className="form-label required">*手机号码：</label>
+            <label className="form-label required">手机号码：</label>
             <div className="form-input-wrapper">
               <div className="phone-input-group">
                 <select className="country-code-select">
                   <option value="+86">+86 中国</option>
+                  <option value="+852">+852 中国香港</option>
+                  <option value="+853">+853 中国澳门</option>
+                  <option value="+886">+886 中国台湾</option>
                 </select>
                 <input
                   type="tel"
@@ -697,13 +698,14 @@ const RegistrationForm: React.FC = () => {
             />
             <label htmlFor="agreement">
               我已阅读并同意遵守
-              <a href="/service-terms" target="_blank">《中国铁路客户服务中心网站服务条款》</a>
-              <a href="/privacy-policy" target="_blank">《隐私权政策》</a>
+              <a href="/otn/regist/rule" target="_blank" rel="noreferrer">《中国铁路客户服务中心网站服务条款》</a>
+              {' '}
+              <a href="/otn/gonggao/privacyPolicy_web.html" target="_blank" rel="noreferrer">《隐私权政策》</a>
             </label>
           </div>
 
           {/* 提交按钮 */}
-          <div className="form-row">
+          <div className="form-row form-row-submit">
             <button type="submit" className="submit-button" disabled={isSubmitting}>
               {isSubmitting ? '发送验证码中...' : '下一步'}
             </button>

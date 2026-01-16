@@ -193,12 +193,16 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
       {/* 顶部链接 */}
       <div className="home-top-links">
         <a href="#" className="home-top-link">无障碍</a>
+        <span className="home-top-sep">|</span>
         <a href="#" className="home-top-link">敬老版</a>
+        <span className="home-top-sep">|</span>
         <a href="#" className="home-top-link">English</a>
+        <span className="home-top-sep">|</span>
         <a href="#" className="home-top-link" onClick={(e) => {
           e.preventDefault();
           handleMyAccount();
         }}>我的12306</a>
+        <span className="home-top-sep">|</span>
 
         {/* @scenario SCENARIO-003: 已登录显示用户名和退出按钮 */}
         {isLoggedIn ? (
@@ -213,19 +217,28 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
           </>
         ) : (
           <>
-            {/* @scenario SCENARIO-001 & SCENARIO-002: 未登录显示登录和注册按钮 */}
-            <button 
-              className="home-top-auth-link login" 
-              onClick={handleLogin}
+            <span className="home-top-greeting">您好，请</span>
+            <a
+              href="#"
+              className="home-top-link home-top-auth-link-text"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLogin();
+              }}
             >
               登录
-            </button>
-            <button 
-              className="home-top-auth-link register" 
-              onClick={handleRegister}
+            </a>
+            <span className="home-top-auth-space" aria-hidden="true" />
+            <a
+              href="#"
+              className="home-top-link home-top-auth-link-text"
+              onClick={(e) => {
+                e.preventDefault();
+                handleRegister();
+              }}
             >
               注册
-            </button>
+            </a>
           </>
         )}
       </div>

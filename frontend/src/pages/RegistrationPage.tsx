@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import TopNavigation from '../components/TopNavigation/TopNavigation';
+import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
+import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import RegistrationForm from '../components/RegistrationForm/RegistrationForm';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import './RegistrationPage.css';
@@ -12,7 +13,8 @@ import './RegistrationPage.css';
 const RegistrationPage: React.FC = () => {
   return (
     <div className="registration-page">
-      <TopNavigation />
+      <HomeTopBar />
+      <SecondaryNav />
       <main className="registration-main">
         <div className="breadcrumb">
           您现在的位置：<a href="/">客运首页</a> &gt; 注册
