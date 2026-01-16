@@ -52,7 +52,7 @@
   
   children:
     - id: REQ-ORDER-TOP-NAV
-      name: 顶部导航栏
+      name: 顶部导航栏（复用首页顶部导航栏内容）
       description: |
         页面顶部导航栏（与其他页面共用）。
         
