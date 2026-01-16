@@ -185,22 +185,39 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
 
       {/* @feature "显示版权和备案信息" */}
       <div className="bottom-navigation-footer-txt">
-        <p>
-          <span>版权所有©2008-2025</span>
-          <span>中国铁道科学研究院集团有限公司</span>
-          <span>技术支持：铁旅科技有限公司</span>
-        </p>
-        <p>
-          <span>京公网安备 11010802038392号</span>
-          <span>|</span>
-          <span>京ICP备05020493号-4</span>
-          <span>|</span>
-          <span>ICP证：京B2-20202537</span>
-        </p>
-        <img 
-          src="/images/login/登录页面-底部导航-无障碍服务Logo.jpg" 
-          alt="无障碍服务"
-        />
+        <div className="bottom-navigation-footer-txt-inner">
+          <p className="bottom-navigation-footer-copy">
+            <span className="bottom-navigation-mr">版权所有©2008-2025</span>
+            <span className="bottom-navigation-mr">中国铁道科学研究院集团有限公司</span>
+            <span>技术支持：铁旅科技有限公司</span>
+          </p>
+          <p className="bottom-navigation-footer-beian">
+            <span className="bottom-navigation-footer-beian-left bottom-navigation-mr">
+              <img
+                className="bottom-navigation-footer-gongan"
+                src="/images/gongan.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <a
+                href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802038392"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                京公网安备 11010802038392号
+              </a>
+            </span>
+            <span className="bottom-navigation-mr" aria-hidden="true">|</span>
+            <span className="bottom-navigation-mr">京ICP备05020493号-4</span>
+            <span className="bottom-navigation-mr" aria-hidden="true">|</span>
+            <span>ICP证：京B2-20202537</span>
+          </p>
+          <img
+            className="bottom-navigation-footer-a11y"
+            src="/images/login/登录页面-底部导航-无障碍服务Logo.jpg"
+            alt="无障碍服务"
+          />
+        </div>
       </div>
     </div>
   );

@@ -26,9 +26,12 @@
 }
 
 .bottom-navigation-foot-con-tit {
-  margin: 0 0 15px 0 !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
+  /* 原站：14px 常规字重，且标题行高较大（视觉上更“垂直居中”） */
+  margin: 0 !important;
+  height: 54px !important;
+  line-height: 54px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
   color: #333333 !important;
 }
 
@@ -36,7 +39,9 @@
   display: grid !important;
   grid-template-columns: repeat(2, 200px) !important;
   grid-template-rows: repeat(2, auto) !important;
-  gap: 15px !important;
+  /* 原站：横向/纵向间距更紧（约 10px） */
+  gap: 10px !important;
+  width: 420px !important;
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -61,12 +66,20 @@
   width: 200px !important;
   height: 34px !important;
   object-fit: contain !important;
+  /* 原站：每个 logo 都有浅灰细边框 */
+  border: 1px solid #EFEFEF !important;
+  box-sizing: border-box !important;
+  background: #FFFFFF !important;
 }
 
 /* ========== 二维码区域 ========== */
 .bottom-navigation-foot-code {
   display: flex !important;
-  gap: 30px !important;
+  /* 原站各二维码列间距更紧 */
+  gap: 0 !important;
+  /* 4列(140*3 + 240) = 660，避免最后一列溢出导致页面横向滚动 */
+  width: 660px !important;
+  align-items: flex-start !important;
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -74,10 +87,15 @@
 
 .bottom-navigation-foot-code li {
   text-align: center !important;
+  /* 关键：防止 flex 把每列压缩到很窄导致标题被“挤掉” */
+  flex: 0 0 140px !important;
+  width: 140px !important;
+  height: 134px !important;
 }
 
 .bottom-navigation-code-pic {
-  margin-top: 10px !important;
+  /* 原站：二维码紧贴标题下方 */
+  margin-top: 0 !important;
 }
 
 .bottom-navigation-code-pic img {
@@ -86,10 +104,12 @@
   height: 80px !important;
   object-fit: contain !important;
   margin: 0 auto !important;
+  border: 1px solid #EFEFEF !important;
+  box-sizing: border-box !important;
 }
 
 .bottom-navigation-code-tips {
-  margin-top: 10px !important;
+  margin-top: 0 !important;
   font-size: 12px !important;
   color: #999999 !important;
   line-height: 1.5 !important;
@@ -99,24 +119,49 @@
 
 /* ========== 版权信息区域 ========== */
 .bottom-navigation-footer-txt {
-  background-color: #5A5A5A !important;
-  padding: 20px 0 !important;
+  /* 原站：更浅一点的灰（#666）且上下 padding 更小 */
+  background-color: #666666 !important;
+  /* 需要为右下角无障碍按钮预留足够高度，避免按钮“顶出灰条/被裁切” */
+  padding: 10px 0 !important;
   text-align: center !important;
 }
 
+.bottom-navigation-footer-txt-inner {
+  position: relative !important;
+  /* 版权区在原站是全宽容器（p 的宽度为 viewport 宽） */
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+}
+
 .bottom-navigation-footer-txt p {
-  margin: 0 0 10px 0 !important;
-  font-size: 12px !important;
+  margin: 0 !important;
+  font-size: 14px !important;
   color: #C1C1C1 !important;
-  line-height: 1.8 !important;
+  line-height: 30px !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif !important;
+  width: 100% !important;
 }
 
 .bottom-navigation-footer-txt p:last-of-type {
-  margin-bottom: 15px !important;
+  margin-top: 0 !important;
 }
 
-.bottom-navigation-footer-txt span {
-  margin: 0 10px !important;
+/* 原站：通过 .mr 控制间距（主要是 margin-right） */
+.bottom-navigation-mr {
+  margin-right: 10px !important;
+}
+
+.bottom-navigation-footer-beian-left {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.bottom-navigation-footer-gongan {
+  width: 13px !important;
+  height: 13px !important;
+  margin-right: 5px !important;
+  vertical-align: middle !important;
 }
 
 .bottom-navigation-footer-txt a {
@@ -129,11 +174,39 @@
   color: #FFFFFF !important;
 }
 
-.bottom-navigation-footer-txt > img {
+.bottom-navigation-footer-a11y {
   display: block !important;
   width: 130px !important;
   height: 46px !important;
   object-fit: contain !important;
-  margin: 0 auto !important;
+  position: absolute !important;
+  /* 对齐原站：left:50% + margin-left:350px，top:17px */
+  left: 50% !important;
+  margin-left: 350px !important;
+  top: 17px !important;
+}
+
+/* 最后一列（铁路12306）：原站“官方APP下载...”在二维码右侧的浅灰框内 */
+.bottom-navigation-foot-code li:last-child {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  height: auto !important;
+  text-align: left !important;
+}
+
+.bottom-navigation-foot-code li:last-child .bottom-navigation-code-pic {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+
+.bottom-navigation-foot-code li:last-child .bottom-navigation-code-tips {
+  border: 1px solid #EFEFEF !important;
+  background: #FFFFFF !important;
+  padding: 8px 10px !important;
+  width: 150px !important;
+  max-width: 150px !important;
+  text-align: left !important;
+  line-height: 18px !important;
 }
 

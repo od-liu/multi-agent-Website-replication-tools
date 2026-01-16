@@ -40,7 +40,7 @@ const SecondaryNav: React.FC = () => {
             onClick={(e) => handleNavClick(item.path, e)}
           >
             {item.label}
-            {item.hasDropdown && <span className="dropdown-arrow"> ▼</span>}
+            {item.hasDropdown && <span className="dropdown-arrow" aria-hidden="true" />}
           </a>
         ))}
       </div>

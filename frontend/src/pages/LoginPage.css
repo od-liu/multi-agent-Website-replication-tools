@@ -4,8 +4,11 @@
 .page-login {
   display: flex !important;
   flex-direction: column !important;
-  min-width: 1497px !important;
+  /* 与 target_image.png 对齐：1440×954 视口下不应强制溢出横向滚动 */
+  min-width: 1440px !important;
   min-height: 954px !important;
+  /* 避免轮播容器(ul 宽 200%)等造成页面横向滚动/截图黑边 */
+  overflow-x: hidden !important;
   background-color: #F5F5F5 !important;
   margin: 0 !important;
   padding: 0 !important;

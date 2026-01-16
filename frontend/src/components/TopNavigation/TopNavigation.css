@@ -8,18 +8,20 @@
   height: 80px !important;
   background-color: #FFFFFF !important;
   z-index: 2000 !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: none !important;
 }
 
 .top-navigation-wrapper {
-  max-width: 1200px !important;
+  /* 对齐官方站点：居中固定宽度，左侧留出约161px（1440宽视口时） */
+  width: 1118px !important;
+  max-width: 1118px !important;
   margin: 0 auto !important;
-  padding: 0 20px !important;
+  padding: 0 !important;
 }
 
 .top-navigation-header-con {
   display: flex !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   align-items: center !important;
   height: 80px !important;
 }
@@ -45,9 +47,13 @@
 
 /* ========== 欢迎文字 ========== */
 .top-navigation-header-welcome {
-  font-size: 18px !important;
+  /* 官方站点：20px，80px高，line-height 80px，左侧与Logo紧邻并带40px内边距 */
+  height: 80px !important;
+  line-height: 80px !important;
+  padding-left: 40px !important;
+  font-size: 20px !important;
   color: #333333 !important;
   font-weight: 400 !important;
-  letter-spacing: 1px !important;
+  letter-spacing: 0 !important;
 }
 

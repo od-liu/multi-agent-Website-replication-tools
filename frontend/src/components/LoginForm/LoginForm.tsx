@@ -215,102 +215,113 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         </div>
       </div>
 
-      {/* 登录卡片（右侧浮动） */}
-      <div className="login-box">
-        {/* 登录方式Tab - 实现 @feature "两种登录模式" */}
-        <ul className="login-hd">
-          <li className={loginMode === 'account' ? 'active' : ''}>
-            <a href="javascript:;" onClick={() => handleTabChange('account')}>
-              账号登录
-            </a>
-          </li>
-          <li className={loginMode === 'qrcode' ? 'active' : ''}>
-            <a href="javascript:;" onClick={() => handleTabChange('qrcode')}>
-              扫码登录
-            </a>
-          </li>
-        </ul>
-
-        <div className="login-bd">
-          {loginMode === 'account' && (
-            <div className="login-account">
-              {/* 用户名输入框 */}
-              <div className="login-item">
-                <label htmlFor="J-userName" className="item-label">
-                  <i className="icon icon-user"></i>
-                </label>
-                <input
-                  type="text"
-                  className="input"
-                  id="J-userName"
-                  placeholder="用户名/邮箱/手机号"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                />
-              </div>
-
-              {/* 密码输入框 */}
-              <div className="login-item">
-                <label htmlFor="J-password" className="item-label">
-                  <i className="icon icon-pwd"></i>
-                </label>
-                <input
-                  type="password"
-                  className="input"
-                  id="J-password"
-                  placeholder="密码"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                />
-              </div>
-
-              {/* 错误提示区域 - 支持所有 scenarios 的错误显示 */}
-              {error && (
-                <div className="login-error show">{error}</div>
-              )}
-
-              {/* 登录按钮 - 触发所有 scenarios */}
-              <a
-                href="javascript:;"
-                className="login-btn"
-                onClick={handleLogin}
-              >
-                立即登录
+      {/* 登录区域容器（卡片 + 下方服务时间提示） */}
+      <div className="login-box-wrap">
+        {/* 登录卡片（右侧浮动） */}
+        <div className="login-box">
+          {/* 登录方式Tab - 实现 @feature "两种登录模式" */}
+          <ul className="login-hd">
+            <li className={loginMode === 'account' ? 'active' : ''}>
+              <a href="javascript:;" onClick={() => handleTabChange('account')}>
+                账号登录
               </a>
+            </li>
+            <li className={loginMode === 'qrcode' ? 'active' : ''}>
+              <a href="javascript:;" onClick={() => handleTabChange('qrcode')}>
+                扫码登录
+              </a>
+            </li>
+          </ul>
 
-              {/* @feature "提供注册和忘记密码链接" */}
-              <div className="login-other">
-                <Link to="/register">
-                  注册12306账号
-                </Link>
-                {' | '}
-                <a href="https://kyfw.12306.cn/otn/view/find_my_password.html" target="_blank" rel="noopener noreferrer">
-                  忘记密码？
+          <div className="login-bd">
+            {loginMode === 'account' && (
+              <div className="login-account">
+                {/* 用户名输入框 */}
+                <div className="login-item">
+                  <label htmlFor="J-userName" className="item-label" aria-hidden="true">
+                    <i className="icon icon-user"></i>
+                  </label>
+                  <input
+                    type="text"
+                    className="input"
+                    id="J-userName"
+                    placeholder="用户名/邮箱/手机号"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                  />
+                </div>
+
+                {/* 密码输入框 */}
+                <div className="login-item">
+                  <label htmlFor="J-password" className="item-label" aria-hidden="true">
+                    <i className="icon icon-pwd"></i>
+                  </label>
+                  <input
+                    type="password"
+                    className="input"
+                    id="J-password"
+                    placeholder="密码"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                  />
+                </div>
+
+                {/* 错误提示区域 - 支持所有 scenarios 的错误显示 */}
+                {error && (
+                  <div className="login-error show">{error}</div>
+                )}
+
+                {/* 登录按钮 - 触发所有 scenarios */}
+                <a
+                  href="javascript:;"
+                  className="login-btn"
+                  onClick={handleLogin}
+                >
+                  立即登录
                 </a>
-              </div>
-            </div>
-          )}
 
-          {loginMode === 'qrcode' && (
-            <div className="login-code">
-              <div className="qr-login-area">
-                <div className="qr-code-container">
-                  <div className="qr-code-placeholder">
-                    <p>请使用12306手机客户端扫码登录</p>
+                {/* @feature "提供注册和忘记密码链接" */}
+                <div className="login-other">
+                  <Link className="txt-primary" to="/register">
+                    注册12306账号
+                  </Link>
+                  <span className="login-other-sep" aria-hidden="true">|</span>
+                  <a
+                    className="txt-lighter"
+                    href="https://kyfw.12306.cn/otn/view/find_my_password.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    忘记密码？
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {loginMode === 'qrcode' && (
+              <div className="login-code">
+                <div className="qr-login-area">
+                  <div className="qr-code-container">
+                    <div className="qr-code-placeholder">
+                      <p>请使用12306手机客户端扫码登录</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* 服务时间说明（官方结构：login-ft 在卡片内，带上边框） */}
+          <div className="login-ft" role="note">
+            <p>
+              铁路12306每日5:00至次日1:00（周二为5:00至24:00）提供购票、改签、变更到站业务办理，
+              全天均可办理退票等其他服务。
+            </p>
+          </div>
         </div>
       </div>
-
-      {/* @feature "服务时间说明文字" */}
-      <p className="login-tips">
-        铁路12306每日5:00至次日1:00（周二为5:00至24:00）提供购票、改签、变更到站业务办理， 全天均可办理退票等其他服务。
-      </p>
     </div>
   );
 };
