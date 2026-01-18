@@ -6,7 +6,7 @@
 /* ========== 页面容器 ========== */
 .home-page-container {
   min-height: 100vh;
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
 }
@@ -34,11 +34,65 @@
   background-position: center top;
   background-repeat: no-repeat;
   position: relative;
-  min-height: 600px;
+  min-height: 450px;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 80px 0 80px 120px;
+  padding: 50px 0 0 161px;
+}
+
+/* ========== 右侧悬浮工具条（4个入口） ========== */
+.home-right-float-nav {
+  position: fixed;
+  right: 0;
+  top: 232px;
+  z-index: 1200;
+}
+
+.home-right-float-navList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 50px;
+}
+
+.home-right-float-navItem {
+  width: 50px;
+  height: 86px;
+  background: #EFEFEF;
+}
+
+.home-right-float-navItem + .home-right-float-navItem {
+  margin-top: 5px;
+}
+
+.home-right-float-navItem--close {
+  height: 68px;
+}
+
+.home-right-float-navLink {
+  width: 50px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #666666;
+  font-size: 14px;
+  text-align: center;
+}
+
+.home-right-float-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #666666;
+}
+
+.home-right-float-text {
+  line-height: 14px;
 }
 
 /* ========== 快捷服务入口区域 ========== */
@@ -48,7 +102,7 @@
   justify-content: center;
   align-items: center;
   padding: 40px 0;
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
 }
 
 .home-quick-services-image {
@@ -62,7 +116,7 @@
 .home-promo-section {
   width: 100%;
   padding: 0 0 40px 0;
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
 }
 
 /* ========== 底部发布信息区域 ========== */
@@ -72,7 +126,7 @@
   justify-content: center;
   align-items: center;
   padding: 40px 0;
-  background-color: #F5F5F5;
+  background-color: #FFFFFF;
 }
 
 .home-info-image {
@@ -85,7 +139,8 @@
 /* ========== 底部导航区域 ========== */
 .home-footer {
   width: 100%;
-  background-color: #F5F5F5;
+  /* let BottomNavigation control the exact footer background */
+  background-color: transparent;
 }
 
 /* ========== 占位符样式（仅用于开发阶段） ========== */

@@ -85,10 +85,10 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
   useEffect(() => {
     // 自动设置当前日期
     const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const weekday = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][today.getDay()];
-    setDepartureDate(`${month}月${day}日 ${weekday}`);
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    setDepartureDate(`${yyyy}-${mm}-${dd}`);
     
     // 获取城市列表
     fetchCities();
@@ -304,15 +304,15 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
         {/* 左侧蓝色标签页 */}
         <div className="form-sidebar">
           <button className="sidebar-tab active">
-            <span className="sidebar-icon sidebar-icon-train"></span>
+            <i className="sidebar-icon icon icon-huochepiao" aria-hidden="true" />
             <span>车票</span>
           </button>
           <button className="sidebar-tab">
-            <span className="sidebar-icon sidebar-icon-query"></span>
+            <i className="sidebar-icon icon icon-cycx" aria-hidden="true" />
             <span>常用查询</span>
           </button>
           <button className="sidebar-tab">
-            <span className="sidebar-icon sidebar-icon-meal"></span>
+            <i className="sidebar-icon icon icon-dingcan" aria-hidden="true" />
             <span>订餐</span>
           </button>
         </div>
@@ -325,56 +325,64 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
               className={`form-tab-button ${activeTab === 'single' ? 'active' : ''}`}
               onClick={() => setActiveTab('single')}
             >
-              <span className="form-tab-icon form-tab-icon-single"></span>
+              <i className="form-tab-icon icon icon-dancheng" aria-hidden="true" />
               <span>单程</span>
             </button>
             <button 
               className={`form-tab-button ${activeTab === 'round' ? 'active' : ''}`}
               onClick={() => setActiveTab('round')}
             >
-              <span className="form-tab-icon form-tab-icon-round"></span>
+              <i className="form-tab-icon icon icon-wangfan" aria-hidden="true" />
               <span>往返</span>
             </button>
             <button 
               className={`form-tab-button ${activeTab === 'transfer' ? 'active' : ''}`}
               onClick={() => setActiveTab('transfer')}
             >
-              <span className="form-tab-icon form-tab-icon-transfer"></span>
+              <i className="form-tab-icon icon icon-huancheng" aria-hidden="true" />
               <span>中转换乘</span>
             </button>
             <button 
               className={`form-tab-button ${activeTab === 'refund' ? 'active' : ''}`}
               onClick={() => setActiveTab('refund')}
             >
-              <span className="form-tab-icon form-tab-icon-ticket"></span>
+              <i className="form-tab-icon icon icon-chepiao" aria-hidden="true" />
               <span>退改签</span>
             </button>
           </div>
 
           {/* 出发地/到达地输入区域 */}
           <div className="stations-container">
-            <div className="train-search-row-horizontal">
-              <label className="field-label-left">出发城市</label>
-              <div className="input-with-icon" style={{ position: 'relative' }}>
+            {/* 交换按钮（位于出发地/到达地右侧中部） */}
+            <button
+              type="button"
+              className="swap-button-center"
+              aria-label="切换"
+              onClick={handleSwapCities}
+            >
+              <span className="swap-icon" aria-hidden="true" />
+            </button>
+
+            <div className="station-row">
+              <label className="station-label">出发地</label>
+              <div className="input-with-icon">
                 <div className="station-input">
-                  <input 
-                    type="text" 
-                    placeholder="请选择城市" 
+                  <input
+                    type="text"
+                    placeholder="简拼/全拼/汉字"
                     className="station-input-field"
                     value={fromCity}
                     onChange={handleFromCityChange}
                     onFocus={handleFromCityFocus}
                   />
                 </div>
-                <svg className="location-icon" width="18" height="18" viewBox="0 0 18 18">
-                  <circle cx="9" cy="9" r="3" fill="#999999"/>
-                </svg>
+                <span className="station-dropdown-icon" aria-hidden="true" />
                 {/* 城市下拉框 */}
                 {showFromCityDropdown && filteredFromCities.length > 0 && (
                   <div className="city-dropdown">
                     {filteredFromCities.slice(0, 10).map((city, index) => (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className="city-dropdown-item"
                         onClick={() => handleSelectFromCity(city)}
                       >
@@ -386,39 +394,26 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
               </div>
             </div>
 
-            {/* 交换按钮 */}
-            <div className="connector-wrapper">
-              <button 
-                className="swap-button-center" 
-                aria-label="交换出发城市和到达城市"
-                onClick={handleSwapCities}
-              >
-                <span className="swap-icon">⇄</span>
-              </button>
-            </div>
-
-            <div className="train-search-row-horizontal">
-              <label className="field-label-left">到达城市</label>
-              <div className="input-with-icon" style={{ position: 'relative' }}>
+            <div className="station-row">
+              <label className="station-label">到达地</label>
+              <div className="input-with-icon">
                 <div className="station-input">
-                  <input 
-                    type="text" 
-                    placeholder="请选择城市" 
+                  <input
+                    type="text"
+                    placeholder="简拼/全拼/汉字"
                     className="station-input-field"
                     value={toCity}
                     onChange={handleToCityChange}
                     onFocus={handleToCityFocus}
                   />
                 </div>
-                <svg className="location-icon" width="18" height="18" viewBox="0 0 18 18">
-                  <circle cx="9" cy="9" r="3" fill="#999999"/>
-                </svg>
+                <span className="station-dropdown-icon" aria-hidden="true" />
                 {/* 城市下拉框 */}
                 {showToCityDropdown && filteredToCities.length > 0 && (
                   <div className="city-dropdown">
                     {filteredToCities.slice(0, 10).map((city, index) => (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className="city-dropdown-item"
                         onClick={() => handleSelectToCity(city)}
                       >
@@ -433,21 +428,18 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
 
           {/* 出发日期 */}
           <div className="train-search-row-horizontal date-row">
-            <label className="field-label-left">出发日期</label>
-            <div className="input-with-icon">
+            <label className="station-label">出发日期</label>
+            <div className="input-with-icon date-input-with-icon">
               <div className="date-picker">
                 <input 
                   type="text" 
                   readOnly 
-                  placeholder="请选择日期" 
+                  placeholder="请输入日期" 
                   className="date-input" 
                   value={departureDate}
                   onClick={handleDateClick}
                 />
-                <svg className="calendar-icon" width="16" height="16" viewBox="0 0 16 16">
-                  <rect x="2" y="3" width="12" height="11" fill="none" stroke="#999999" strokeWidth="1"/>
-                  <line x1="2" y1="6" x2="14" y2="6" stroke="#999999" strokeWidth="1"/>
-                </svg>
+                <span className="calendar-icon" aria-hidden="true" />
               </div>
             </div>
           </div>
@@ -481,7 +473,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
 
           {/* 查询按钮 */}
           <button className="train-search-button" onClick={handleSearch}>
-            查 询
+            {'查\u00A0\u00A0\u00A0\u00A0询'}
           </button>
         </div>
       </div>

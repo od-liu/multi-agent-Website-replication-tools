@@ -4,8 +4,9 @@
   position: static !important;
   display: block !important;
   width: 100% !important;
-  background-color: #FFFFFF !important;
-  padding: 30px 0 0 0 !important;
+  /* match 12306: friend-links + QR area sits on a light gray background */
+  background-color: #F8F8F8 !important;
+  padding: 20px 0 0 0 !important;
 }
 
 .bottom-navigation-footer .bottom-navigation-wrapper {

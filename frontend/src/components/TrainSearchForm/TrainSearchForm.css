@@ -4,6 +4,23 @@
  * ⚠️ 以下样式基于 ui-style-guide.md 中的完整 CSS 代码
  */
 
+/* ========== 12306 首页 iconfont（用于查询表单右侧小图标） ========== */
+@font-face {
+  font-family: "home-icon";
+  src:
+    url("/fonts/home/iconfont.woff2") format("woff2"),
+    url("/fonts/home/iconfont.woff") format("woff"),
+    url("/fonts/home/iconfont.ttf") format("truetype");
+  font-display: swap;
+}
+
+.home-iconfont {
+  font-family: "home-icon" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* ========== 查询表单容器 ========== */
 .home-search-container {
   display: flex !important;
@@ -16,9 +33,15 @@
 .home-search-wrapper {
   display: flex !important;
   gap: 0 !important;
-  max-width: 700px !important;
-  width: auto !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  width: 510px !important;
+  max-width: 510px !important;
+  box-shadow: none !important;
+  height: 350px !important;
+  position: relative !important;
+  font-size: 14px !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif !important;
+  color: #333333 !important;
 }
 
 /* ========== 左侧蓝色标签页 ========== */
@@ -26,23 +49,33 @@
   display: flex !important;
   flex-direction: column !important;
   background-color: #3B99FC !important;
-  border-radius: 8px 0 0 8px !important;
+  width: 100px !important;
+  height: 350px !important;
+  border-radius: 0 !important;
   overflow: hidden !important;
 }
 
 .sidebar-tab {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 20px 24px !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  /* match 12306: icon on the left, text on the same row, vertically centered via line-height */
+  display: block !important;
+  width: 100px !important;
+  height: 115px !important;
+  padding: 0 !important;
+  background-color: transparent !important;
   color: #ffffff !important;
   font-size: 16px !important;
+  line-height: 115px !important;
+  text-align: left !important;
   border: none !important;
+  border-bottom: 1px solid #86BFFB !important;
   cursor: pointer !important;
   transition: background-color 0.2s !important;
-  gap: 8px !important;
+}
+
+.sidebar-tab:last-child {
+  height: 120px !important;
+  line-height: 120px !important;
+  border-bottom: none !important;
 }
 
 .sidebar-tab.active {
@@ -55,38 +88,74 @@
 }
 
 .sidebar-icon {
-  display: inline-block !important;
-  width: 24px !important;
-  height: 24px !important;
+  display: block !important;
+  float: left !important;
+  width: 28px !important;
+  height: 100% !important;
+  background: none !important;
+  font-size: 22px !important;
+  line-height: 115px !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+
+/* 原站 `订餐` 图标比另外两个略小 */
+.sidebar-icon.icon-dingcan {
+  font-size: 18px !important;
+}
+
+/* keep text on the same line with the floated icon */
+.sidebar-tab > span {
+  display: block !important;
+  height: 115px !important;
+  line-height: 115px !important;
+}
+
+.sidebar-tab:last-child > span {
+  height: 120px !important;
+  line-height: 120px !important;
+}
+
+.sidebar-tab:last-child .sidebar-icon {
+  line-height: 120px !important;
 }
 
 /* ========== 表单主体（白色卡片） ========== */
 .search-form-container {
   flex: 1 !important;
   background-color: #ffffff !important;
-  border-radius: 0 8px 8px 0 !important;
-  padding: 24px 32px !important;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 0 !important;
+  /* match 12306 `.search-main-item`: padding-top is larger and aligns internal rows */
+  padding: 32px 25px 0 !important;
+  box-shadow: none !important;
+  width: 410px !important;
+  height: 350px !important;
 }
 
 /* ========== 顶部标签页（单程/往返等） ========== */
 .form-tabs {
   display: flex !important;
-  gap: 16px !important;
-  margin-bottom: 24px !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  padding-bottom: 12px !important;
+  gap: 0 !important;
+  margin: 0 !important;
+  height: 34px !important;
+  border-bottom: 2px solid #DEDEDE !important;
+  padding: 0 !important;
 }
 
 .form-tab-button {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 8px 16px !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  width: 90px !important;
+  height: 32px !important;
+  padding: 0 !important;
   background-color: transparent !important;
   border: none !important;
-  font-size: 16px !important;
-  color: #666666 !important;
+  font-size: 14px !important;
+  line-height: 32px !important;
+  /* 原站未选中文字为 rgb(153,153,153) */
+  color: #999999 !important;
   cursor: pointer !important;
   transition: color 0.2s !important;
   position: relative !important;
@@ -94,48 +163,70 @@
 
 .form-tab-button.active {
   color: #3B99FC !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
 }
 
 .form-tab-button.active::after {
   content: '' !important;
   position: absolute !important;
-  bottom: -12px !important;
+  bottom: -2px !important;
   left: 0 !important;
   right: 0 !important;
-  height: 3px !important;
+  height: 2px !important;
   background-color: #3B99FC !important;
 }
 
 .form-tab-icon {
   display: inline-block !important;
-  width: 18px !important;
-  height: 18px !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 5px 0 0 !important;
+  background: none !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
 }
 
 /* ========== 城市输入区域 ========== */
 .stations-container {
+  position: relative !important;
+  display: block !important;
+  padding-top: 10px !important;
+  margin: 0 !important;
+  padding-right: 0 !important;
+  width: 360px !important;
+}
+
+.station-row {
   display: flex !important;
+  flex-direction: row !important;
   align-items: center !important;
-  gap: 16px !important;
-  margin-bottom: 20px !important;
+  gap: 0 !important;
+  margin-top: 16px !important;
 }
 
-.train-search-row-horizontal {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
+.station-row + .station-row {
+  margin-top: 16px !important;
 }
 
-.field-label-left {
+.home-search-container .station-label {
+  width: 75px !important;
+  min-width: 75px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  padding: 0 10px 0 0 !important;
   font-size: 14px !important;
   color: #333333 !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
+  flex: 0 0 75px !important;
+  margin: 0 !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  display: block !important;
 }
 
 .input-with-icon {
   position: relative !important;
+  width: 265px !important;
 }
 
 .station-input {
@@ -144,10 +235,13 @@
 
 .station-input-field {
   width: 100% !important;
-  padding: 12px 40px 12px 16px !important;
-  font-size: 16px !important;
-  border: 1px solid #d0d0d0 !important;
-  border-radius: 4px !important;
+  height: 30px !important;
+  padding: 4px 30px 4px 10px !important;
+  font-size: 14px !important;
+  /* match original input text vertical alignment */
+  line-height: 20px !important;
+  border: 1px solid #DEDEDE !important;
+  border-radius: 0 !important;
   outline: none !important;
   transition: border-color 0.2s !important;
 }
@@ -160,14 +254,30 @@
   color: #999999 !important;
 }
 
-.location-icon {
+.station-dropdown-icon {
   position: absolute !important;
-  right: 12px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 18px !important;
-  height: 18px !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
   pointer-events: none !important;
+  background: transparent !important;
+}
+
+/* 12306 `.icon-place`: wrapper 30x30, glyph 18px, color #DCDCDC */
+.station-dropdown-icon::before {
+  content: "\e6b9" !important; /* icon-place */
+  display: block !important;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  color: #DCDCDC !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  font-family: "home-icon" !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* ========== 交换按钮 ========== */
@@ -180,50 +290,79 @@
 
 .swap-button-center {
   position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 36px !important;
-  height: 36px !important;
-  background-color: #ffffff !important;
-  border: 2px solid #3B99FC !important;
+  /* target image: the orange switch circle overlaps the right edge of the input boxes (not floating fully outside) */
+  right: 8px !important;
+  /* original `#danChange` sits slightly below the exact middle of the two station inputs */
+  top: calc(50% + 13px) !important;
+  transform: translateY(-50%) !important;
+  width: 24px !important;
+  height: 24px !important;
+  background-color: #FF8000 !important;
+  border: 2px solid #FFFFFF !important;
   border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
-  font-size: 20px !important;
-  color: #3B99FC !important;
+  color: #FFFFFF !important;
+  z-index: 2 !important;
 }
 
 .swap-button-center:hover {
-  background-color: #3B99FC !important;
-  color: #ffffff !important;
+  opacity: 0.85 !important;
 }
 
 .swap-icon {
-  display: inline-block !important;
+  /* 12306 `.icon-qiehuan`: glyph 16px, line-height 20px */
+  display: block !important;
+  width: 24px !important;
+  height: 24px !important;
+  line-height: 20px !important;
+  text-align: center !important;
+  color: #FFFFFF !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  font-family: "home-icon" !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+.swap-icon::before {
+  content: "\e60d" !important; /* icon-qiehuan */
 }
 
 /* ========== 日期选择器 ========== */
 .date-row {
-  margin-bottom: 20px !important;
+  /* match 12306: date row starts lower than the station group */
+  margin-top: 16px !important;
+  margin-bottom: 12px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0 !important;
 }
 
 .date-picker {
   position: relative !important;
+  width: 265px !important;
 }
 
 .date-input {
-  width: 100% !important;
-  padding: 12px 40px 12px 16px !important;
-  font-size: 16px !important;
-  border: 1px solid #d0d0d0 !important;
-  border-radius: 4px !important;
+  width: 265px !important;
+  height: 30px !important;
+  padding: 4px 10px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  border: 1px solid #DEDEDE !important;
+  border-radius: 0 !important;
   outline: none !important;
   cursor: pointer !important;
   background-color: #ffffff !important;
+}
+
+.date-input-with-icon {
+  width: 265px !important;
 }
 
 .date-input:focus {
@@ -232,20 +371,35 @@
 
 .calendar-icon {
   position: absolute !important;
-  right: 12px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 16px !important;
-  height: 16px !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: 30px !important;
+  height: 30px !important;
   pointer-events: none !important;
-  color: #999999 !important;
+  background: transparent !important;
+}
+
+/* 12306 `.icon-date`: wrapper 30x30, glyph 18px, color #DCDCDC */
+.calendar-icon::before {
+  content: "\e6c1" !important; /* icon-date */
+  display: block !important;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 30px !important;
+  text-align: center !important;
+  color: #DCDCDC !important;
+  font-size: 18px !important;
+  font-weight: 400 !important;
+  font-family: "home-icon" !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* ========== 复选框选项（学生/高铁动车） ========== */
 .train-search-options {
   display: flex !important;
-  gap: 24px !important;
-  margin-bottom: 24px !important;
+  gap: 60px !important;
+  margin: 0 0 10px !important;
 }
 
 .checkbox-label {
@@ -255,27 +409,42 @@
   font-size: 14px !important;
   color: #333333 !important;
   cursor: pointer !important;
+  height: 30px !important;
+  line-height: 30px !important;
 }
 
 .checkbox-label input[type="checkbox"] {
-  width: 18px !important;
-  height: 18px !important;
+  /* original uses a 16x16 check icon asset */
+  width: 16px !important;
+  height: 16px !important;
   cursor: pointer !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: 1px solid #DEDEDE !important;
+  background-color: #FFFFFF !important;
+  border-radius: 0 !important;
+  display: inline-block !important;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background-color: #3B99FC !important;
+  border-color: #3B99FC !important;
 }
 
 /* ========== 查询按钮 ========== */
 .train-search-button {
-  width: 100% !important;
-  padding: 14px 0 !important;
-  background-color: #FF7700 !important;
+  width: 360px !important;
+  height: 30px !important;
+  padding: 4px 10px !important;
+  background-color: #FF8000 !important;
   color: #ffffff !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  border: none !important;
-  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  border: 1px solid #FF8000 !important;
+  border-radius: 6px !important;
   cursor: pointer !important;
   transition: background-color 0.2s !important;
-  letter-spacing: 4px !important;
+  letter-spacing: normal !important;
 }
 
 .train-search-button:hover {

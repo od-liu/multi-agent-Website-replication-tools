@@ -5,11 +5,12 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './SecondaryNav.css';
 
 const SecondaryNav: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
     { label: '首页', path: '/', hasDropdown: false },
@@ -32,17 +33,21 @@ const SecondaryNav: React.FC = () => {
   return (
     <nav className="secondary-nav">
       <div className="secondary-nav-container">
-        {navItems.map((item, index) => (
-          <a
-            key={index}
-            href={item.path}
-            className="secondary-nav-item"
-            onClick={(e) => handleNavClick(item.path, e)}
-          >
-            {item.label}
-            {item.hasDropdown && <span className="dropdown-arrow" aria-hidden="true" />}
-          </a>
-        ))}
+        {navItems.map((item, index) => {
+          const isActive = item.path !== '#' && location.pathname === item.path;
+          return (
+            <a
+              key={index}
+              href={item.path}
+              className={`secondary-nav-item${isActive ? ' active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
+              onClick={(e) => handleNavClick(item.path, e)}
+            >
+              {item.label}
+              {item.hasDropdown && <span className="dropdown-arrow" aria-hidden="true" />}
+            </a>
+          );
+        })}
       </div>
     </nav>
   );
