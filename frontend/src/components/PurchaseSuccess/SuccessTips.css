@@ -1,0 +1,71 @@
+/* ========== 温馨提示区域 ========== */
+/* 📸 参考截图: requirements/images/purchase-success/组件特写截图/温馨提示区域.png */
+
+.success-tips-container {
+  background-color: rgb(255, 251, 229) !important; /* #FFFBE5 */
+  border: 1px solid #D0D0D0 !important;
+  border-radius: 4px !important;
+  padding: 20px 30px !important;
+  margin-top: 20px !important;
+  width: 1100px !important;
+  box-sizing: border-box !important;
+}
+
+.success-tips-header {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: rgb(0, 0, 0) !important;
+  margin-bottom: 15px !important;
+}
+
+.success-tips-content {
+  display: flex !important;
+  gap: 30px !important;
+  align-items: flex-start !important;
+}
+
+/* ========== 文字提示区域 ========== */
+.tips-text-section {
+  flex: 1 !important;
+}
+
+.tips-list {
+  margin: 0 !important;
+  padding-left: 20px !important;
+  font-size: 13px !important;
+  color: rgb(51, 51, 51) !important;
+  line-height: 1.8 !important;
+}
+
+.tips-list li {
+  margin-bottom: 10px !important;
+}
+
+/* ========== 二维码区域 ========== */
+.tips-qrcode-section {
+  display: flex !important;
+  gap: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+.qrcode-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.qrcode-image {
+  width: 150px !important;
+  height: 150px !important;
+  display: block !important;
+  border: 1px solid #D0D0D0 !important;
+}
+
+.qrcode-label {
+  font-size: 12px !important;
+  color: rgb(102, 102, 102) !important;
+  text-align: center !important;
+  line-height: 1.4 !important;
+  max-width: 150px !important;
+}

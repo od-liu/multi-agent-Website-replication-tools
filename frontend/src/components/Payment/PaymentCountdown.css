@@ -1,0 +1,47 @@
+/* ========== 支付倒计时横幅 ========== */
+/* 📸 参考截图: requirements/images/payment/组件特写截图/支付倒计时横幅.png */
+
+.payment-countdown {
+  background-color: #E6F7FF !important;
+  border: 1px solid #91D5FF !important;
+  border-radius: 4px !important;
+  padding: 15px 20px !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* 超时状态 */
+.payment-countdown.timeout {
+  background-color: #FFF3F3 !important;
+  border-color: #FFCCCC !important;
+}
+
+/* 锁定图标 */
+.countdown-lock-icon {
+  width: 40px !important;
+  height: 40px !important;
+  flex-shrink: 0 !important;
+}
+
+/* 倒计时文字 */
+.countdown-text {
+  font-size: 14px !important;
+  color: #000000 !important;
+  line-height: 1.5 !important;
+}
+
+/* 倒计时时间（橙色高亮） */
+.countdown-time {
+  color: #FF6600 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  margin-left: 5px !important;
+}
+
+/* 超时状态下的倒计时时间（红色） */
+.payment-countdown.timeout .countdown-time {
+  color: #FF0000 !important;
+}

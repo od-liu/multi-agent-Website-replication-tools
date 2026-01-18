@@ -1,0 +1,49 @@
+/* ========== 超时提示弹窗 ========== */
+
+.timeout-modal {
+  width: 90% !important;
+  max-width: 400px !important;
+  background-color: #FFFFFF !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden !important;
+}
+
+/* 弹窗内容区 */
+.timeout-modal-content {
+  padding: 30px 20px !important;
+  text-align: center !important;
+}
+
+.timeout-modal-message {
+  font-size: 16px !important;
+  color: #333333 !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+/* 弹窗按钮区 */
+.timeout-modal-footer {
+  padding: 15px 20px !important;
+  border-top: 1px solid #E0E0E0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.timeout-modal-button {
+  padding: 10px 30px !important;
+  background-color: #FF6600 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  min-width: 100px !important;
+  transition: background-color 0.2s !important;
+}
+
+.timeout-modal-button:hover {
+  background-color: #FF8833 !important;
+}

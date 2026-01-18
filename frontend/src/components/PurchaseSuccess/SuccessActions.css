@@ -1,0 +1,43 @@
+/* ========== 操作按钮组 ========== */
+/* 📸 参考截图: requirements/images/purchase-success/组件特写截图/操作按钮区域.png */
+
+.success-actions-container {
+  margin: 30px 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 30px !important;
+}
+
+.success-action-button {
+  width: 160px !important;
+  height: 50px !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+/* 次要按钮（白底灰字） */
+.secondary-button {
+  background-color: #FFFFFF !important;
+  color: rgb(102, 102, 102) !important;
+  border: 1px solid #D0D0D0 !important;
+}
+
+.secondary-button:hover {
+  background-color: #F5F5F5 !important;
+  border-color: #BDBDBD !important;
+}
+
+/* 主要按钮（橙色） */
+.primary-button {
+  background-color: rgb(255, 114, 0) !important; /* #FF7200 */
+  color: #FFFFFF !important;
+  border: none !important;
+}
+
+.primary-button:hover {
+  background-color: rgb(255, 136, 51) !important; /* #FF8833 */
+}

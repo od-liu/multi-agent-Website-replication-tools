@@ -1,0 +1,122 @@
+/* ========== 取消订单确认弹窗 ========== */
+
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+}
+
+.cancel-order-modal {
+  width: 100% !important;
+  max-width: 600px !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #C0D7EB !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  overflow: hidden !important;
+}
+
+/* 弹窗标题栏（渐变蓝色） */
+.cancel-modal-header {
+  background: linear-gradient(rgb(54, 152, 213), rgb(29, 130, 189)) !important;
+  padding: 5px 20px !important;
+  border-bottom: 2px solid #8FCDEC !important;
+  border-radius: 10px 10px 0px 0px !important;
+}
+
+.cancel-modal-title {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #FFFFFF !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* 弹窗内容区 */
+.cancel-modal-content {
+  padding: 30px 50px 10px 50px !important;
+  background-color: #FFFFFF !important;
+  display: flex !important;
+  gap: 20px !important;
+  align-items: flex-start !important;
+}
+
+/* 问号图标 */
+.cancel-modal-icon-wrapper {
+  flex-shrink: 0 !important;
+  margin-top: 10px !important;
+}
+
+.cancel-modal-question-icon {
+  width: 80px !important;
+  height: 80px !important;
+  display: block !important;
+}
+
+/* 文字内容 */
+.cancel-modal-text-wrapper {
+  flex: 1 !important;
+}
+
+.cancel-modal-question {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
+  margin-bottom: 5px !important;
+  line-height: 1.4 !important;
+}
+
+.cancel-modal-warning {
+  font-size: 13px !important;
+  color: #666666 !important;
+  line-height: 1.8 !important;
+}
+
+/* 弹窗按钮区 */
+.cancel-modal-footer {
+  padding: 20px !important;
+  background-color: #FFFFFF !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 30px !important;
+}
+
+.cancel-modal-button {
+  padding: 10px 30px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  min-width: 100px !important;
+  transition: all 0.2s !important;
+}
+
+/* 取消按钮（白底灰字） */
+.cancel-button {
+  background-color: #FFFFFF !important;
+  color: #666666 !important;
+  border: 1px solid #D0D0D0 !important;
+}
+
+.cancel-button:hover {
+  background-color: #F5F5F5 !important;
+  border-color: #BDBDBD !important;
+}
+
+/* 确认按钮（橙色） */
+.confirm-button {
+  background-color: #FF6600 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+}
+
+.confirm-button:hover {
+  background-color: #FF8833 !important;
+}

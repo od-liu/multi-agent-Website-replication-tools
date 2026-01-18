@@ -1,0 +1,91 @@
+/* ========== 订单详情容器 ========== */
+/* 📸 参考截图: requirements/images/purchase-success/组件特写截图/订单详情区域.png */
+
+.success-order-info-container {
+  margin: 20px 0 !important;
+  width: 1100px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #D0D0D0 !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background-color: #FFFFFF !important;
+}
+
+/* ========== 标题栏（渐变蓝色） ========== */
+.success-order-info-header {
+  background: linear-gradient(rgb(54, 152, 213), rgb(29, 130, 189)) !important;
+  color: rgb(255, 255, 255) !important; /* 白色 */
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  padding: 5px 20px !important;
+  border-bottom: 2px solid #8FCDEC !important;
+}
+
+/* ========== 车次信息行 ========== */
+.success-order-train-info {
+  background-color: #FFFFFF !important;
+  padding: 15px 20px !important;
+  border-bottom: 1px solid #D0D0D0 !important;
+  font-size: 20px !important;
+  color: rgb(51, 51, 51) !important; /* #333333 */
+  line-height: 1.5 !important;
+}
+
+.train-date {
+  margin-right: 20px !important;
+}
+
+.train-number {
+  font-weight: 700 !important;
+  margin-right: 5px !important;
+}
+
+.station-name {
+  color: rgb(255, 0, 0) !important; /* #FF0000 - 红色 */
+  font-size: 26px !important;
+  font-weight: 1000 !important; /* 超粗体 */
+}
+
+.train-time {
+  color: rgb(51, 51, 51) !important;
+  font-size: 16px !important;
+}
+
+.arrow {
+  margin: 0 5px !important;
+  color: rgb(51, 51, 51) !important;
+}
+
+/* ========== 订单信息表格 ========== */
+.success-order-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: #FFFFFF !important;
+}
+
+.success-order-table thead {
+  background-color: rgb(239, 241, 249) !important; /* #EFF1F9 */
+}
+
+.success-order-table th {
+  padding: 12px 8px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: rgb(51, 51, 51) !important;
+  text-align: center !important;
+  border: 1px solid #D0D0D0 !important;
+}
+
+.success-order-table td {
+  padding: 12px 8px !important;
+  font-size: 14px !important;
+  color: rgb(51, 51, 51) !important;
+  text-align: center !important;
+  border: 1px solid #D0D0D0 !important;
+}
+
+/* 已支付状态（橙色） */
+.status-paid {
+  color: rgb(251, 133, 48) !important; /* #FB8530 */
+  font-weight: 700 !important;
+}

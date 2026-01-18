@@ -1,0 +1,83 @@
+/* ========== 成功提示横幅 ========== */
+/* 📸 参考截图: requirements/images/purchase-success/组件特写截图/成功提示区域.png */
+
+.success-banner {
+  background-color: rgb(238, 255, 204) !important; /* #EEFFCC - 浅黄绿色 */
+  border: 1px solid rgb(50, 145, 208) !important; /* #3291D0 - 蓝色 */
+  border-radius: 0px !important;
+  padding: 20px 40px !important;
+  margin: 10px 0 20px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 20px !important;
+  width: 1100px !important;
+  box-sizing: border-box !important;
+}
+
+/* 成功图标 */
+.success-icon {
+  width: 40px !important;
+  height: 40px !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+}
+
+/* 成功内容区 */
+.success-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+/* 标题行 */
+.success-title-row {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.success-title {
+  color: rgb(39, 163, 6) !important; /* #27A306 - 绿色 */
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+.success-thanks {
+  color: rgb(0, 0, 0) !important; /* #000000 */
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.success-order-info {
+  color: rgb(0, 0, 0) !important;
+  font-size: 14px !important;
+}
+
+.order-number {
+  color: rgb(255, 102, 0) !important; /* #FF6600 - 橙色 */
+  font-size: 22px !important;
+  font-weight: 600 !important;
+}
+
+/* 乘车人信息 */
+.success-passenger-info {
+  margin-top: 10px !important;
+}
+
+.passenger-name {
+  color: rgb(0, 0, 0) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.8 !important;
+}
+
+/* 通知说明 */
+.success-notification-info {
+  color: rgb(0, 0, 0) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.6 !important;
+  margin-top: 10px !important;
+}

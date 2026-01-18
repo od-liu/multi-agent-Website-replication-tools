@@ -1,13 +1,14 @@
 /* ========== 车次列表 ========== */
 /* 📸 参考截图: requirements/images/train-list/组件特写截图/车次列表.png */
 
-:root {
-  --primary-blue: rgb(59, 153, 252);      /* #3B99FC */
-  --bg-light-gray: rgb(245, 245, 245);    /* #F5F5F5 */
-  --text-primary: rgb(51, 51, 51);        /* #333333 */
-  --text-secondary: rgb(102, 102, 102);   /* #666666 */
-  --success-green: rgb(82, 196, 26);      /* #52C41A */
-  --border-gray: rgb(224, 224, 224);      /* #E0E0E0 */
+/* TrainList 组件专用变量 - 使用组件前缀避免全局污染 */
+.train-list {
+  --trainlist-primary-blue: rgb(59, 153, 252);      /* #3B99FC */
+  --trainlist-bg-light-gray: rgb(245, 245, 245);    /* #F5F5F5 */
+  --trainlist-text-primary: rgb(51, 51, 51);        /* #333333 */
+  --trainlist-text-secondary: rgb(102, 102, 102);   /* #666666 */
+  --trainlist-success-green: rgb(82, 196, 26);      /* #52C41A */
+  --trainlist-border-gray: rgb(224, 224, 224);      /* #E0E0E0 */
 }
 
 .train-list {
@@ -24,7 +25,7 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  border-bottom: 1px solid var(--bg-light-gray) !important;
+  border-bottom: 1px solid var(--trainlist-bg-light-gray) !important;
   font-size: 13px !important;
 }
 
@@ -37,19 +38,19 @@
 .route-info {
   font-size: 16px !important;
   font-weight: 600 !important;
-  color: var(--text-primary) !important;
+  color: var(--trainlist-text-primary) !important;
 }
 
 .date-info {
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
 }
 
 .train-count {
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
 }
 
 .transfer-tip {
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
   font-size: 12px !important;
 }
 
@@ -63,7 +64,7 @@
   align-items: center !important;
   gap: 4px !important;
   font-size: 13px !important;
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
   cursor: pointer !important;
 }
 
@@ -71,7 +72,7 @@
 .list-header {
   display: grid !important;
   grid-template-columns: 80px 100px 100px 80px repeat(7, 80px) 60px 80px !important;
-  background-color: var(--primary-blue) !important;
+  background-color: var(--trainlist-primary-blue) !important;
   color: white !important;
   font-size: 12px !important;
   text-align: center !important;
@@ -94,7 +95,7 @@
   display: grid !important;
   grid-template-columns: 80px 100px 100px 80px repeat(7, 80px) 60px 80px !important;
   padding: 16px !important;
-  border-bottom: 1px solid var(--bg-light-gray) !important;
+  border-bottom: 1px solid var(--trainlist-bg-light-gray) !important;
   align-items: center !important;
   text-align: center !important;
   font-size: 14px !important;
@@ -117,7 +118,7 @@
 .train-number .number {
   font-size: 16px !important;
   font-weight: 600 !important;
-  color: var(--primary-blue) !important;
+  color: var(--trainlist-primary-blue) !important;
 }
 
 .train-type-badge {
@@ -159,11 +160,11 @@
 }
 
 .departure-time {
-  color: var(--text-primary) !important;
+  color: var(--trainlist-text-primary) !important;
 }
 
 .arrival-time {
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
   font-size: 14px !important;
 }
 
@@ -173,23 +174,23 @@
 }
 
 .duration {
-  color: var(--text-primary) !important;
+  color: var(--trainlist-text-primary) !important;
   font-weight: 600 !important;
 }
 
 .arrival-day {
   font-size: 11px !important;
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
 }
 
 /* 席别余票 */
 .seat-availability {
   font-size: 14px !important;
-  color: var(--text-secondary) !important;
+  color: var(--trainlist-text-secondary) !important;
 }
 
 .seat-availability.has-tickets {
-  color: var(--success-green) !important;
+  color: var(--trainlist-success-green) !important;
   font-weight: 600 !important;
 }
 
@@ -201,7 +202,7 @@
 .book-button {
   width: 70px !important;
   height: 32px !important;
-  background-color: var(--primary-blue) !important;
+  background-color: var(--trainlist-primary-blue) !important;
   color: white !important;
   border: none !important;
   border-radius: 4px !important;

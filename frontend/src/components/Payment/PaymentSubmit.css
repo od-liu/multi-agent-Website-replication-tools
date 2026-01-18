@@ -1,0 +1,62 @@
+/* ========== 支付按钮区域 ========== */
+/* 📸 参考截图: requirements/images/payment/组件特写截图/支付按钮区域.png */
+
+.payment-submit-container {
+  margin-top: 30px !important;
+  padding: 30px 0 !important;
+}
+
+.payment-submit-buttons {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 30px !important;
+}
+
+/* 取消订单按钮（白底灰字） */
+.payment-cancel-button {
+  width: 160px !important;
+  height: 50px !important;
+  background-color: #FFFFFF !important;
+  color: rgb(102, 102, 102) !important;
+  border: 1px solid #D0D0D0 !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.payment-cancel-button:hover:not(:disabled) {
+  background-color: #F5F5F5 !important;
+  border-color: #BDBDBD !important;
+}
+
+.payment-cancel-button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* 网上支付按钮（橙色） */
+.payment-confirm-button {
+  width: 160px !important;
+  height: 50px !important;
+  background-color: rgb(255, 114, 0) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 4px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+
+.payment-confirm-button:hover:not(:disabled) {
+  background-color: rgb(255, 136, 51) !important;
+}
+
+.payment-confirm-button:disabled,
+.payment-confirm-button.processing {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
