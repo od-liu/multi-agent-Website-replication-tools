@@ -28,7 +28,8 @@
  * @background_color "#F5F5F5"
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import TrainSearchForm from '../components/TrainSearchForm/TrainSearchForm';
@@ -38,15 +39,48 @@ import './HomePage.css';
 
 const HomePage: React.FC = () => {
   // ========== State Management ==========
-  // 页面级别的状态管理（如果需要）
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+
+  // ========== Load User Info from localStorage ==========
+  useEffect(() => {
+    const userInfoStr = localStorage.getItem('user_info');
+    if (userInfoStr) {
+      try {
+        const userInfo = JSON.parse(userInfoStr);
+        setIsLoggedIn(userInfo.isLoggedIn || false);
+        setUsername(userInfo.username || '');
+      } catch (error) {
+        console.error('Failed to parse user info:', error);
+      }
+    }
+  }, []);
+
+  // ========== Logout Handler ==========
+  const handleLogout = () => {
+    // 清除localStorage中的用户信息
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_info');
+    
+    // 更新状态
+    setIsLoggedIn(false);
+    setUsername('');
+    
+    // 跳转到登录页
+    navigate('/login');
+  };
 
   // ========== Page Layout ==========
   return (
     <div className="home-page-container">
       {/* 顶部导航栏 */}
       <header className="home-header">
-        <HomeTopBar isLoggedIn={false} />
+        <HomeTopBar 
+          isLoggedIn={isLoggedIn} 
+          username={username}
+          onLogout={handleLogout}
+        />
         <SecondaryNav />
       </header>
 

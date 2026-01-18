@@ -26,6 +26,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import TopNavigation from '../components/TopNavigation/TopNavigation';
 import LoginForm from '../components/LoginForm/LoginForm';
@@ -34,8 +35,10 @@ import SmsVerificationModal from '../components/SmsVerification/SmsVerification'
 
 const LoginPage: React.FC = () => {
   // ========== State Management ==========
+  const navigate = useNavigate();
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [currentUsername, setCurrentUsername] = useState<string>('');
 
   // ========== Event Handlers ==========
   
@@ -46,6 +49,7 @@ const LoginPage: React.FC = () => {
   const handleLoginSuccess = (data: any) => {
     console.log('登录成功:', data);
     setCurrentUserId(data.userId);
+    setCurrentUsername(data.username || data.phone || data.email || '');
     setShowSmsModal(true);
   };
 
@@ -55,16 +59,28 @@ const LoginPage: React.FC = () => {
    */
   const handleVerificationSuccess = (data: any) => {
     console.log('验证成功:', data);
+    
     // 保存token到localStorage
     if (data.token) {
       localStorage.setItem('auth_token', data.token);
     }
+    
+    // 保存用户信息到localStorage
+    const userInfo = {
+      userId: currentUserId,
+      username: currentUsername,
+      isLoggedIn: true
+    };
+    localStorage.setItem('user_info', JSON.stringify(userInfo));
+    
     // 关闭弹窗
     setShowSmsModal(false);
+    
     // 显示成功消息
     alert('登录成功！');
-    // 实际项目中应该跳转到主页
-    // window.location.href = '/home';
+    
+    // 跳转到首页
+    navigate('/home');
   };
 
   /**

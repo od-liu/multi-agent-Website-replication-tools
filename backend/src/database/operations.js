@@ -30,7 +30,7 @@ export async function authenticateUser(username, password) {
 
     // Query user (support username/email/phone)
     const user = await db.getAsync(
-      'SELECT id, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
+      'SELECT id, username, email, phone, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
       username, username, username
     );
 
@@ -52,7 +52,10 @@ export async function authenticateUser(username, password) {
 
     return {
       success: true,
-      userId: user.id
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+      phone: user.phone
     };
   } catch (error) {
     console.error('认证失败:', error);

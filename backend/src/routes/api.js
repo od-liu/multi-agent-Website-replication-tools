@@ -48,7 +48,10 @@ router.post('/api/auth/login', async (req, res) => {
   if (result.success) {
     return res.status(200).json({
       success: true,
-      userId: result.userId
+      userId: result.userId,
+      username: result.username,
+      email: result.email,
+      phone: result.phone
     });
   } else {
     return res.status(401).json({
