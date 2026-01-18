@@ -38,6 +38,8 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [currentUsername, setCurrentUsername] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>('');
 
   // ========== Event Handlers ==========
   
@@ -48,8 +50,12 @@ const LoginPage: React.FC = () => {
   const handleLoginSuccess = (data: any) => {
     console.log('登录成功:', data);
     setCurrentUserId(data.userId);
-    // 临时保存 userId（验证成功后会持久化）
+    setCurrentUsername(data.username || '');
+    setCurrentName(data.name || '');
+    // 临时保存信息（验证成功后会持久化）
     sessionStorage.setItem('pendingUserId', String(data.userId));
+    sessionStorage.setItem('pendingUsername', data.username || '');
+    sessionStorage.setItem('pendingName', data.name || '');
     setShowSmsModal(true);
   };
 
@@ -63,12 +69,19 @@ const LoginPage: React.FC = () => {
     if (data.token) {
       localStorage.setItem('auth_token', data.token);
     }
-    // 保存 userId 到 localStorage（用于获取乘客列表等）
+    // 保存用户信息到 localStorage
     if (currentUserId) {
       localStorage.setItem('userId', String(currentUserId));
     }
+    // 保存用户名（显示在导航栏）- 优先使用真实姓名
+    const displayName = currentName || currentUsername;
+    if (displayName) {
+      localStorage.setItem('username', displayName);
+    }
     // 清除临时数据
     sessionStorage.removeItem('pendingUserId');
+    sessionStorage.removeItem('pendingUsername');
+    sessionStorage.removeItem('pendingName');
     // 关闭弹窗
     setShowSmsModal(false);
     // 跳转到首页

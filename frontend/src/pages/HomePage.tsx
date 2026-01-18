@@ -28,7 +28,8 @@
  * @background_color "#F5F5F5"
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import TrainSearchForm from '../components/TrainSearchForm/TrainSearchForm';
@@ -37,16 +38,51 @@ import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
+  
   // ========== State Management ==========
-  // 页面级别的状态管理（如果需要）
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // 从 localStorage 读取登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('userId');
+  });
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
+
+  // 监听 localStorage 变化（用于跨标签页同步）
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const userId = localStorage.getItem('userId');
+      const storedUsername = localStorage.getItem('username');
+      setIsLoggedIn(!!userId);
+      setUsername(storedUsername || '');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // 处理退出登录
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setUsername('');
+    // 可选：跳转到首页或刷新
+    navigate('/');
+  };
 
   // ========== Page Layout ==========
   return (
     <div className="home-page-container">
       {/* 顶部导航栏 */}
       <header className="home-header">
-        <HomeTopBar isLoggedIn={false} />
+        <HomeTopBar 
+          isLoggedIn={isLoggedIn} 
+          username={username}
+          onLogout={handleLogout}
+        />
         <SecondaryNav />
       </header>
 

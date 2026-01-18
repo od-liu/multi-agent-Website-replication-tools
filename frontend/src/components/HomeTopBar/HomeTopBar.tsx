@@ -207,13 +207,22 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
         {/* @scenario SCENARIO-003: 已登录显示用户名和退出按钮 */}
         {isLoggedIn ? (
           <>
-            <span className="home-top-username">欢迎，{username}</span>
-            <button 
-              className="home-top-auth-link logout" 
-              onClick={onLogout}
+            <span className="home-top-greeting">您好，</span>
+            <a href="#" className="home-top-link home-top-username-link" onClick={(e) => {
+              e.preventDefault();
+              handleMyAccount();
+            }}>{username}</a>
+            <span className="home-top-sep">|</span>
+            <a
+              href="#"
+              className="home-top-link home-top-auth-link-text"
+              onClick={(e) => {
+                e.preventDefault();
+                if (onLogout) onLogout();
+              }}
             >
               退出
-            </button>
+            </a>
           </>
         ) : (
           <>

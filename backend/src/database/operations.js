@@ -28,9 +28,9 @@ export async function authenticateUser(username, password) {
     const bcrypt = (await import('bcrypt')).default;
     const db = getDb();
 
-    // Query user (support username/email/phone)
+    // Query user (support username/email/phone) - 包含 name 和 username
     const user = await db.getAsync(
-      'SELECT id, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
+      'SELECT id, username, name, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
       username, username, username
     );
 
@@ -52,7 +52,9 @@ export async function authenticateUser(username, password) {
 
     return {
       success: true,
-      userId: user.id
+      userId: user.id,
+      username: user.username,
+      name: user.name
     };
   } catch (error) {
     console.error('认证失败:', error);
