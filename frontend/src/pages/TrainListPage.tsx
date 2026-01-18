@@ -240,7 +240,7 @@ const TrainListPage: React.FC = () => {
       />
 
       {/* @feature "整合主导航菜单" */}
-      <MainNavigation />
+      <MainNavigation activeItem="车票" />
 
       {/* 主内容区域 */}
       <div className="train-list-content">

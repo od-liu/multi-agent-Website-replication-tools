@@ -35,7 +35,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainNavigation.css';
 
-const MainNavigation: React.FC = () => {
+interface MainNavigationProps {
+  activeItem?: string; // 当前选中的菜单项，如 "首页", "车票" 等
+}
+
+const MainNavigation: React.FC<MainNavigationProps> = ({ activeItem }) => {
   const navigate = useNavigate();
 
   // ========== 导航菜单项配置 ==========
@@ -69,6 +73,7 @@ const MainNavigation: React.FC = () => {
           <a
             key={index}
             href={item.path}
+            className={item.label === activeItem ? 'active' : ''}
             onClick={(e) => {
               e.preventDefault();
               handleNavigate(item.path);

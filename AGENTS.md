@@ -1,4 +1,4 @@
-# UI 像素级调整 Agent System Prompt (v6 - 优先缺失/多余元素)
+# UI 像素级调整 Agent System Prompt
 
 ## Role
 

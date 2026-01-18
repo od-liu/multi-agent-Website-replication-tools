@@ -38,6 +38,12 @@
   text-decoration: underline !important;
 }
 
+/* 选中状态 */
+.main-navigation a.active {
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
 /* 下拉箭头 */
 .main-navigation .dropdown-arrow {
   font-size: 10px !important;
