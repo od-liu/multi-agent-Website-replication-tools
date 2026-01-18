@@ -123,7 +123,7 @@ const TrainListPage: React.FC = () => {
     
     // 调用 API 获取车次列表
     try {
-      const response = await fetch('http://localhost:3000/api/trains/search', {
+      const response = await fetch('http://localhost:5175/api/trains/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

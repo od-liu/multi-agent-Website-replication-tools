@@ -121,7 +121,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({ onSearch }) => {
     // 获取城市列表
     const fetchCities = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/trains/cities');
+        const response = await fetch('http://localhost:5175/api/trains/cities');
         const data = await response.json();
         if (data.success) {
           setCities(data.cities);
@@ -341,7 +341,7 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({ onSearch }) => {
       const startTime = Date.now();
       
       // 调用真实API
-      const response = await fetch('http://localhost:3000/api/trains/search', {
+      const response = await fetch('http://localhost:5175/api/trains/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
