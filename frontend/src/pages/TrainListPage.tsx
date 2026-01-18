@@ -232,15 +232,18 @@ const TrainListPage: React.FC = () => {
   // ========== UI Render ==========
   return (
     <div className="train-list-page">
-      {/* @feature "整合顶部导航栏" */}
-      <HomeTopBar 
-        isLoggedIn={isLoggedIn}
-        username={username}
-        onLogout={handleLogout}
-      />
+      {/* 顶部导航区域（白色背景） */}
+      <header className="train-list-header">
+        {/* @feature "整合顶部导航栏" */}
+        <HomeTopBar 
+          isLoggedIn={isLoggedIn}
+          username={username}
+          onLogout={handleLogout}
+        />
 
-      {/* @feature "整合主导航菜单" - 复用主页的SecondaryNav组件 */}
-      <SecondaryNav />
+        {/* @feature "整合主导航菜单" - 复用主页的SecondaryNav组件 */}
+        <SecondaryNav />
+      </header>
 
       {/* 主内容区域 */}
       <div className="train-list-content">
