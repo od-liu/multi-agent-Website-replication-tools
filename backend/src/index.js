@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import apiRoutes from './routes/api.js';
 import { initDatabase, insertDemoData } from './database/init_db.js';
+import { cleanupOldOrders } from './database/operations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -50,6 +51,32 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
+// 🆕 定时清理任务：每天凌晨3点执行一次清理30天前的订单
+function setupCleanupScheduler() {
+  const runCleanup = async () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    
+    // 每天凌晨3点执行清理
+    if (hour === 3 && minute === 0) {
+      console.log(`\n🧹 [定时任务] ${now.toISOString()} 开始执行订单清理任务`);
+      const result = await cleanupOldOrders();
+      
+      if (result.success) {
+        console.log(`✅ [定时任务] ${result.message}`);
+      } else {
+        console.error(`❌ [定时任务] ${result.message}`);
+      }
+    }
+  };
+  
+  // 每分钟检查一次是否到了清理时间
+  setInterval(runCleanup, 60 * 1000); // 60秒检查一次
+  
+  console.log('⏰ [定时任务] 订单清理任务已启动（每天凌晨3点执行）');
+}
+
 // Initialize database and start server
 (async () => {
   try {
@@ -63,6 +90,9 @@ app.use((err, req, res, next) => {
   
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    
+    // 🆕 启动定时清理任务
+    setupCleanupScheduler();
   });
 })();
 

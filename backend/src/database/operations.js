@@ -749,6 +749,16 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     const { getDb } = await import('./db.js');
     const db = getDb();
     
+    // 获取当前日期和时间
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
+    const currentTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
+    
+    console.log(`📅 当前时间: ${currentDate} ${currentTime}, 查询日期: ${departureDate}`);
+    
+    // 判断是否查询今天的车次
+    const isToday = departureDate === currentDate;
+    
     // 查询车次（连接trains、stations、cities表）
     let query = `
       SELECT 
@@ -773,6 +783,14 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     
     const params = [fromCity, toCity];
     
+    // 🆕 需求：查询结果应该只包含当前时间之后发车的车次
+    // 如果查询今天的车次，只返回还未发车的车次
+    if (isToday) {
+      query += ` AND t.departure_time > ?`;
+      params.push(currentTime);
+      console.log(`⏰ 查询今天的车次，过滤已发车的列车（发车时间 > ${currentTime}）`);
+    }
+    
     // 如果只查高铁/动车
     if (isHighSpeed) {
       query += ` AND (t.train_type = 'GC' OR t.train_type = 'D')`;
@@ -781,6 +799,11 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     query += ` ORDER BY t.departure_time`;
     
     const trains = await db.allAsync(query, ...params);
+    
+    console.log(`✅ 查询到 ${trains.length} 个车次`);
+    if (isToday && trains.length > 0) {
+      console.log(`🚄 最早车次: ${trains[0].train_number} ${trains[0].departure_time}`);
+    }
     
     if (!trains || trains.length === 0) {
       return {
@@ -1070,8 +1093,8 @@ export async function submitOrder(userId, orderData) {
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 生成订单ID
-    const orderId = `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // 生成订单编号和ID
+    const orderNumber = `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     // 计算订单总价
     const totalPrice = orderData.passengers.reduce((sum, p) => {
@@ -1082,21 +1105,54 @@ export async function submitOrder(userId, orderData) {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 20 * 60 * 1000); // 20分钟
     
-    // 1. 创建订单记录
-    await db.runAsync(`
-      INSERT INTO orders (
-        id, user_id, train_number, from_station, to_station,
-        departure_date, departure_time, arrival_time, total_price,
-        status, created_at, expires_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `,
-      orderId, userId, orderData.trainNumber, orderData.fromStation, orderData.toStation,
-      orderData.departureDate, orderData.departureTime, orderData.arrivalTime, totalPrice,
-      '已确认未支付', now.toISOString(), expiresAt.toISOString()
+    // 1. 根据车次号查询 train_id
+    const train = await db.getAsync(
+      'SELECT id FROM trains WHERE train_number = ?',
+      orderData.trainNumber
     );
     
-    // 2. 创建乘客订单记录并分配座位
+    if (!train) {
+      return {
+        success: false,
+        message: `车次 ${orderData.trainNumber} 不存在`
+      };
+    }
+    
+    // 2. 查询或创建 train_schedule
+    let schedule = await db.getAsync(
+      'SELECT id FROM train_schedules WHERE train_id = ? AND departure_date = ?',
+      train.id, orderData.departureDate
+    );
+    
+    if (!schedule) {
+      // 创建新的班次记录
+      const departureDateTime = `${orderData.departureDate}T${orderData.departureTime || '00:00:00'}`;
+      const arrivalDateTime = `${orderData.departureDate}T${orderData.arrivalTime || '23:59:59'}`;
+      
+      const scheduleResult = await db.runAsync(`
+        INSERT INTO train_schedules (
+          train_id, departure_date, departure_datetime, arrival_datetime, status
+        ) VALUES (?, ?, ?, ?, ?)
+      `, train.id, orderData.departureDate, departureDateTime, arrivalDateTime, 'scheduled');
+      
+      schedule = { id: scheduleResult.lastID };
+    }
+    
+    // 3. 创建订单记录（使用数据库实际的表结构）
+    const orderResult = await db.runAsync(`
+      INSERT INTO orders (
+        order_number, user_id, schedule_id, total_price,
+        status, created_at, expires_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `,
+      orderNumber, userId, schedule.id, totalPrice,
+      'unpaid', now.toISOString(), expiresAt.toISOString()
+    );
+    
+    const orderId = orderResult.lastID;
+    
+    // 4. 创建乘客订单记录并分配座位
     const seats = [];
     for (let idx = 0; idx < orderData.passengers.length; idx++) {
       const passenger = orderData.passengers[idx];
@@ -1126,7 +1182,8 @@ export async function submitOrder(userId, orderData) {
     
     return {
       success: true,
-      orderId,
+      orderId: String(orderId), // 返回数据库自动生成的ID
+      orderNumber, // 返回订单编号
       message: '订单提交成功',
       seats
     };
@@ -1151,27 +1208,39 @@ export async function submitOrder(userId, orderData) {
  */
 export async function getOrderPaymentInfo(orderId) {
   try {
+    console.log(`💰 [获取订单支付信息] orderId: ${orderId}`);
+    
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 获取订单基本信息
+    // 🔧 修正：通过 JOIN 获取订单完整信息
+    // orders 表只存储 schedule_id，需要 JOIN train_schedules 和 trains 表
     const order = await db.getAsync(`
       SELECT 
         o.id as orderId,
-        o.train_number as trainNumber,
-        o.departure_date as date,
-        o.from_station as fromStation,
-        o.to_station as toStation,
-        o.departure_time as departTime,
-        o.arrival_time as arriveTime,
+        o.order_number as orderNumber,
+        t.train_number as trainNumber,
+        ts.departure_date as date,
+        ds.station_name as fromStation,
+        as.station_name as toStation,
+        t.departure_time as departTime,
+        t.arrival_time as arriveTime,
         o.total_price as totalPrice,
         o.created_at as createdAt,
-        o.expires_at as expiresAt
+        o.expires_at as expiresAt,
+        o.status
       FROM orders o
-      WHERE o.id = ? AND o.status = '已确认未支付'
+      JOIN train_schedules ts ON o.schedule_id = ts.id
+      JOIN trains t ON ts.train_id = t.id
+      JOIN stations ds ON t.departure_station_id = ds.id
+      JOIN stations as ON t.arrival_station_id = as.id
+      WHERE o.id = ? AND o.status = 'unpaid'
     `, orderId);
     
+    console.log(`📦 [获取订单支付信息] 查询结果:`, order);
+    
     if (!order) {
+      console.log(`❌ [获取订单支付信息] 订单不存在或已失效`);
       return {
         success: false,
         message: '订单不存在或已失效'
@@ -1193,6 +1262,8 @@ export async function getOrderPaymentInfo(orderId) {
       WHERE op.order_id = ?
     `, orderId);
     
+    console.log(`👥 [获取订单支付信息] 乘客信息:`, passengers);
+    
     return {
       success: true,
       order: {
@@ -1201,7 +1272,7 @@ export async function getOrderPaymentInfo(orderId) {
       }
     };
   } catch (error) {
-    console.error('获取订单支付信息失败:', error);
+    console.error('❌ [获取订单支付信息失败]:', error);
     return {
       success: false,
       message: '获取订单信息失败'
@@ -1244,10 +1315,10 @@ export async function confirmPayment(orderId) {
     const expiresAt = new Date(order.expires_at);
     
     if (now > expiresAt) {
-      // 订单已超时,更新订单状态为已取消
+      // 🔧 修正：订单已超时,更新订单状态为已取消（使用英文状态值）
       await db.runAsync(`
         UPDATE orders 
-        SET status = '已取消'
+        SET status = 'cancelled'
         WHERE id = ?
       `, orderId);
       
@@ -1258,10 +1329,10 @@ export async function confirmPayment(orderId) {
       };
     }
     
-    // 更新订单状态为已支付
+    // 🔧 修正：更新订单状态为已支付（使用正确的字段名 payment_time）
     await db.runAsync(`
       UPDATE orders 
-      SET status = '已支付', paid_at = CURRENT_TIMESTAMP
+      SET status = 'paid', payment_method = '网上支付', payment_time = CURRENT_TIMESTAMP
       WHERE id = ?
     `, orderId);
     
@@ -1350,32 +1421,39 @@ export async function cancelOrder(orderId, userId) {
  */
 export async function getOrderSuccessInfo(orderId) {
   try {
+    console.log(`🎉 [获取购票成功信息] orderId: ${orderId}`);
+    
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 获取订单基本信息
+    // 🔧 修正：通过 JOIN 获取订单完整信息
     const order = await db.getAsync(`
       SELECT 
         o.id as orderId,
-        o.train_number as trainNumber,
-        o.departure_date as date,
-        o.from_station as fromStation,
-        o.to_station as toStation,
-        o.departure_time as departTime,
-        o.arrival_time as arriveTime
+        o.order_number as orderNumber,
+        t.train_number as trainNumber,
+        ts.departure_date as date,
+        ds.station_name as fromStation,
+        as.station_name as toStation,
+        t.departure_time as departTime,
+        t.arrival_time as arriveTime
       FROM orders o
-      WHERE o.id = ? AND o.status = '已支付'
+      JOIN train_schedules ts ON o.schedule_id = ts.id
+      JOIN trains t ON ts.train_id = t.id
+      JOIN stations ds ON t.departure_station_id = ds.id
+      JOIN stations as ON t.arrival_station_id = as.id
+      WHERE o.id = ? AND o.status = 'paid'
     `, orderId);
     
+    console.log(`📦 [获取购票成功信息] 查询结果:`, order);
+    
     if (!order) {
+      console.log(`❌ [获取购票成功信息] 订单不存在或未支付`);
       return {
         success: false,
         message: '订单不存在或未支付'
       };
     }
-    
-    // 生成订单号(格式: EA + 8位UUID前缀)
-    const orderNumber = `EA${orderId.substring(0, 8).toUpperCase()}`;
     
     // 获取乘客信息
     const passengers = await db.allAsync(`
@@ -1393,6 +1471,8 @@ export async function getOrderSuccessInfo(orderId) {
       WHERE op.order_id = ?
     `, orderId);
     
+    console.log(`👥 [获取购票成功信息] 乘客信息:`, passengers);
+    
     // 对证件号打码: 前4位+***+后3位
     const maskedPassengers = passengers.map(p => ({
       ...p,
@@ -1404,15 +1484,181 @@ export async function getOrderSuccessInfo(orderId) {
       success: true,
       order: {
         ...order,
-        orderNumber,
+        orderNumber: order.orderNumber, // 使用数据库中的 order_number
         passengers: maskedPassengers
       }
     };
   } catch (error) {
-    console.error('获取订单成功信息失败:', error);
+    console.error('❌ [获取订单成功信息失败]:', error);
     return {
       success: false,
       message: '获取订单信息失败'
+    };
+  }
+}
+
+/**
+ * @function FUNC-GET-USER-ORDERS
+ * @summary 获取用户订单列表（支持30天历史订单过滤）
+ * @param {number} userId - 用户ID
+ * @param {Object} options - 查询选项
+ * @param {string} options.status - 订单状态过滤（unpaid/paid/cancelled）
+ * @param {boolean} options.last30Days - 是否只查询30天内的订单（默认true）
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {Array} result.data - 订单列表
+ * @db_ops SELECT FROM orders, train_schedules, trains, stations
+ */
+export async function getUserOrders(userId, options = {}) {
+  try {
+    console.log(`📋 [获取用户订单列表] userId: ${userId}, options:`, options);
+    
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    // 解构选项
+    const { status, last30Days = true } = options;
+    
+    // 构建基础查询
+    let query = `
+      SELECT 
+        o.id as orderId,
+        o.order_number as orderNumber,
+        t.train_number as trainNumber,
+        ts.departure_date as date,
+        ds.station_name as fromStation,
+        as.station_name as toStation,
+        t.departure_time as departTime,
+        t.arrival_time as arriveTime,
+        o.total_price as totalPrice,
+        o.status,
+        o.created_at as createdAt,
+        o.expires_at as expiresAt,
+        o.payment_time as paymentTime
+      FROM orders o
+      JOIN train_schedules ts ON o.schedule_id = ts.id
+      JOIN trains t ON ts.train_id = t.id
+      JOIN stations ds ON t.departure_station_id = ds.id
+      JOIN stations as ON t.arrival_station_id = as.id
+      WHERE o.user_id = ?
+    `;
+    
+    const params = [userId];
+    
+    // 🆕 需求：个人账户需要存储用户30天内的历史订单
+    // 添加30天过滤条件
+    if (last30Days) {
+      query += ` AND o.created_at >= datetime('now', '-30 days')`;
+      console.log(`📅 [获取用户订单列表] 应用30天过滤`);
+    }
+    
+    // 添加状态过滤
+    if (status) {
+      query += ` AND o.status = ?`;
+      params.push(status);
+      console.log(`🏷️ [获取用户订单列表] 过滤状态: ${status}`);
+    }
+    
+    // 按创建时间降序排序（最新的在前）
+    query += ` ORDER BY o.created_at DESC`;
+    
+    const orders = await db.allAsync(query, ...params);
+    
+    console.log(`✅ [获取用户订单列表] 查询到 ${orders.length} 条订单`);
+    
+    // 获取每个订单的乘客信息
+    const ordersWithPassengers = await Promise.all(
+      orders.map(async (order) => {
+        const passengers = await db.allAsync(`
+          SELECT 
+            op.name,
+            op.id_type as idType,
+            op.id_number as idNumber,
+            op.ticket_type as ticketType,
+            op.seat_class as seatClass,
+            op.car_number as carNumber,
+            op.seat_number as seatNumber,
+            op.price
+          FROM order_passengers op
+          WHERE op.order_id = ?
+        `, order.orderId);
+        
+        return {
+          ...order,
+          passengers
+        };
+      })
+    );
+    
+    return {
+      success: true,
+      data: ordersWithPassengers
+    };
+  } catch (error) {
+    console.error('❌ [获取用户订单列表失败]:', error);
+    return {
+      success: false,
+      message: '获取订单列表失败'
+    };
+  }
+}
+
+/**
+ * @function FUNC-CLEANUP-OLD-ORDERS
+ * @summary 定时清理30天前的订单（定时任务）
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {number} result.deletedCount - 删除的订单数量
+ * @db_ops DELETE FROM orders, order_passengers
+ */
+export async function cleanupOldOrders() {
+  try {
+    console.log(`🧹 [定时清理] 开始清理30天前的订单`);
+    
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    // 查询30天前的订单ID
+    const oldOrders = await db.allAsync(`
+      SELECT id 
+      FROM orders 
+      WHERE created_at < datetime('now', '-30 days')
+    `);
+    
+    if (oldOrders.length === 0) {
+      console.log(`✅ [定时清理] 没有需要清理的订单`);
+      return {
+        success: true,
+        deletedCount: 0,
+        message: '没有需要清理的订单'
+      };
+    }
+    
+    console.log(`📦 [定时清理] 找到 ${oldOrders.length} 条需要清理的订单`);
+    
+    // 删除订单乘客记录
+    for (const order of oldOrders) {
+      await db.runAsync('DELETE FROM order_passengers WHERE order_id = ?', order.id);
+    }
+    
+    // 删除订单
+    const result = await db.runAsync(`
+      DELETE FROM orders 
+      WHERE created_at < datetime('now', '-30 days')
+    `);
+    
+    console.log(`✅ [定时清理] 成功清理 ${oldOrders.length} 条订单`);
+    
+    return {
+      success: true,
+      deletedCount: oldOrders.length,
+      message: `成功清理 ${oldOrders.length} 条30天前的订单`
+    };
+  } catch (error) {
+    console.error('❌ [定时清理失败]:', error);
+    return {
+      success: false,
+      message: '清理订单失败'
     };
   }
 }

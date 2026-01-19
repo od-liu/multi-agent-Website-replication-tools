@@ -25,7 +25,8 @@ import {
   cancelOrder,
   getOrderSuccessInfo,
   getPersonalInfo,
-  verifyPassword
+  verifyPassword,
+  getUserOrders
 } from '../database/operations.js';
 
 const router = express.Router();
@@ -532,6 +533,55 @@ router.get('/api/passengers', async (req, res) => {
     return res.status(500).json({
       success: false,
       message: '获取乘客列表失败'
+    });
+  }
+});
+
+/**
+ * @api API-GET-USER-ORDERS GET /api/orders
+ * @summary 获取用户订单列表（支持30天历史订单过滤）
+ * @param {string} query.status - 订单状态过滤（可选：unpaid/paid/cancelled）
+ * @param {string} query.last30Days - 是否只查询30天内订单（默认true）
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {Array} response.data - 订单列表
+ * @calls FUNC-GET-USER-ORDERS - 委托给订单查询函数
+ */
+router.get('/api/orders', async (req, res) => {
+  try {
+    // 从请求头获取用户ID
+    const userId = req.headers['x-user-id'];
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: '未登录或用户信息缺失'
+      });
+    }
+    
+    // 解析查询参数
+    const { status, last30Days } = req.query;
+    const options = {
+      status: status || undefined,
+      last30Days: last30Days === 'false' ? false : true // 默认为true
+    };
+    
+    console.log(`📋 [订单列表API] 用户 ${userId} 查询订单, 选项:`, options);
+    
+    // 调用 FUNC-GET-USER-ORDERS
+    const result = await getUserOrders(userId, options);
+    
+    if (result.success) {
+      console.log(`✅ [订单列表API] 返回 ${result.data.length} 条订单`);
+      return res.status(200).json(result);
+    } else {
+      return res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error('❌ [订单列表API] 错误:', error);
+    return res.status(500).json({
+      success: false,
+      message: '获取订单列表失败'
     });
   }
 });
