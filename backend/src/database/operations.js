@@ -1215,6 +1215,7 @@ export async function getOrderPaymentInfo(orderId) {
     
     // 🔧 修正：通过 JOIN 获取订单完整信息
     // orders 表只存储 schedule_id，需要 JOIN train_schedules 和 trains 表
+    // ⚠️ 注意：不能使用 'as' 作为表别名，因为它是 SQL 保留字
     const order = await db.getAsync(`
       SELECT 
         o.id as orderId,
@@ -1222,7 +1223,7 @@ export async function getOrderPaymentInfo(orderId) {
         t.train_number as trainNumber,
         ts.departure_date as date,
         ds.station_name as fromStation,
-        as.station_name as toStation,
+        arr_s.station_name as toStation,
         t.departure_time as departTime,
         t.arrival_time as arriveTime,
         o.total_price as totalPrice,
@@ -1233,7 +1234,7 @@ export async function getOrderPaymentInfo(orderId) {
       JOIN train_schedules ts ON o.schedule_id = ts.id
       JOIN trains t ON ts.train_id = t.id
       JOIN stations ds ON t.departure_station_id = ds.id
-      JOIN stations as ON t.arrival_station_id = as.id
+      JOIN stations arr_s ON t.arrival_station_id = arr_s.id
       WHERE o.id = ? AND o.status = 'unpaid'
     `, orderId);
     
@@ -1427,6 +1428,7 @@ export async function getOrderSuccessInfo(orderId) {
     const db = getDb();
     
     // 🔧 修正：通过 JOIN 获取订单完整信息
+    // ⚠️ 注意：不能使用 'as' 作为表别名，因为它是 SQL 保留字
     const order = await db.getAsync(`
       SELECT 
         o.id as orderId,
@@ -1434,14 +1436,14 @@ export async function getOrderSuccessInfo(orderId) {
         t.train_number as trainNumber,
         ts.departure_date as date,
         ds.station_name as fromStation,
-        as.station_name as toStation,
+        arr_s.station_name as toStation,
         t.departure_time as departTime,
         t.arrival_time as arriveTime
       FROM orders o
       JOIN train_schedules ts ON o.schedule_id = ts.id
       JOIN trains t ON ts.train_id = t.id
       JOIN stations ds ON t.departure_station_id = ds.id
-      JOIN stations as ON t.arrival_station_id = as.id
+      JOIN stations arr_s ON t.arrival_station_id = arr_s.id
       WHERE o.id = ? AND o.status = 'paid'
     `, orderId);
     
@@ -1520,6 +1522,7 @@ export async function getUserOrders(userId, options = {}) {
     const { status, last30Days = true } = options;
     
     // 构建基础查询
+    // ⚠️ 注意：不能使用 'as' 作为表别名，因为它是 SQL 保留字
     let query = `
       SELECT 
         o.id as orderId,
@@ -1527,7 +1530,7 @@ export async function getUserOrders(userId, options = {}) {
         t.train_number as trainNumber,
         ts.departure_date as date,
         ds.station_name as fromStation,
-        as.station_name as toStation,
+        arr_s.station_name as toStation,
         t.departure_time as departTime,
         t.arrival_time as arriveTime,
         o.total_price as totalPrice,
@@ -1539,7 +1542,7 @@ export async function getUserOrders(userId, options = {}) {
       JOIN train_schedules ts ON o.schedule_id = ts.id
       JOIN trains t ON ts.train_id = t.id
       JOIN stations ds ON t.departure_station_id = ds.id
-      JOIN stations as ON t.arrival_station_id = as.id
+      JOIN stations arr_s ON t.arrival_station_id = arr_s.id
       WHERE o.user_id = ?
     `;
     
