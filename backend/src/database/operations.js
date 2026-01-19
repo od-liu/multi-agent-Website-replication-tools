@@ -743,11 +743,14 @@ export async function verifyRegistrationCode(phoneNumber, code) {
  * @db_ops SELECT on trains, stations
  */
 export async function searchTrains(fromCity, toCity, departureDate, isStudent = false, isHighSpeed = false) {
+  const startTime = performance.now();
   try {
     console.log(`🔍 查询车票: ${fromCity} → ${toCity}, 日期: ${departureDate}, 学生票: ${isStudent}, 高铁/动车: ${isHighSpeed}`);
     
     const { getDb } = await import('./db.js');
     const db = getDb();
+    const t1 = performance.now();
+    console.log(`⏱️  [1] 获取DB连接: ${(t1 - startTime).toFixed(2)}ms`);
     
     // 获取当前日期和时间
     const now = new Date();
@@ -798,7 +801,10 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     
     query += ` ORDER BY t.departure_time`;
     
+    const t2 = performance.now();
     const trains = await db.allAsync(query, ...params);
+    const t3 = performance.now();
+    console.log(`⏱️  [2] 查询车次: ${(t3 - t2).toFixed(2)}ms`);
     
     console.log(`✅ 查询到 ${trains.length} 个车次`);
     if (isToday && trains.length > 0) {
@@ -813,6 +819,7 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     }
     
     // 🚀 性能优化：批量查询所有车次的座位信息（一次查询，而非循环查询）
+    const t4 = performance.now();
     const trainIds = trains.map(t => t.train_id);
     const placeholders = trainIds.map(() => '?').join(',');
     
@@ -821,6 +828,8 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
       FROM train_seats
       WHERE train_id IN (${placeholders})
     `, ...trainIds);
+    const t5 = performance.now();
+    console.log(`⏱️  [3] 查询座位（批量）: ${(t5 - t4).toFixed(2)}ms`);
     
     // 按 train_id 分组座位信息
     const seatsByTrainId = {};
@@ -870,6 +879,10 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         supportsStudent: true
       };
     });
+    
+    const endTime = performance.now();
+    const totalTime = (endTime - startTime).toFixed(2);
+    console.log(`✅ 查询完成，总耗时: ${totalTime}ms`);
     
     return {
       success: true,
