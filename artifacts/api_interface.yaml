@@ -88,3 +88,40 @@ API-SUBMIT-ORDER:
   signature: POST /api/orders/submit
   downstream_ids:
     - FUNC-SUBMIT-ORDER
+API-GET-PERSONAL-INFO:
+  related_req_id: REQ-PERSONAL-INFO-TAB
+  path: backend/src/routes/api.js
+  signature: GET /api/personal-info
+  upstream_ids:
+    - UI-PERSONAL-INFO-TAB
+  downstream_ids:
+    - FUNC-GET-PERSONAL-INFO
+API-UPDATE-CONTACT-INFO:
+  related_req_id: REQ-PERSONAL-INFO-TAB
+  path: backend/src/routes/api.js
+  signature: PUT /api/personal-info/contact
+  upstream_ids:
+    - UI-PERSONAL-INFO-TAB
+  downstream_ids:
+    - FUNC-UPDATE-CONTACT-INFO
+API-ADD-PASSENGER:
+  related_req_id: REQ-PASSENGER-MANAGE-TAB
+  path: backend/src/routes/api.js
+  signature: POST /api/passengers
+  upstream_ids:
+    - UI-PASSENGER-MANAGE-PANEL
+  downstream_ids: []
+API-UPDATE-PASSENGER:
+  related_req_id: REQ-PASSENGER-MANAGE-TAB
+  path: backend/src/routes/api.js
+  signature: PUT /api/passengers/:id
+  upstream_ids:
+    - UI-PASSENGER-MANAGE-PANEL
+  downstream_ids: []
+API-DELETE-PASSENGER:
+  related_req_id: REQ-PASSENGER-MANAGE-TAB
+  path: backend/src/routes/api.js
+  signature: DELETE /api/passengers/:id
+  upstream_ids:
+    - UI-PASSENGER-MANAGE-PANEL
+  downstream_ids: []

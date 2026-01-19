@@ -1,0 +1,164 @@
+/* ========== 表单容器 ========== */
+.passenger-form-container {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: white;
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #3B99FC;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* ========== 表单行 ========== */
+.form-content {
+  margin-bottom: 30px;
+}
+
+.form-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  width: 250px;
+  padding-top: 10px;
+  font-size: 15px;
+  color: #333;
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.required-mark {
+  color: #ff4d4f;
+  margin-right: 4px;
+  font-weight: bold;
+}
+
+.form-input-wrapper {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  max-width: 400px;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: #3B99FC;
+}
+
+.form-input.error {
+  border-color: #E60000;
+}
+
+.form-error {
+  font-size: 12px;
+  color: #E60000;
+  margin-top: 5px;
+}
+
+.form-select {
+  cursor: pointer;
+  background-color: white;
+}
+
+/* ========== 编辑表单-只读信息 ========== */
+.edit-basic-info-section {
+  padding: 0;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.edit-info-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.edit-info-label {
+  width: 250px;
+  padding-top: 10px;
+  font-size: 15px;
+  color: #333;
+  text-align: right;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 20px;
+}
+
+.edit-info-value {
+  flex: 1;
+  margin-left: 10px;
+  padding-top: 10px;
+  font-size: 14px;
+  color: #333;
+  line-height: 20px;
+}
+
+.edit-verification-status {
+  color: #3b99fc;
+  font-weight: 500;
+}
+
+/* ========== 按钮 ========== */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding-top: 30px;
+  border-top: 1px solid #E0E0E0;
+}
+
+.form-btn {
+  padding: 10px 40px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form-btn-cancel {
+  color: #666;
+  background-color: #F5F5F5;
+}
+
+.form-btn-cancel:hover {
+  background-color: #E0E0E0;
+}
+
+.form-btn-submit {
+  color: white;
+  background-color: #FF6600;
+}
+
+.form-btn-submit:hover {
+  background-color: #FF8833;
+}

@@ -1,0 +1,196 @@
+/* ========== 弹窗遮罩 ========== */
+.phone-verify-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ========== 弹窗容器 ========== */
+.phone-verify-modal {
+  width: 90%;
+  max-width: 500px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* ========== 标题栏 ========== */
+.phone-verify-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #42a5f5, #2196f3);
+  border-radius: 8px 8px 0 0;
+}
+
+.phone-verify-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.phone-verify-modal-close {
+  width: 30px;
+  height: 30px;
+  font-size: 28px;
+  color: rgba(255, 255, 255, 0.8);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.3s;
+}
+
+.phone-verify-modal-close:hover {
+  color: white;
+}
+
+/* ========== 内容区域 ========== */
+.phone-verify-modal-content {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.phone-verify-modal-hint {
+  font-size: 16px;
+  color: #666;
+  margin-top: 5px;
+  margin-bottom: 25px;
+}
+
+/* ========== 表单组 ========== */
+.phone-verify-form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.phone-verify-label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.required-mark {
+  color: #E60000;
+  margin-right: 2px;
+}
+
+.phone-verify-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.phone-verify-input:focus {
+  border-color: #2196f3;
+}
+
+.phone-verify-input.error {
+  border-color: #E60000;
+}
+
+.phone-verify-error {
+  font-size: 12px;
+  color: #E60000;
+  margin-top: 5px;
+}
+
+/* ========== 验证码输入组 ========== */
+.phone-verify-code-group {
+  display: flex;
+  align-items: center;
+  padding: 0px 50px 10px 50px;
+}
+
+.phone-verify-label-inline {
+  min-width: 80px;
+  font-size: 16px;
+  color: #666;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.phone-verify-code-input {
+  flex: 1;
+  height: 44px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.phone-verify-code-input:focus {
+  border-color: #2196f3;
+}
+
+.phone-verify-code-input.error {
+  border-color: #E60000;
+}
+
+/* ========== 底部按钮区域 ========== */
+.phone-verify-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.phone-verify-btn-secondary {
+  padding: 10px 30px;
+  font-size: 14px;
+  color: #666;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.phone-verify-btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.phone-verify-btn-primary {
+  padding: 10px 30px;
+  font-size: 14px;
+  color: white;
+  background-color: #ff9800;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.phone-verify-btn-primary:hover {
+  background-color: #f57c00;
+}
+
+.phone-verify-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

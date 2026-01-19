@@ -37,6 +37,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import MainNavigation from '../components/MainNavigation/MainNavigation';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
@@ -72,6 +73,7 @@ interface OrderSuccessInfo {
 const PurchaseSuccessPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
+  const { isLoggedIn, username, handleLogout } = useAuth();
 
   // ========== State Management ==========
   const [orderInfo, setOrderInfo] = useState<OrderSuccessInfo | null>(null);
@@ -94,7 +96,7 @@ const PurchaseSuccessPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5175/api/orders/${orderId}/success`, {
+        const response = await fetch(`/api/orders/${orderId}/success`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -158,7 +160,7 @@ const PurchaseSuccessPage: React.FC = () => {
   if (loading) {
     return (
       <div className="purchase-success-page">
-        <HomeTopBar />
+        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
         <MainNavigation />
         <div className="success-loading">加载中...</div>
       </div>
@@ -172,7 +174,7 @@ const PurchaseSuccessPage: React.FC = () => {
   return (
     <div className="purchase-success-page">
       {/* 顶部导航 - 复用共享组件 */}
-      <HomeTopBar />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
       <MainNavigation />
 
       {/* 主内容区 */}

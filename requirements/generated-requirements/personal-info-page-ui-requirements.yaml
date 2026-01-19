@@ -1,12 +1,6 @@
-# 个人信息页初始需求文档
-# 这是提供给 UI Analyzer Agent 的输入文档
-# Agent 会自动获取截图、图片资源和交互场景截图
-
-# ⚠️ 使用说明：
-# 1. 如果某个组件需要交互场景截图，请在 description 中添加 "**交互场景截图**:" 字段
-# 2. 如果交互场景需要登录凭证，请在 "**登录凭证**:" 中填写或引用环境变量
-# 3. Agent 会按照 steps 中定义的步骤自动执行交互并截图
-# 4. 支持的 action 类型: type, click, wait, wait_for_element, screenshot, evaluate 等
+# 个人信息页 - UI需求文档（完整版）
+# 由 UI Analyzer Agent 自动生成
+# 生成日期：2026-01-19
 
 - id: REQ-PERSONAL-INFO-PAGE
   name: 个人信息页
@@ -14,7 +8,6 @@
     用户登录后的个人中心页面，包含个人信息管理、乘客管理和订单管理。
     
     **网站地址**: http://localhost:5173/personal-info (需要先登录)
-    **页面宽度参考**: 1920px
     **页面标识**: personal-info
     
     **访问方式**:
@@ -36,6 +29,81 @@
     - 管理乘车人信息（查看、添加、编辑、删除）
     - 查看订单历史（未完成订单、未出行订单、历史订单）
     - 查看订单详情
+    
+    --- 以下是 UI Analyzer 添加的详细分析 ---
+    
+    **🆕 页面尺寸参考**（从实际DOM获取）:
+    - 页面宽度: 1512px（实际浏览器视口宽度）
+    - 页面高度: 1148px
+    - viewport meta: width=device-width, initial-scale=1.0
+    
+    **🆕 整体布局分析**:
+    
+    ```
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    顶部导航栏 (84px高)                        │
+    │  Logo | 搜索框 | 无障碍 敬老版 English | 您好，用户名 | 退出   │
+    ├─────────────────────────────────────────────────────────────┤
+    │                    主导航栏 (46px高)                          │
+    │  首页 | 车票 ▼ | 团购服务 ▼ | 会员服务 ▼ | ...                │
+    ├─────────────────────────────────────────────────────────────┤
+    │  当前位置：个人中心 > 查看个人信息                             │
+    ├──────────────┬──────────────────────────────────────────────┤
+    │              │                                              │
+    │  侧边栏菜单   │          主内容区域                           │
+    │  (220px宽)   │        (980px宽)                             │
+    │              │                                              │
+    │  个人中心     │    [基本信息]                                 │
+    │  订单中心 ▼   │    用户名、姓名、证件等                         │
+    │  本人车票     │                                              │
+    │  会员中心     │    [联系方式]  [编辑按钮]                      │
+    │  个人信息 ▼   │    手机号、邮箱                                │
+    │  常用信息管理▼│                                              │
+    │  温馨服务     │    [附加信息]  [编辑按钮]                      │
+    │  投诉和建议   │    优惠类型                                    │
+    │              │                                              │
+    ├──────────────┴──────────────────────────────────────────────┤
+    │                    底部导航 (197px高)                         │
+    │  友情链接(4个) | 二维码(4个) | 版权信息                        │
+    └─────────────────────────────────────────────────────────────┘
+    ```
+    
+    **🆕 颜色体系**（从实际页面提取）:
+    
+    **主题色**:
+    - 主蓝色: `rgb(59, 153, 252)` (#3B99FC) - 主导航栏背景、选中菜单项
+    - 深蓝色: `rgb(38, 118, 227)` (#2676E3) - 链接hover状态
+    - 浅蓝色: `rgb(42, 136, 235)` (#2A88EB) - 边框颜色
+    
+    **文本颜色**:
+    - 主文本: `rgb(33, 53, 71)` (#213547) - 深灰色，正文文本
+    - 次要文本: `rgb(51, 51, 51)` (#333333) - 标题文本
+    - 灰色文本: `rgb(85, 85, 85)` (#555555) - 按钮文本
+    
+    **状态颜色**:
+    - 必填标记: `rgb(230, 0, 0)` (#E60000) - 红色星号
+    - 核验状态: `rgb(255, 152, 0)` (#FF9800) - 橙色"已通过"
+    - 成功绿色: 未在当前页面使用
+    - 错误红色: `rgb(230, 0, 0)` (#E60000)
+    
+    **背景和边框**:
+    - 页面背景: `rgb(255, 255, 255)` (#FFFFFF) - 白色
+    - 底部背景: `rgb(245, 245, 245)` (#F5F5F5) - 浅灰色
+    - 边框颜色: `rgb(224, 224, 224)` (#E0E0E0) - 浅灰色边框
+    
+    **网页资源清单**（已下载到 requirements/images/personal-info-page/）:
+    - logo.png (2.9KB) - 55×63px，显示为60×60px
+    - search.svg (840B) - 搜索图标，显示为30×30px
+    - 友情链接-左上.png (9.0KB) - 300×51px，显示为176×30px
+    - 友情链接-右上.png (17KB) - 400×68px，显示为176×30px
+    - 友情链接-左下.png (19KB) - 800×136px，显示为176×30px
+    - 友情链接-右下.png (16KB) - 400×68px，显示为176×30px
+    - 中国铁路官方微信二维码.png (29KB) - 344×344px，显示为80×80px
+    - 中国铁路官方微博二维码.png (156KB) - 800×800px，显示为80×80px
+    - 12306公众号二维码.png (31KB) - 258×258px，显示为80×80px
+    - 铁路12306二维码.png (36KB) - 258×258px，显示为80×80px
+    
+    参考图片: "./images/personal-info-page/整体页面截图/个人信息页.png"
   
   dependencies:
     - REQ-LOGIN-PAGE
@@ -56,6 +124,157 @@
         - 显示主导航菜单
         - 显示用户名和退出按钮（已登录状态）
         - Logo点击返回首页
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: body直接子元素
+        - 位置: 页面最顶部，x: 106px, y: 0px
+        - 尺寸: 1300px × 84px（从DOM测量）
+        - 布局: flex (display: flex)
+        
+        **🆕 HTML结构**（基于实际HTML源代码）:
+        
+        > ⚠️ 以下是从浏览器读取的实际HTML结构
+        
+        ```html
+        <div class="train-list-top-container" id="ui-header-top">
+          <div class="train-list-logo-section">
+            <img src="/images/logo.png" alt="中国铁路12306" class="train-list-logo-image">
+            <div class="train-list-logo-text">
+              <div class="train-list-logo-chinese">中国铁路12306</div>
+              <div class="train-list-logo-english">12306 CHINA RAILWAY</div>
+            </div>
+          </div>
+          
+          <div class="train-list-search-box">
+            <input type="text" class="train-list-search-input" 
+                   placeholder="搜索车票、餐饮、常旅客、相关规章">
+            <button class="train-list-search-button">
+              <img src="/images/search.svg" alt="搜索" class="train-list-search-icon">
+            </button>
+          </div>
+          
+          <div class="train-list-top-links">
+            <a href="#" class="train-list-top-link">无障碍</a>
+            <a href="#" class="train-list-top-link">敬老版</a>
+            <a href="#" class="train-list-top-link">English</a>
+            <a href="#" class="train-list-top-link">我的12306</a>
+            <span class="train-list-welcome-text">您好，</span>
+            <span class="train-list-username">刘嘉敏</span>
+            <span class="train-list-divider">|</span>
+            <button class="train-list-logout-button">退出</button>
+          </div>
+        </div>
+        ```
+        
+        **🆕 文本内容清单**（从HTML提取）:
+        
+        > 📝 以下是组件中所有实际的文本内容
+        
+        - "中国铁路12306" - Logo中文名称
+        - "12306 CHINA RAILWAY" - Logo英文名称
+        - "搜索车票、餐饮、常旅客、相关规章" - 搜索框placeholder
+        - "无障碍" - 顶部链接
+        - "敬老版" - 顶部链接
+        - "English" - 顶部链接
+        - "我的12306" - 顶部链接
+        - "您好，" - 欢迎文本
+        - "刘嘉敏" - 用户名（动态内容）
+        - "|" - 分隔符
+        - "退出" - 退出按钮
+        
+        **🆕 样式信息**（从computedStyles提取）:
+        
+        - 容器布局: `display: flex`, `flex-direction: row`
+        - 对齐方式: `justify-content: space-between`, `align-items: center`
+        - 内边距: `padding: 12px 40px`
+        - 外边距: `margin: 0px 106px`
+        - 高度: `height: 84px`
+        - 背景色: 透明
+        
+        **实现说明**:
+        
+        1. `.train-list-top-container` - 顶部导航容器
+           - HTML标签: `<div>`
+           - 实现方式: Flexbox布局，三列分布
+           - 布局: flex容器，justify-content: space-between
+        
+        2. `.train-list-logo-section` - Logo区域
+           - 包含: logo图片 + 中英文文字
+           - Logo图片: 60×60px（固定尺寸）
+        
+        3. `.train-list-search-box` - 搜索框区域
+           - 包含: 文本输入框 + 搜索按钮
+           - 搜索图标: 30×30px
+        
+        4. `.train-list-top-links` - 右侧链接区域
+           - 包含: 4个文字链接 + 欢迎文字 + 用户名 + 退出按钮
+        
+        **网页资源**:
+        - Logo: "/images/logo.png"
+          * 实现方式: `<img>` 标签
+          * 原始尺寸: 55×63px
+          * 显示尺寸: 60×60px
+          * CSS策略: 固定尺寸 width: 60px, height: 60px
+        
+        - 搜索图标: "/images/search.svg"
+          * 实现方式: `<img>` 标签
+          * 原始尺寸: 200×200px
+          * 显示尺寸: 30×30px
+          * CSS策略: 固定尺寸 width: 30px, height: 30px
+        
+        参考图片: "./images/personal-info-page/组件特写截图/顶部导航栏.png"
+      
+      dependencies: []
+      scenarios: []
+      children: []
+    
+    - id: REQ-MAIN-NAV
+      name: 主导航栏
+      description: |
+        页面的主导航菜单栏，包含首页、车票等主要功能入口。
+        
+        **需要截图**: 否（包含在顶部导航栏截图中）
+        **组件定位**: 顶部导航栏下方，蓝色背景区域
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: body直接子元素
+        - 位置: 顶部导航栏下方，x: 0px, y: 85px
+        - 尺寸: 1512px × 46px（全宽）
+        - 布局: block
+        
+        **🆕 HTML结构**:
+        
+        ```html
+        <nav class="main-navigation">
+          <div class="nav-container">
+            <a class="nav-item" href="/">首页</a>
+            <a class="nav-item active" href="/trains">车票 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">团购服务 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">会员服务 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">站车服务 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">商旅服务 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">出行指南 <span class="nav-arrow">▼</span></a>
+            <a href="#" class="nav-item">信息查询 <span class="nav-arrow">▼</span></a>
+          </div>
+        </nav>
+        ```
+        
+        **🆕 样式信息**:
+        
+        - 背景色: `rgb(59, 153, 252)` (#3B99FC) - 主题蓝色
+        - 高度: 46px
+        - 文字颜色: 白色
+        - 选中项背景: `rgb(38, 118, 227)` (深蓝色)
+        
+        **实现说明**:
+        - 使用 `<nav>` 语义化标签
+        - 内部 flex 布局，横向排列菜单项
+        - `.active` 类表示当前选中项
+        - 下拉箭头使用 `<span>` 标签，内容为 "▼"
       
       dependencies: []
       scenarios: []
@@ -82,6 +301,114 @@
           * 投诉和建议
         - 当前选中菜单项高亮
         - 点击菜单项切换右侧内容
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .main-content
+        - 位置: 面包屑导航下方，左侧，x: 156px, y: 175px
+        - 尺寸: 220px × 777px
+        - 布局: block
+        
+        **🆕 HTML结构**（简化版，保留关键信息）:
+        
+        ```html
+        <div class="side-menu">
+          <div class="menu-header">个人中心</div>
+          
+          <div class="menu-section">
+            <div class="menu-title">
+              订单中心
+              <span class="menu-toggle">
+                <svg><!-- 下拉图标 SVG --></svg>
+              </span>
+            </div>
+            <div class="menu-items">
+              <div class="menu-item">火车票订单</div>
+              <div class="menu-item disabled">候补订单</div>
+              <!-- ... 更多子菜单项 -->
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title-simple">本人车票</div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title-simple">会员中心</div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title">
+              个人信息
+              <span class="menu-toggle"><!-- 下拉图标 --></span>
+            </div>
+            <div class="menu-items">
+              <div class="menu-item selected">查看个人信息</div>
+              <div class="menu-item disabled">账号安全</div>
+              <div class="menu-item">手机核验</div>
+              <div class="menu-item disabled">账号注销</div>
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title">
+              常用信息管理
+              <span class="menu-toggle"><!-- 下拉图标 --></span>
+            </div>
+            <div class="menu-items">
+              <div class="menu-item">乘车人</div>
+              <div class="menu-item disabled">地址管理</div>
+            </div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title">温馨服务</div>
+          </div>
+          
+          <div class="menu-section">
+            <div class="menu-title">投诉和建议</div>
+          </div>
+        </div>
+        ```
+        
+        **🆕 样式信息**:
+        
+        - 宽度: 220px（固定）
+        - 背景色: 白色
+        - 右侧内边距: 20px
+        - 菜单标题: 黑色文字，可点击展开/收起
+        - 选中菜单项: 蓝色背景(#3B99FC)，白色文字
+        - 禁用菜单项: 灰色文字，不可点击
+        
+        **实现说明**:
+        
+        1. `.side-menu` - 侧边栏容器
+           - 固定宽度220px
+           - 垂直布局
+        
+        2. `.menu-header` - "个人中心"标题
+           - 顶部标题，加粗显示
+        
+        3. `.menu-section` - 菜单分组
+           - 包含一个菜单标题和可选的子菜单项
+        
+        4. `.menu-title` - 可展开的菜单标题
+           - 包含SVG下拉图标
+           - 点击展开/收起子菜单
+        
+        5. `.menu-title-simple` - 不可展开的菜单标题
+           - 无子菜单的简单菜单项
+        
+        6. `.menu-item.selected` - 选中的菜单项
+           - 背景: `rgb(59, 153, 252)` (#3B99FC)
+           - 文字: 白色
+        
+        7. `.menu-item.disabled` - 禁用的菜单项
+           - 文字: 灰色
+           - 不响应点击事件
+        
+        参考图片: "./images/personal-info-page/组件特写截图/侧边栏菜单.png"
       
       dependencies: []
       scenarios: []
@@ -105,7 +432,162 @@
         - 显示邮箱（可修改）
         - 提供"编辑"或"保存"按钮
         - 编辑模式下可跳转到手机核验Tab
-        - 保存时进行格式验证          
+        - 保存时进行格式验证
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: .content-area
+        - 位置: 侧边栏右侧，x: 376px, y: 175px
+        - 尺寸: 980px × 777px
+        - 布局: flex, flex-direction: column
+        
+        **🆕 HTML结构**（简化版）:
+        
+        ```html
+        <div class="personal-info-panel" id="ui-personal-info-content">
+          <!-- 基本信息部分 -->
+          <div class="basic-info-section">
+            <h3 class="section-title">基本信息</h3>
+            <div class="info-content">
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>用户名：
+                </span>
+                <span class="info-value">od12322</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>姓名：
+                </span>
+                <span class="info-value">刘嘉敏</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">国家/地区：</span>
+                <span class="info-value">中国China</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>证件类型：
+                </span>
+                <span class="info-value">居民身份证</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>证件号码：
+                </span>
+                <span class="info-value">3301***********028</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">核验状态：</span>
+                <span class="info-value verification-status">已通过</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 联系方式部分 -->
+          <div class="contact-info-section">
+            <div class="section-header">
+              <h3 class="section-title">联系方式</h3>
+              <button class="edit-button">编辑</button>
+            </div>
+            <div class="info-content">
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>手机号：
+                </span>
+                <div class="info-value-group">
+                  <span class="info-value">(+86) 198****9256</span>
+                  <span class="verification-status">已通过核验</span>
+                </div>
+              </div>
+              <div class="info-row">
+                <span class="info-label">邮箱：</span>
+                <span class="info-value">3279882704@qq.com</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 附加信息部分 -->
+          <div class="additional-info-section">
+            <div class="section-header">
+              <h3 class="section-title">附加信息</h3>
+              <button class="edit-button">编辑</button>
+            </div>
+            <div class="info-content">
+              <div class="info-row">
+                <span class="info-label">
+                  <span class="required-mark">* </span>优惠(待)类型：
+                </span>
+                <span class="info-value">成人</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        ```
+        
+        **🆕 文本内容清单**:
+        
+        - "基本信息" - section标题
+        - "*" - 必填标记（红色）
+        - "用户名：" - 字段标签
+        - "od12322" - 用户名值（动态内容）
+        - "姓名：" - 字段标签
+        - "刘嘉敏" - 姓名值（动态内容）
+        - "国家/地区：" - 字段标签
+        - "中国China" - 国家值
+        - "证件类型：" - 字段标签
+        - "居民身份证" - 证件类型值
+        - "证件号码：" - 字段标签
+        - "3301***********028" - 证件号值（部分隐藏）
+        - "核验状态：" - 字段标签
+        - "已通过" - 核验状态值（橙色）
+        - "联系方式" - section标题
+        - "编辑" - 编辑按钮
+        - "手机号：" - 字段标签
+        - "(+86) 198****9256" - 手机号值（部分隐藏）
+        - "已通过核验" - 核验状态（橙色）
+        - "邮箱：" - 字段标签
+        - "3279882704@qq.com" - 邮箱值（动态内容）
+        - "附加信息" - section标题
+        - "优惠(待)类型：" - 字段标签
+        - "成人" - 优惠类型值
+        
+        **🆕 样式信息**:
+        
+        - 容器内边距: 10px 20px
+        - Section间距: 垂直排列，有间隔
+        - 必填标记颜色: `rgb(230, 0, 0)` (#E60000) - 红色
+        - 核验状态颜色: `rgb(255, 152, 0)` (#FF9800) - 橙色
+        - 编辑按钮: 边框按钮，灰色边框
+        
+        **实现说明**:
+        
+        1. `.personal-info-panel` - 个人信息面板容器
+           - Flex布局，垂直排列三个section
+        
+        2. `.section-title` - section标题
+           - h3标签，字体大小通常16-18px
+           - 颜色: `rgb(51, 51, 51)` (#333)
+        
+        3. `.info-row` - 信息行
+           - 包含label和value
+           - label通常右对齐或固定宽度
+        
+        4. `.required-mark` - 必填标记
+           - 红色星号"*"
+           - 颜色: #E60000
+        
+        5. `.verification-status` - 核验状态
+           - 橙色文字
+           - 颜色: #FF9800
+        
+        6. `.edit-button` - 编辑按钮
+           - 灰色边框按钮
+           - 背景: 透明
+           - 边框: `rgb(224, 224, 224)` (#E0E0E0)
+        
+        参考图片: "./images/personal-info-page/组件特写截图/个人信息Tab.png"
       
       dependencies: []
       
@@ -149,6 +631,10 @@
             - 手机号必须是11位数字
             - 手机号不能包含特殊字符或非数字字符
             - 登录密码必须与数据库中的密码匹配
+            
+            --- 以下是 UI Analyzer 添加的详细分析 ---
+            
+            参考图片: "./images/personal-info-page/组件特写截图/手机核验页.png"
           
           dependencies: []
           
@@ -221,6 +707,10 @@
         - 编辑乘客时跳转到编辑乘车人表单页
         - 限制乘客数量（如最多15人）
         - 无乘客时显示空状态提示和引导
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        参考图片: "./images/personal-info-page/组件特写截图/乘车人Tab.png"
         
         **交互场景截图**:
           - name: "添加乘客弹窗"
@@ -493,7 +983,11 @@
           * 车票状态
         - 无订单时显示空状态提示
         - 支持分页（如订单较多）
-        - 显示“温馨提示”
+        - 显示"温馨提示"
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        参考图片: "./images/personal-info-page/组件特写截图/我的订单Tab.png"
         
         **交互场景截图**:
           - name: "订单列表显示"
@@ -535,6 +1029,91 @@
         - 显示友情链接
         - 显示二维码
         - 显示版权和备案信息
+        
+        --- 以下是 UI Analyzer 添加的详细分析 ---
+        
+        **位置信息**:
+        - 父容器: body直接子元素
+        - 位置: 页面最底部，x: 0px, y: 952px
+        - 尺寸: 1512px × 197px（全宽）
+        - 布局: block
+        
+        **🆕 HTML结构**（简化版）:
+        
+        ```html
+        <footer class="bottom-navigation">
+          <div class="bottom-content">
+            <!-- 友情链接部分 -->
+            <div class="friendship-links-section">
+              <h3 class="section-title">友情链接</h3>
+              <div class="friendship-links-grid">
+                <div class="friendship-link-item">
+                  <img src="/images/友情链接-左上.png" alt="中国国家铁路集团有限公司">
+                </div>
+                <div class="friendship-link-item">
+                  <img src="/images/友情链接-右上.png" alt="中国铁路客户保险总公司">
+                </div>
+                <div class="friendship-link-item">
+                  <img src="/images/友情链接-左下.png" alt="中铁银通支付有限公司">
+                </div>
+                <div class="friendship-link-item">
+                  <img src="/images/友情链接-右下.png" alt="中铁程科技有限责任公司">
+                </div>
+              </div>
+            </div>
+            
+            <!-- 二维码部分 -->
+            <div class="qr-codes-section">
+              <div class="qr-codes-wrapper">
+                <div class="qr-code-row">
+                  <span class="qr-label">中国铁路官方微信</span>
+                  <span class="qr-label">中国铁路官方微博</span>
+                  <span class="qr-label">12306 公众号</span>
+                  <span class="qr-label">铁路12306</span>
+                </div>
+                <div class="qr-code-row">
+                  <div class="qr-code-item">
+                    <img src="/images/中国铁路官方微信二维码.png" alt="中国铁路官方微信">
+                  </div>
+                  <div class="qr-code-item">
+                    <img src="/images/中国铁路官方微博二维码.png" alt="中国铁路官方微博">
+                  </div>
+                  <div class="qr-code-item">
+                    <img src="/images/12306公众号二维码.png" alt="12306 公众号">
+                  </div>
+                  <div class="qr-code-item">
+                    <img src="/images/铁路12306二维码.png" alt="铁路12306">
+                  </div>
+                </div>
+              </div>
+              <div class="qr-code-footer">
+                <p>官方APP下载，目前铁路未授权其他网站或APP开展类似服务内容，敬请广大用户注意。</p>
+              </div>
+            </div>
+          </div>
+        </footer>
+        ```
+        
+        **🆕 样式信息**:
+        
+        - 背景色: `rgb(245, 245, 245)` (#F5F5F5) - 浅灰色
+        - 内边距: 40px 0px
+        - 友情链接: 2行2列布局，每个图片176×30px
+        - 二维码: 1行4列布局，每个图片80×80px
+        
+        **网页资源**（友情链接）:
+        - 友情链接-左上.png: 原始300×51px，显示176×30px
+        - 友情链接-右上.png: 原始400×68px，显示176×30px
+        - 友情链接-左下.png: 原始800×136px，显示176×30px
+        - 友情链接-右下.png: 原始400×68px，显示176×30px
+        
+        **网页资源**（二维码）:
+        - 中国铁路官方微信二维码.png: 原始344×344px，显示80×80px
+        - 中国铁路官方微博二维码.png: 原始800×800px，显示80×80px
+        - 12306公众号二维码.png: 原始258×258px，显示80×80px
+        - 铁路12306二维码.png: 原始258×258px，显示80×80px
+        
+        参考图片: "./images/personal-info-page/组件特写截图/底部导航.png"
       
       dependencies: []
       scenarios: []

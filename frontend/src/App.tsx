@@ -6,6 +6,7 @@ import TrainListPage from './pages/TrainListPage'
 import OrderFillPage from './pages/OrderFillPage'
 import PaymentPage from './pages/PaymentPage'
 import PurchaseSuccessPage from './pages/PurchaseSuccessPage'
+import PersonalInfoPage from './pages/PersonalInfoPage'
 import './App.css'
 
 function App() {
@@ -32,6 +33,16 @@ function App() {
           
           {/* 购票成功页路由 */}
           <Route path="/success/:orderId" element={<PurchaseSuccessPage />} />
+          
+          {/* 个人信息页路由 */}
+          <Route path="/personal-info" element={<PersonalInfoPage />} />
+          <Route path="/my-account" element={<PersonalInfoPage />} />
+          
+          {/* 乘客管理页路由（使用相同的页面布局） */}
+          <Route path="/passengers" element={<PersonalInfoPage />} />
+          
+          {/* 订单历史页路由（使用相同的页面布局） */}
+          <Route path="/orders" element={<PersonalInfoPage />} />
         </Routes>
       </div>
     </Router>

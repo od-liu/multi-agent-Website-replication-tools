@@ -96,3 +96,19 @@ FUNC-SUBMIT-ORDER:
     - orders
     - order_passengers
     - train_seats
+FUNC-GET-PERSONAL-INFO:
+  related_req_id: REQ-PERSONAL-INFO-TAB
+  path: backend/src/database/operations.js
+  signature: getPersonalInfo(userId)
+  upstream_ids:
+    - API-GET-PERSONAL-INFO
+  db_tables:
+    - users
+FUNC-UPDATE-CONTACT-INFO:
+  related_req_id: REQ-PERSONAL-INFO-TAB
+  path: backend/src/database/operations.js
+  signature: updateContactInfo(userId, contactData)
+  upstream_ids:
+    - API-UPDATE-CONTACT-INFO
+  db_tables:
+    - users

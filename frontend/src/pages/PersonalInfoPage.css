@@ -1,0 +1,41 @@
+/* ========== 个人信息页面容器 ========== */
+.personal-info-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+}
+
+/* ========== 面包屑导航 ========== */
+.breadcrumb-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px 40px;
+  width: 100%;
+}
+
+.breadcrumb-text {
+  font-size: 14px;
+  color: #666666;
+}
+
+/* ========== 主内容区域 ========== */
+.personal-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  padding-bottom: 40px;
+}
+
+/* ========== 内容区域 ========== */
+.personal-content-area {
+  flex: 1;
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  padding: 20px;
+}

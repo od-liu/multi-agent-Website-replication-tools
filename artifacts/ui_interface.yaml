@@ -17,6 +17,7 @@ UI-BOTTOM-NAV:
     - homepage
     - train-list
     - order-fill
+    - personal-info
 UI-LOGIN-PAGE:
   related_req_id: REQ-LOGIN-PAGE
   path: frontend/src/pages/LoginPage.tsx
@@ -74,6 +75,7 @@ UI-HOME-TOP-NAV:
     - homepage
     - train-list
     - order-fill
+    - personal-info
 UI-HOME-SEARCH-FORM:
   related_req_id: REQ-HOME-SEARCH-FORM
   path: frontend/src/components/TrainSearchForm/TrainSearchForm.tsx
@@ -96,6 +98,7 @@ UI-MAIN-NAV:
   pages:
     - train-list
     - order-fill
+    - personal-info
 UI-TRAIN-SEARCH-BAR:
   related_req_id: REQ-TRAIN-SEARCH-BAR
   path: frontend/src/components/TrainSearchBar/TrainSearchBar.tsx
@@ -160,3 +163,27 @@ UI-ORDER-ERROR-MODAL:
   path: frontend/src/components/OrderFill/ErrorModal.tsx
   description: 订单错误提示弹窗，显示余票不足、订票失败等错误信息
   downstream_ids: []
+UI-PERSONAL-SIDEBAR:
+  related_req_id: REQ-PERSONAL-SIDEBAR
+  path: frontend/src/components/SideMenu/SideMenu.tsx
+  description: 个人中心侧边栏菜单，支持多级菜单展开/收起
+  downstream_ids: []
+UI-PERSONAL-INFO-TAB:
+  related_req_id: REQ-PERSONAL-INFO-TAB
+  path: frontend/src/components/PersonalInfoPanel/PersonalInfoPanel.tsx
+  description: 个人信息Tab，显示和编辑用户个人信息
+  downstream_ids:
+    - API-GET-PERSONAL-INFO
+    - API-UPDATE-CONTACT-INFO
+UI-PERSONAL-INFO-PAGE:
+  related_req_id: REQ-PERSONAL-INFO-PAGE
+  path: frontend/src/pages/PersonalInfoPage.tsx
+  description: 个人信息页面容器组件，整合所有子组件
+  downstream_ids: []
+UI-PASSENGER-MANAGE-PANEL:
+  related_req_id: REQ-PASSENGER-MANAGE-TAB
+  path: frontend/src/components/PassengerManagePanel/PassengerManagePanel.tsx
+  description: 乘客管理面板，显示常用乘客列表并支持添加、编辑、删除操作
+  downstream_ids:
+    - API-GET-PASSENGERS
+    - API-DELETE-PASSENGER

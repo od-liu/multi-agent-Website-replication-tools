@@ -1,0 +1,199 @@
+{
+  "page": "personal-info-page",
+  "pageTitle": "个人信息页",
+  "pageUrl": "http://localhost:5173/personal-info",
+  "extractedDate": "2026-01-18",
+  "images": [
+    {
+      "filename": "logo.png",
+      "alt": "中国铁路12306",
+      "category": "logo",
+      "usage": "顶部导航栏Logo",
+      "originalUrl": "http://localhost:5173/images/logo.png",
+      "naturalSize": {
+        "width": 55,
+        "height": 63
+      },
+      "displaySize": {
+        "width": 60,
+        "height": 60
+      },
+      "cssStrategy": "固定尺寸，width: 60px, height: 60px",
+      "downloaded": true
+    },
+    {
+      "filename": "search.svg",
+      "alt": "搜索",
+      "category": "icon",
+      "usage": "顶部搜索按钮图标",
+      "originalUrl": "http://localhost:5173/images/search.svg",
+      "naturalSize": {
+        "width": 200,
+        "height": 200
+      },
+      "displaySize": {
+        "width": 30,
+        "height": 30
+      },
+      "cssStrategy": "固定尺寸，width: 30px, height: 30px",
+      "downloaded": true
+    },
+    {
+      "filename": "友情链接-左上.png",
+      "alt": "中国国家铁路集团有限公司",
+      "category": "友情链接",
+      "usage": "底部友情链接区域（左上位置）",
+      "originalUrl": "http://localhost:5173/images/友情链接-左上.png",
+      "naturalSize": {
+        "width": 300,
+        "height": 51
+      },
+      "displaySize": {
+        "width": 176,
+        "height": 30
+      },
+      "scale": 0.59,
+      "cssStrategy": "固定宽度 176px，height: auto，保持比例",
+      "downloaded": true
+    },
+    {
+      "filename": "友情链接-右上.png",
+      "alt": "中国铁路客户保险总公司",
+      "category": "友情链接",
+      "usage": "底部友情链接区域（右上位置）",
+      "originalUrl": "http://localhost:5173/images/友情链接-右上.png",
+      "naturalSize": {
+        "width": 400,
+        "height": 68
+      },
+      "displaySize": {
+        "width": 176,
+        "height": 30
+      },
+      "scale": 0.44,
+      "cssStrategy": "固定宽度 176px，height: auto，保持比例",
+      "downloaded": true
+    },
+    {
+      "filename": "友情链接-左下.png",
+      "alt": "中铁银通支付有限公司",
+      "category": "友情链接",
+      "usage": "底部友情链接区域（左下位置）",
+      "originalUrl": "http://localhost:5173/images/友情链接-左下.png",
+      "naturalSize": {
+        "width": 800,
+        "height": 136
+      },
+      "displaySize": {
+        "width": 176,
+        "height": 30
+      },
+      "scale": 0.22,
+      "cssStrategy": "固定宽度 176px，height: auto，保持比例",
+      "downloaded": true
+    },
+    {
+      "filename": "友情链接-右下.png",
+      "alt": "中铁程科技有限责任公司",
+      "category": "友情链接",
+      "usage": "底部友情链接区域（右下位置）",
+      "originalUrl": "http://localhost:5173/images/友情链接-右下.png",
+      "naturalSize": {
+        "width": 400,
+        "height": 68
+      },
+      "displaySize": {
+        "width": 176,
+        "height": 30
+      },
+      "scale": 0.44,
+      "cssStrategy": "固定宽度 176px，height: auto，保持比例",
+      "downloaded": true
+    },
+    {
+      "filename": "中国铁路官方微信二维码.png",
+      "alt": "中国铁路官方微信",
+      "category": "二维码",
+      "usage": "底部二维码区域（左侧第1个）",
+      "originalUrl": "http://localhost:5173/images/中国铁路官方微信二维码.png",
+      "naturalSize": {
+        "width": 344,
+        "height": 344
+      },
+      "displaySize": {
+        "width": 80,
+        "height": 80
+      },
+      "scale": 0.23,
+      "cssStrategy": "固定尺寸，width: 80px, height: 80px",
+      "downloaded": true
+    },
+    {
+      "filename": "中国铁路官方微博二维码.png",
+      "alt": "中国铁路官方微博",
+      "category": "二维码",
+      "usage": "底部二维码区域（左侧第2个）",
+      "originalUrl": "http://localhost:5173/images/中国铁路官方微博二维码.png",
+      "naturalSize": {
+        "width": 800,
+        "height": 800
+      },
+      "displaySize": {
+        "width": 80,
+        "height": 80
+      },
+      "scale": 0.10,
+      "cssStrategy": "固定尺寸，width: 80px, height: 80px",
+      "downloaded": true
+    },
+    {
+      "filename": "12306公众号二维码.png",
+      "alt": "12306 公众号",
+      "category": "二维码",
+      "usage": "底部二维码区域（左侧第3个）",
+      "originalUrl": "http://localhost:5173/images/12306公众号二维码.png",
+      "naturalSize": {
+        "width": 258,
+        "height": 258
+      },
+      "displaySize": {
+        "width": 80,
+        "height": 80
+      },
+      "scale": 0.31,
+      "cssStrategy": "固定尺寸，width: 80px, height: 80px",
+      "downloaded": true
+    },
+    {
+      "filename": "铁路12306二维码.png",
+      "alt": "铁路12306",
+      "category": "二维码",
+      "usage": "底部二维码区域（左侧第4个）",
+      "originalUrl": "http://localhost:5173/images/铁路12306二维码.png",
+      "naturalSize": {
+        "width": 258,
+        "height": 258
+      },
+      "displaySize": {
+        "width": 80,
+        "height": 80
+      },
+      "scale": 0.31,
+      "cssStrategy": "固定尺寸，width: 80px, height: 80px",
+      "downloaded": true
+    }
+  ],
+  "iconFonts": [],
+  "backgroundImages": [],
+  "summary": {
+    "totalImages": 10,
+    "totalIconFonts": 0,
+    "totalBackgroundImages": 0,
+    "categories": {
+      "logo": 1,
+      "icon": 1,
+      "友情链接": 4,
+      "二维码": 4
+    }
+  }
+}

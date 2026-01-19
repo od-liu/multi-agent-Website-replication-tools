@@ -1,0 +1,215 @@
+/* ========== 个人信息面板容器 ========== */
+.personal-info-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: #FFFFFF !important;
+  padding: 10px 20px !important;
+  min-height: 777px !important;
+}
+
+/* ========== Section样式 ========== */
+.basic-info-section,
+.contact-info-section,
+.additional-info-section {
+  margin-bottom: 30px !important;
+  padding-bottom: 20px !important;
+  border-bottom: 1px solid #E0E0E0 !important;
+}
+
+.additional-info-section {
+  border-bottom: none !important;
+}
+
+/* ========== Section标题 ========== */
+.section-title {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #333333 !important;
+  margin-bottom: 20px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 2px solid #3B99FC !important;
+}
+
+/* ========== Section头部（标题+编辑按钮） ========== */
+.section-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 20px !important;
+}
+
+.section-header .section-title {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+  flex: 1 !important;
+}
+
+/* ========== 编辑按钮 ========== */
+.edit-button {
+  padding: 6px 20px !important;
+  font-size: 14px !important;
+  color: #555555 !important;
+  background-color: transparent !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+}
+
+.edit-button:hover {
+  border-color: #3B99FC !important;
+  color: #3B99FC !important;
+  background-color: rgba(59, 153, 252, 0.05) !important;
+}
+
+/* ========== 编辑操作按钮组 ========== */
+.edit-actions {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.save-button {
+  padding: 6px 20px !important;
+  font-size: 14px !important;
+  color: white !important;
+  background-color: #3B99FC !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s !important;
+}
+
+.save-button:hover {
+  background-color: #2676E3 !important;
+}
+
+.cancel-button {
+  padding: 6px 20px !important;
+  font-size: 14px !important;
+  color: #555555 !important;
+  background-color: transparent !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.3s !important;
+}
+
+.cancel-button:hover {
+  border-color: #E60000 !important;
+  color: #E60000 !important;
+}
+
+/* ========== 信息内容容器 ========== */
+.info-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+/* ========== 信息行 ========== */
+.info-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  min-height: 30px !important;
+  padding: 8px 0 !important;
+}
+
+/* ========== 信息标签 ========== */
+.info-label {
+  flex-shrink: 0 !important;
+  width: 150px !important;
+  font-size: 14px !important;
+  color: #213547 !important;
+  text-align: right !important;
+  padding-right: 20px !important;
+  line-height: 1.8 !important;
+}
+
+/* ========== 必填标记 ========== */
+.required-mark {
+  color: #E60000 !important;
+  font-weight: bold !important;
+  margin-right: 2px !important;
+}
+
+/* ========== 信息值 ========== */
+.info-value {
+  flex: 1 !important;
+  font-size: 14px !important;
+  color: #213547 !important;
+  line-height: 1.8 !important;
+}
+
+/* ========== 信息值组（包含多个信息） ========== */
+.info-value-group {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.info-value-group .info-value {
+  margin-bottom: 5px !important;
+}
+
+/* ========== 核验状态 ========== */
+.verification-status {
+  color: #FF9800 !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+}
+
+/* ========== 手机核验链接 ========== */
+.phone-verify-link {
+  color: #3B99FC !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+  transition: color 0.3s !important;
+}
+
+.phone-verify-link:hover {
+  color: #2676E3 !important;
+}
+
+/* ========== 输入框样式 ========== */
+.input-text {
+  width: 100% !important;
+  max-width: 300px !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  color: #213547 !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  transition: border-color 0.3s !important;
+}
+
+.input-text:focus {
+  border-color: #3B99FC !important;
+  box-shadow: 0 0 0 2px rgba(59, 153, 252, 0.1) !important;
+}
+
+/* ========== 下拉框样式 ========== */
+.input-select {
+  width: 100% !important;
+  max-width: 300px !important;
+  height: 40px !important;
+  padding: 0 12px !important;
+  font-size: 14px !important;
+  color: #213547 !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E0E0E0 !important;
+  border-radius: 4px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: border-color 0.3s !important;
+}
+
+.input-select:focus {
+  border-color: #3B99FC !important;
+  box-shadow: 0 0 0 2px rgba(59, 153, 252, 0.1) !important;
+}

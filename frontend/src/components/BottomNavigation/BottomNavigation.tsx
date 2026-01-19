@@ -35,7 +35,7 @@ import React from 'react';
 import './BottomNavigation.css';
 
 interface BottomNavigationProps {
-  pageType?: 'login' | 'registration' | 'homepage';
+  pageType?: 'login' | 'registration' | 'homepage' | 'personal-info';
 }
 
 const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' }) => {
@@ -106,16 +106,52 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
         src: '/images/首页-底部导航-中铁程科技Logo.png',
         alt: '中铁程科技有限责任公司'
       }
+    ],
+    'personal-info': [
+      {
+        href: 'http://www.china-railway.com.cn/',
+        src: '/images/友情链接-左上.png',
+        alt: '中国国家铁路集团有限公司'
+      },
+      {
+        href: 'http://www.china-railway.com.cn/',
+        src: '/images/友情链接-右上.png',
+        alt: '中国铁路客户保险总公司'
+      },
+      {
+        href: 'http://www.crpass.cn/',
+        src: '/images/友情链接-左下.png',
+        alt: '中铁银通支付有限公司'
+      },
+      {
+        href: 'http://www.zt-tech.com/',
+        src: '/images/友情链接-右下.png',
+        alt: '中铁程科技有限责任公司'
+      }
     ]
   };
 
   // 获取当前页面的友情链接配置
   const friendshipLinks = friendshipLinksConfig[pageType];
 
-  // 二维码配置（所有页面相同）
-  const qrCodeImagePath = pageType === 'homepage' 
-    ? '/images' 
-    : `/images/${pageType}`;
+  // 二维码配置（根据页面类型选择路径）
+  const getQrCodeImageSrc = (qrCodeType: string) => {
+    if (pageType === 'personal-info') {
+      // 个人信息页使用简化的文件名
+      const fileNames: { [key: string]: string } = {
+        '中国铁路官方微信': '中国铁路官方微信二维码.png',
+        '中国铁路官方微博': '中国铁路官方微博二维码.png',
+        '12306 公众号': '12306公众号二维码.png',
+        '铁路12306': '铁路12306二维码.png'
+      };
+      return `/images/${fileNames[qrCodeType]}`;
+    } else if (pageType === 'homepage') {
+      return `/images/首页-底部导航-${qrCodeType}二维码.png`;
+    } else {
+      const pagePrefix = pageType === 'registration' ? '注册页面' : '登录页面';
+      return `/images/${pageType}/${pagePrefix}-底部导航-${qrCodeType}二维码.png`;
+    }
+  };
 
   return (
     <div className="bottom-navigation-footer" role="complementary" aria-label="底部">
@@ -145,7 +181,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
             <h2 className="bottom-navigation-foot-con-tit">中国铁路官方微信</h2>
             <div className="bottom-navigation-code-pic">
               <img 
-                src={`${qrCodeImagePath}/${pageType === 'homepage' ? '首页' : pageType === 'registration' ? '注册页面' : '登录页面'}-底部导航-中国铁路官方微信二维码.png`}
+                src={getQrCodeImageSrc('中国铁路官方微信')}
                 alt="中国铁路官方微信"
               />
             </div>
@@ -154,7 +190,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
             <h2 className="bottom-navigation-foot-con-tit">中国铁路官方微博</h2>
             <div className="bottom-navigation-code-pic">
               <img 
-                src={`${qrCodeImagePath}/${pageType === 'homepage' ? '首页' : pageType === 'registration' ? '注册页面' : '登录页面'}-底部导航-中国铁路官方微博二维码.png`}
+                src={getQrCodeImageSrc('中国铁路官方微博')}
                 alt="中国铁路官方微博"
               />
             </div>
@@ -163,7 +199,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
             <h2 className="bottom-navigation-foot-con-tit">12306 公众号</h2>
             <div className="bottom-navigation-code-pic">
               <img 
-                src={`${qrCodeImagePath}/${pageType === 'homepage' ? '首页' : pageType === 'registration' ? '注册页面' : '登录页面'}-底部导航-12306公众号二维码.png`}
+                src={getQrCodeImageSrc('12306 公众号')}
                 alt="12306 公众号"
               />
             </div>
@@ -172,7 +208,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ pageType = 'login' 
             <h2 className="bottom-navigation-foot-con-tit">铁路12306</h2>
             <div className="bottom-navigation-code-pic">
               <img 
-                src={`${qrCodeImagePath}/${pageType === 'homepage' ? '首页' : pageType === 'registration' ? '注册页面' : '登录页面'}-底部导航-铁路12306二维码.png`}
+                src={getQrCodeImageSrc('铁路12306')}
                 alt="铁路12306"
               />
               <div className="bottom-navigation-code-tips">
