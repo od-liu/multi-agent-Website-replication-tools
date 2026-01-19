@@ -163,7 +163,8 @@ const TrainListPage: React.FC = () => {
           toCity: params.toCity,
           departureDate: params.departureDate,
           isStudent: params.passengerType === 'student',
-          isHighSpeed: false
+          isHighSpeed: false,
+          useV2: true  // 🆕 使用新的座位管理系统
         })
       });
       
@@ -293,7 +294,8 @@ const TrainListPage: React.FC = () => {
           toCity: searchParams.toCity,
           departureDate: newDate,
           isStudent: false,
-          isHighSpeed: false
+          isHighSpeed: false,
+          useV2: true  // 🆕 使用新的座位管理系统
         })
       });
       

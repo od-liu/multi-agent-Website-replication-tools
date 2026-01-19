@@ -356,7 +356,8 @@ const TrainSearchBar: React.FC<TrainSearchBarProps> = ({
           toCity,
           departureDate,
           isStudent: passengerType === 'student',
-          isHighSpeed: false // 可以根据筛选条件传递
+          isHighSpeed: false, // 可以根据筛选条件传递
+          useV2: true  // 🆕 使用新的座位管理系统
         })
       });
       
