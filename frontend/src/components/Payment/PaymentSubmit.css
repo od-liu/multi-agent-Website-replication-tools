@@ -2,27 +2,29 @@
 /* 📸 参考截图: requirements/images/payment/组件特写截图/支付按钮区域.png */
 
 .payment-submit-container {
-  margin-top: 20px !important;
-  padding: 20px 0 !important;
+  border-top: 1px solid #D0D0D0 !important;
+  padding: 18px 0 16px !important;
 }
 
 .payment-submit-buttons {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  gap: 80px !important;
+  gap: 20px !important;
 }
 
 /* 取消订单按钮（白底灰字） */
 .payment-cancel-button {
-  width: 180px !important;
-  height: 48px !important;
+  /* 对照官方：92x30、12px、细边框 */
+  width: 92px !important;
+  height: 30px !important;
   background-color: #FFFFFF !important;
-  color: rgb(102, 102, 102) !important;
-  border: 1px solid #D0D0D0 !important;
+  color: rgb(51, 51, 51) !important;
+  border: 1px solid #CCCCCC !important;
   border-radius: 4px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 28px !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
 }
@@ -39,14 +41,15 @@
 
 /* 网上支付按钮（橙色） */
 .payment-confirm-button {
-  width: 260px !important;
-  height: 48px !important;
+  width: 92px !important;
+  height: 30px !important;
   background-color: #FF6600 !important;
   color: #FFFFFF !important;
   border: none !important;
   border-radius: 4px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 30px !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
 }

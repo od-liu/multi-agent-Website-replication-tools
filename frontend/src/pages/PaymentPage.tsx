@@ -334,32 +334,45 @@ const PaymentPage: React.FC = () => {
           isTimeout={isTimeout}
         />
 
-        {/* 订单信息区域 */}
-        <PaymentOrderInfo orderInfo={orderInfo} />
+        {/* 订单信息 + 按钮 + 温馨提示（同一块内容容器，匹配参考截图结构） */}
+        <div className="payment-order-section">
+          {/* 订单信息区域 */}
+          <PaymentOrderInfo orderInfo={orderInfo} />
 
-        {/* 支付按钮区域 */}
-        <PaymentSubmit
-          totalPrice={orderInfo.totalPrice}
-          isTimeout={isTimeout}
-          isProcessing={isProcessing}
-          onPayment={handlePayment}
-          onCancel={handleCancelOrder}
-        />
+          {/* 支付按钮区域 */}
+          <PaymentSubmit
+            totalPrice={orderInfo.totalPrice}
+            isTimeout={isTimeout}
+            isProcessing={isProcessing}
+            onPayment={handlePayment}
+            onCancel={handleCancelOrder}
+          />
 
-        {/* 温馨提示 */}
-        <div className="payment-warm-tips">
-          <div className="tips-title">温馨提示：</div>
-          <ol className="tips-list">
-            <li>请在指定时间内完成网上支付。</li>
-            <li>逾期未支付，系统将取消本次交易。</li>
-            <li>在完成支付或取消本订单之前，您将无法购买其他车票。</li>
-            <li>退票政策和收费：<a href="#" className="tips-link">详改说明</a></li>
-            <li>购买铁路乘意险保障您的出行安全。</li>
-            <li>请充分理解保险责任、责任免除、保险期间、合同解除等约定，详询保险条款，详见保险条款或保险单号登录查看。</li>
-            <li>如因违力原因或其他不可控因素的出行变动，当前车型能会发生变动。</li>
-            <li>跨境旅客暂行须知及旅客携带品直接由车站公告。</li>
-            <li>未尽事宜详见《国铁集团旅客服务质量规范》等有关规定和车站公告。</li>
-          </ol>
+          {/* 温馨提示 */}
+          <div className="payment-warm-tips">
+            <div className="tips-title">温馨提示：</div>
+            <ol className="tips-list">
+              <li>请在指定时间内完成网上支付。</li>
+              <li>逾期未支付，系统将取消本次交易。</li>
+              <li>在完成支付或取消本订单之前，您将无法购买其他车票。</li>
+              <li>
+                退票政策和收费：
+                <a href="#" className="tips-link">退改说明</a>
+              </li>
+              <li>
+                购买铁路乘意险保障您的出行安全，提供意外伤害身故伤残、意外伤害医疗费用、意外伤害住院津贴、突发急性病身故保障，
+                同时保障您和随行被监护人因疏忽或过失造成第三者人身伤亡和财产损失依法应由您承担的直接经济赔偿责任，详见保险条款
+              </li>
+              <li>
+                请充分理解保险责任、责任免除、保险期间、合同解除等约定，详见保险条款。凭保单号或保单查询号登录
+                <a href="https://www.china-ric.com" className="tips-link">www.china-ric.com</a>
+                查看电子保单或下载电子发票。
+              </li>
+              <li>如因运力原因或其他不可控因素导致列车调度调整时，当前车型可能会发生变动。</li>
+              <li>跨境旅客旅行须知详见铁路跨境旅客相关运输组织规则和车站公告。</li>
+              <li>未尽事宜详见《国铁集团铁路旅客运输规程》等有关规定和车站公告。</li>
+            </ol>
+          </div>
         </div>
       </div>
 

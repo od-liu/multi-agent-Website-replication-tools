@@ -9,20 +9,27 @@
 /* ========== 顶部导航区域（白色背景） ========== */
 .payment-header {
   background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  /* 参考 12306：顶部区域不做 sticky，避免滚动时覆盖正文 */
+  box-shadow: none;
+  position: static;
 }
 
 .payment-main-content {
   flex: 1;
   /* 📸 参考截图: requirements/images/payment/整体页面截图/支付页面.png */
-  max-width: 1000px;
+  max-width: 980px;
   width: 100%;
   margin: 0 auto;
-  padding: 20px 0 40px;
+  padding: 10px 0 40px;
   box-sizing: border-box;
+}
+
+/* ========== 订单信息 + 按钮 + 温馨提示整体容器 ========== */
+.payment-order-section {
+  background-color: #FFFFFF;
+  border: 1px solid #D0D0D0;
+  border-radius: 0;
+  overflow: hidden;
 }
 
 .payment-loading {
@@ -40,18 +47,18 @@
   background-color: #FFFBE5;
   border: 1px solid #E5D7A1;
   border-radius: 2px;
-  padding: 18px 20px;
-  margin-top: 30px;
-  font-size: 13px;
+  padding: 16px 20px;
+  margin: 16px 20px 20px;
+  font-size: 12px;
   color: #333333;
-  line-height: 1.8;
+  line-height: 20px;
 }
 
 .tips-title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: #000000;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .tips-list {
@@ -60,15 +67,16 @@
 }
 
 .tips-list li {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .tips-link {
-  color: #2196F3;
-  text-decoration: underline;
+  color: #0066CC;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .tips-link:hover {
-  color: #1976D2;
+  color: #004C99;
+  text-decoration: underline;
 }
