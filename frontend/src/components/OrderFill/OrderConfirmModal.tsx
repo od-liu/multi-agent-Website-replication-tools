@@ -34,7 +34,7 @@
  * }
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import './OrderConfirmModal.css';
 
 interface PassengerData {
@@ -84,8 +84,11 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
   seatAvailability,
   onClose,
   onConfirm,
-  isSubmitting = false
+  isSubmitting: isSubmittingProp = false
 }) => {
+  // 本地提交状态管理
+  const [isSubmitting, setIsSubmitting] = useState(isSubmittingProp);
+  
   // ========== Scenario Implementations ==========
 
   /**
@@ -124,14 +127,17 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
       });
       
       // 调用 API-SUBMIT-ORDER
+      // 注意：后端API期望的字段名与前端不同，需要映射
       const response = await fetch('/api/orders/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          trainNo: trainInfo.trainNo,
-          date: trainInfo.date,
-          departureStation: trainInfo.departureStation,
-          arrivalStation: trainInfo.arrivalStation,
+          trainNumber: trainInfo.trainNo,           // 后端期望 trainNumber
+          departureDate: trainInfo.date,            // 后端期望 departureDate
+          fromStation: trainInfo.departureStation,  // 后端期望 fromStation
+          toStation: trainInfo.arrivalStation,      // 后端期望 toStation
+          departureTime: trainInfo.departureTime,   // 后端需要出发时间
+          arrivalTime: trainInfo.arrivalTime,       // 后端需要到达时间
           passengers: passengers.map(p => ({
             passengerId: p.id,
             seatType: p.seatType,
