@@ -45,6 +45,7 @@ interface Passenger {
   discountType: string;
   verificationStatus: string;
   addedDate: string;
+  isSelf?: boolean; // 🆕 标识是否为用户本人
 }
 
 const PassengerManagePanel: React.FC = () => {
@@ -74,14 +75,33 @@ const PassengerManagePanel: React.FC = () => {
 
   const fetchPassengers = async () => {
     try {
-      const response = await fetch('/api/passengers');
+      // 从 localStorage 获取用户ID
+      const userInfoStr = localStorage.getItem('user_info');
+      if (!userInfoStr) {
+        console.error('❌ 未登录，无法获取乘客列表');
+        return;
+      }
+      
+      const userInfo = JSON.parse(userInfoStr);
+      const userId = userInfo.userId;
+      
+      console.log('📋 [乘客管理] 获取常用乘客, userId:', userId);
+      
+      const response = await fetch('/api/passengers', {
+        headers: {
+          'X-User-Id': userId
+        }
+      });
       const result = await response.json();
       
       if (result.success) {
-        setPassengers(result.data);
+        console.log(`✅ [乘客管理] 获取到 ${result.passengers?.length || 0} 个常用乘客`);
+        setPassengers(result.passengers || []);
+      } else {
+        console.error('❌ [乘客管理] 获取乘客列表失败:', result.message);
       }
     } catch (error) {
-      console.error('获取乘客列表失败:', error);
+      console.error('❌ [乘客管理] 网络错误:', error);
     }
   };
 
@@ -114,7 +134,18 @@ const PassengerManagePanel: React.FC = () => {
    * @scenario SCENARIO-005 "删除乘客-取消"
    * @calls API-DELETE-PASSENGER
    */
-  const handleDeleteClick = (passengerId: number) => {
+  const handleDeleteClick = (passengerId: number, isSelf: boolean) => {
+    // 🆕 禁止删除用户本人
+    if (isSelf) {
+      setConfirmModalConfig({
+        message: '不能删除您本人的乘车人信息',
+        onConfirm: () => setShowConfirmModal(false),
+        showCancel: false
+      });
+      setShowConfirmModal(true);
+      return;
+    }
+    
     setConfirmModalConfig({
       message: '您确定要删除选中的乘车人吗？',
       showCancel: true,
@@ -325,8 +356,13 @@ const PassengerManagePanel: React.FC = () => {
                     </button>
                     <button
                       className="action-btn action-btn-delete"
-                      onClick={() => handleDeleteClick(passenger.id)}
-                      title="删除"
+                      onClick={() => handleDeleteClick(passenger.id, passenger.isSelf || false)}
+                      title={passenger.isSelf ? "不能删除您本人" : "删除"}
+                      disabled={passenger.isSelf}
+                      style={{ 
+                        opacity: passenger.isSelf ? 0.5 : 1,
+                        cursor: passenger.isSelf ? 'not-allowed' : 'pointer'
+                      }}
                     >
                       🗑
                     </button>

@@ -218,6 +218,24 @@
   font-weight: 500 !important;
 }
 
+/* 用户名链接样式（可点击跳转到个人中心） */
+.home-top-username-link {
+  font-size: 12px !important;
+  color: #0066CC !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transition: all 0.2s !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  cursor: pointer !important;
+}
+
+.home-top-username-link:hover {
+  color: #0055AA !important;
+  text-decoration: underline !important;
+  opacity: 0.9 !important;
+}
+
 .home-top-auth-link.logout {
   background-color: transparent !important;
   color: #FF7700 !important;

@@ -24,6 +24,7 @@
 
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import MainNavigation from '../components/MainNavigation/MainNavigation';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
@@ -51,19 +52,56 @@ const OrderFillPage: React.FC = () => {
   // ========== State Management ==========
   const location = useLocation();
   const navigate = useNavigate();
+  const { isLoggedIn, username, handleLogout } = useAuth();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedPassengers, setSelectedPassengers] = useState<any[]>([]);
   
   // 从路由state中获取车次信息
-  const trainData = location.state?.trainData || {
+  const train = location.state?.train;
+  // const searchParams = location.state?.searchParams; // 备用：如果需要显示搜索参数
+  
+  // 如果没有车次信息，显示错误或返回
+  if (!train) {
+    console.error('❌ 未接收到车次信息，返回车次列表页');
+    // 可以选择跳转回车次列表页或显示错误
+    // navigate('/trains');
+  }
+  
+  console.log('📋 接收到的车次信息:', train);
+  
+  // 转换TrainList传递的数据格式为OrderFillPage需要的格式
+  const trainData = train ? {
+    date: train.departureDate || '2026-01-18',
+    trainNo: train.trainNumber || 'G103',
+    departureStation: train.departureStation || '北京南',
+    departureTime: train.departureTime || '06:20',
+    arrivalStation: train.arrivalStation || '上海虹桥',
+    arrivalTime: train.arrivalTime || '11:58',
+    scheduleId: train.scheduleId, // 🆕 添加scheduleId用于后续下单
+    prices: {
+      secondClass: { 
+        price: train.seats?.['二等座_price'] || 553.5, 
+        available: train.seats?.['二等座'] === '有' ? 100 : (parseInt(train.seats?.['二等座']) || 0)
+      },
+      firstClass: { 
+        price: train.seats?.['一等座_price'] || 933.0, 
+        available: train.seats?.['一等座'] === '有' ? 50 : (parseInt(train.seats?.['一等座']) || 0)
+      },
+      businessClass: { 
+        price: train.seats?.['商务座_price'] || 1748.5, 
+        available: train.seats?.['商务座'] === '有' ? 20 : (parseInt(train.seats?.['商务座']) || 0)
+      }
+    }
+  } : {
     date: '2026-01-18（周日）',
     trainNo: 'G103',
     departureStation: '北京南',
     departureTime: '06:20',
     arrivalStation: '上海虹桥',
     arrivalTime: '11:58',
+    scheduleId: null,
     prices: {
       secondClass: { price: 662.0, available: 960 },
       firstClass: { price: 1060.0, available: 80 },
@@ -145,7 +183,11 @@ const OrderFillPage: React.FC = () => {
   return (
     <div className="order-fill-page">
       {/* 顶部导航栏（复用首页） */}
-      <HomeTopBar />
+      <HomeTopBar 
+        isLoggedIn={isLoggedIn}
+        username={username}
+        onLogout={handleLogout}
+      />
       
       {/* 主导航菜单 */}
       <MainNavigation />

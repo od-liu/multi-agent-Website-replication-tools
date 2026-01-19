@@ -45,6 +45,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import MainNavigation from '../components/MainNavigation/MainNavigation';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
@@ -81,6 +82,7 @@ interface OrderInfo {
 const PaymentPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
+  const { isLoggedIn, username, handleLogout } = useAuth();
 
   // ========== State Management ==========
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
@@ -113,7 +115,7 @@ const PaymentPage: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:5175/api/payment/${orderId}`, {
+        const response = await fetch(`/api/payment/${orderId}`, {
           method: 'GET',
           credentials: 'include'
         });
@@ -195,7 +197,7 @@ const PaymentPage: React.FC = () => {
     try {
       setIsProcessing(true);
 
-      const response = await fetch(`http://localhost:5175/api/payment/${orderId}/confirm`, {
+      const response = await fetch(`/api/payment/${orderId}/confirm`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
@@ -247,7 +249,7 @@ const PaymentPage: React.FC = () => {
    */
   const handleConfirmCancel = async () => {
     try {
-      const response = await fetch(`http://localhost:5175/api/payment/${orderId}/cancel`, {
+      const response = await fetch(`/api/payment/${orderId}/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
@@ -294,7 +296,7 @@ const PaymentPage: React.FC = () => {
   if (loading) {
     return (
       <div className="payment-page">
-        <HomeTopBar />
+        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
         <MainNavigation />
         <div className="payment-loading">加载中...</div>
       </div>
@@ -308,7 +310,7 @@ const PaymentPage: React.FC = () => {
   return (
     <div className="payment-page">
       {/* 顶部导航 - 复用共享组件 */}
-      <HomeTopBar />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
       <MainNavigation />
 
       {/* 主内容区 */}

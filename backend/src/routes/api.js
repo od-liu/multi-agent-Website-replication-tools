@@ -496,8 +496,15 @@ router.get('/api/trains/:trainNumber/details', async (req, res) => {
  * @calls FUNC-GET-PASSENGERS - 委托给数据库查询函数
  */
 router.get('/api/passengers', async (req, res) => {
-  // 从session或token中获取用户ID（这里暂时mock）
-  const userId = req.session?.userId || 'mock-user-id';
+  // 从请求头中获取用户ID（前端从 localStorage 传递）
+  const userId = req.headers['x-user-id'] || req.query.userId;
+  
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: '未登录，请先登录'
+    });
+  }
   
   console.log('📋 [乘客列表] 获取乘客列表, userId:', userId);
   
@@ -877,15 +884,109 @@ router.put('/api/passengers/:id', async (req, res) => {
  */
 router.delete('/api/passengers/:id', async (req, res) => {
   const { id } = req.params;
+  const userId = req.headers['x-user-id'] || req.query.userId;
   
-  console.log(`🗑️ [删除乘客] 删除乘客 ${id}`);
+  console.log(`🗑️ [删除乘客] 删除乘客 ${id}, userId: ${userId}`);
   
-  // 骨架实现：从数据库删除
-  console.log(`✅ [删除乘客] 删除成功`);
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: '未登录，请先登录'
+    });
+  }
+  
+  try {
+    const { getDb } = await import('./database/db.js');
+    const db = getDb();
+    
+    // 🆕 检查是否为用户本人
+    const passenger = await db.getAsync(
+      'SELECT is_self FROM passengers WHERE id = ? AND user_id = ?',
+      id, userId
+    );
+    
+    if (!passenger) {
+      return res.status(404).json({
+        success: false,
+        message: '乘客不存在'
+      });
+    }
+    
+    if (passenger.is_self === 1) {
+      console.log('❌ [删除乘客] 不能删除用户本人');
+      return res.status(403).json({
+        success: false,
+        message: '不能删除您本人的乘车人信息'
+      });
+    }
+    
+    // 从数据库删除
+    await db.runAsync(
+      'DELETE FROM passengers WHERE id = ? AND user_id = ?',
+      id, userId
+    );
+    
+    console.log(`✅ [删除乘客] 删除成功`);
+    
+    return res.status(200).json({
+      success: true,
+      message: '删除成功'
+    });
+  } catch (error) {
+    console.error('❌ [删除乘客] 删除失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '删除失败，请稍后再试'
+    });
+  }
+});
+
+/**
+ * @api API-GET-ORDERS GET /api/orders
+ * @summary 获取用户订单列表
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {Array} response.data - 订单列表
+ */
+router.get('/api/orders', async (req, res) => {
+  console.log('📋 [订单列表] 获取订单列表');
+  
+  // 骨架实现：返回模拟数据
+  // 实际实现需要从数据库查询当前用户的订单
+  const mockOrders = [
+    {
+      id: 'ORDER001',
+      trainNumber: 'G1234',
+      departureStation: '北京南',
+      arrivalStation: '上海虹桥',
+      departureDate: '2024-01-20',
+      departureTime: '08:00',
+      arrivalTime: '13:28',
+      passengers: ['刘嘉敏', '王三'],
+      seatType: '二等座',
+      seatNumber: '05车06A, 05车06B',
+      price: 553.5,
+      status: '已出行'
+    },
+    {
+      id: 'ORDER002',
+      trainNumber: 'D5678',
+      departureStation: '杭州东',
+      arrivalStation: '南京南',
+      departureDate: '2024-01-18',
+      departureTime: '14:30',
+      arrivalTime: '16:45',
+      passengers: ['刘嘉敏'],
+      seatType: '一等座',
+      seatNumber: '03车02A',
+      price: 184.0,
+      status: '已完成'
+    }
+  ];
   
   return res.status(200).json({
     success: true,
-    message: '删除成功'
+    data: mockOrders
   });
 });
 

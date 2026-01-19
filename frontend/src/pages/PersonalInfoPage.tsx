@@ -23,16 +23,19 @@
 
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import MainNavigation from '../components/MainNavigation/MainNavigation';
 import SideMenu from '../components/SideMenu/SideMenu';
 import PersonalInfoPanel from '../components/PersonalInfoPanel/PersonalInfoPanel';
 import PassengerManagePanel from '../components/PassengerManagePanel/PassengerManagePanel';
+import OrderHistoryPanel from '../components/OrderHistoryPanel/OrderHistoryPanel';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import './PersonalInfoPage.css';
 
 const PersonalInfoPage: React.FC = () => {
   const location = useLocation();
+  const { isLoggedIn, username, handleLogout } = useAuth();
   
   // 根据URL路径判断当前显示哪个面板
   const getCurrentPanel = () => {
@@ -53,7 +56,7 @@ const PersonalInfoPage: React.FC = () => {
   return (
     <div className="personal-info-page">
       {/* 顶部导航栏（共享组件） */}
-      <HomeTopBar isLoggedIn={true} username="刘嘉敏" />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
       
       {/* 主导航栏（共享组件） */}
       <MainNavigation />
@@ -72,7 +75,7 @@ const PersonalInfoPage: React.FC = () => {
         <div className="personal-content-area">
           {currentPanel === 'personal-info' && <PersonalInfoPanel />}
           {currentPanel === 'passengers' && <PassengerManagePanel />}
-          {currentPanel === 'orders' && <div>订单历史（待实现）</div>}
+          {currentPanel === 'orders' && <OrderHistoryPanel />}
         </div>
       </div>
       

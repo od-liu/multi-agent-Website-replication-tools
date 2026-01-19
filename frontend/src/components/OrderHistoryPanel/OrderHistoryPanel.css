@@ -1,0 +1,362 @@
+/* ========== 订单历史面板容器 ========== */
+.order-history-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  padding: 20px;
+  min-height: 600px;
+}
+
+/* ========== 筛选区域 ========== */
+.order-filter-section {
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  background-color: #F5F5F5;
+  border-radius: 4px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* 订单类型下拉选择 */
+.query-type-select {
+  height: 36px;
+  padding: 0 30px 0 12px;
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.query-type-select:hover {
+  border-color: #999999;
+}
+
+.query-type-select:focus {
+  outline: none;
+  border-color: #0066CC;
+}
+
+/* 日期输入 */
+.date-input {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+}
+
+.date-input:hover {
+  border-color: #999999;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #0066CC;
+}
+
+.date-display {
+  position: absolute;
+  left: 12px;
+  font-size: 14px;
+  color: #333333;
+  pointer-events: none;
+}
+
+.date-separator {
+  font-size: 14px;
+  color: #666666;
+  margin: 0 5px;
+}
+
+/* 搜索框 */
+.search-box {
+  flex: 1;
+  max-width: 300px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 35px 0 12px;
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333;
+}
+
+.search-input::placeholder {
+  color: #999999;
+}
+
+.search-input:hover {
+  border-color: #999999;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #0066CC;
+}
+
+.clear-search {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-color: #CCCCCC;
+  border-radius: 50%;
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-search:hover {
+  background-color: #999999;
+}
+
+/* 查询按钮 */
+.query-button {
+  height: 36px;
+  padding: 0 30px;
+  border: none;
+  border-radius: 4px;
+  background-color: #0066CC;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.query-button:hover {
+  background-color: #0055AA;
+}
+
+.query-button:active {
+  background-color: #004488;
+}
+
+/* ========== 订单列表区域 ========== */
+.order-list-section {
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+/* 表头 */
+.order-list-header {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  background-color: #F5F5F5;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px 4px 0 0;
+  padding: 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.header-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-train {
+  flex: 2;
+}
+
+.col-passenger {
+  flex: 1.5;
+}
+
+.col-seat {
+  flex: 1.5;
+}
+
+.col-price {
+  flex: 1;
+}
+
+.col-status {
+  flex: 1.5;
+}
+
+/* 订单行容器 */
+.order-list-body {
+  border: 1px solid #DDDDDD;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  min-height: 200px;
+}
+
+/* 单个订单行 */
+.order-row {
+  display: flex;
+  align-items: stretch;
+  min-height: 80px;
+  padding: 15px 20px;
+  border-bottom: 1px solid #EEEEEE;
+  transition: background-color 0.2s;
+}
+
+.order-row:last-child {
+  border-bottom: none;
+}
+
+.order-row:hover {
+  background-color: #F9F9F9;
+}
+
+.order-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 14px;
+  color: #333333;
+}
+
+.order-col.col-train {
+  flex: 2;
+  gap: 4px;
+}
+
+.order-col.col-passenger {
+  flex: 1.5;
+  align-items: center;
+}
+
+.order-col.col-seat {
+  flex: 1.5;
+  align-items: center;
+  gap: 4px;
+}
+
+.order-col.col-price {
+  flex: 1;
+  align-items: center;
+  font-weight: 600;
+  color: #FF6600;
+}
+
+.order-col.col-status {
+  flex: 1.5;
+  align-items: center;
+  font-weight: 500;
+  color: #0066CC;
+}
+
+.train-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0066CC;
+}
+
+.train-route {
+  font-size: 14px;
+  color: #333333;
+}
+
+.train-time {
+  font-size: 12px;
+  color: #666666;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-size: 14px;
+  color: #999999;
+}
+
+/* ========== 温馨提示区域 ========== */
+.warm-tips-section {
+  padding: 20px;
+  background-color: #FFF9E6;
+  border: 1px solid #FFE4A3;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.tips-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  margin: 0 0 15px 0;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.8;
+}
+
+.tips-list li {
+  margin-bottom: 8px;
+}
+
+.tips-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 响应式适配 ========== */
+@media (max-width: 1200px) {
+  .filter-row {
+    flex-wrap: wrap;
+  }
+  
+  .search-box {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-history-panel {
+    padding: 15px;
+  }
+  
+  .order-list-header {
+    font-size: 12px;
+    padding: 0 10px;
+  }
+  
+  .order-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .order-col {
+    flex: 1 !important;
+  }
+}

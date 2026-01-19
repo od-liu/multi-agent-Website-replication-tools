@@ -92,7 +92,90 @@ const createTrainsTable = `
   )
 `;
 
-// Create train_seats table
+// Create train_schedules table (每天的列车实例)
+const createTrainSchedulesTable = `
+  CREATE TABLE IF NOT EXISTS train_schedules (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    train_id INTEGER NOT NULL,
+    departure_date DATE NOT NULL,
+    departure_datetime DATETIME NOT NULL,
+    arrival_datetime DATETIME NOT NULL,
+    status TEXT DEFAULT 'scheduled',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(train_id, departure_date),
+    FOREIGN KEY (train_id) REFERENCES trains(id)
+  )
+`;
+
+// Create seats table (每个座位的状态跟踪)
+const createSeatsTable = `
+  CREATE TABLE IF NOT EXISTS seats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    schedule_id INTEGER NOT NULL,
+    seat_type TEXT NOT NULL,
+    car_number INTEGER NOT NULL,
+    seat_number TEXT NOT NULL,
+    price REAL NOT NULL,
+    status TEXT DEFAULT 'available',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(schedule_id, car_number, seat_number),
+    FOREIGN KEY (schedule_id) REFERENCES train_schedules(id),
+    CHECK (status IN ('available', 'reserved', 'sold'))
+  )
+`;
+
+// Create orders table (订单信息)
+const createOrdersTable = `
+  CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_number TEXT UNIQUE NOT NULL,
+    user_id INTEGER NOT NULL,
+    schedule_id INTEGER NOT NULL,
+    total_price REAL NOT NULL,
+    status TEXT DEFAULT 'unpaid',
+    payment_method TEXT,
+    payment_time DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (schedule_id) REFERENCES train_schedules(id),
+    CHECK (status IN ('unpaid', 'paid', 'cancelled', 'refunded', 'completed'))
+  )
+`;
+
+// Create order_seats table (订单座位关联)
+const createOrderSeatsTable = `
+  CREATE TABLE IF NOT EXISTS order_seats (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    seat_id INTEGER NOT NULL,
+    passenger_name TEXT NOT NULL,
+    passenger_id_number TEXT NOT NULL,
+    passenger_phone TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (seat_id) REFERENCES seats(id)
+  )
+`;
+
+// Create passengers table (常用乘客表)
+const createPassengersTable = `
+  CREATE TABLE IF NOT EXISTS passengers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    id_type TEXT DEFAULT '1',
+    id_number TEXT NOT NULL,
+    phone TEXT,
+    passenger_type TEXT DEFAULT '1',
+    is_self INTEGER DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, id_number)
+  )
+`;
+
+// 保留旧表用于兼容（可选）
 const createTrainSeatsTable = `
   CREATE TABLE IF NOT EXISTS train_seats (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -148,8 +231,33 @@ export async function initDatabase() {
         
         db.run(createTrainSeatsTable, (err) => {
           if (err) reject(err);
+          else console.log('✓ Train seats table created or already exists');
+        });
+        
+        db.run(createTrainSchedulesTable, (err) => {
+          if (err) reject(err);
+          else console.log('✓ Train schedules table created or already exists');
+        });
+        
+        db.run(createSeatsTable, (err) => {
+          if (err) reject(err);
+          else console.log('✓ Seats table created or already exists');
+        });
+        
+        db.run(createOrdersTable, (err) => {
+          if (err) reject(err);
+          else console.log('✓ Orders table created or already exists');
+        });
+        
+        db.run(createOrderSeatsTable, (err) => {
+          if (err) reject(err);
+          else console.log('✓ Order seats table created or already exists');
+        });
+        
+        db.run(createPassengersTable, (err) => {
+          if (err) reject(err);
           else {
-            console.log('✓ Train seats table created or already exists');
+            console.log('✓ Passengers table created or already exists');
             resolve();
           }
         });
@@ -318,14 +426,171 @@ export async function insertDemoData() {
     }
     console.log(`✓ Inserted demo train seats for ${allTrains.length} trains`);
     
+    // Generate train schedules for the next 30 days
+    console.log('📅 Generating train schedules for the next 30 days...');
+    await generateTrainSchedules(30);
+    
   } catch (err) {
     // Ignore UNIQUE constraint errors (happens in parallel tests)
     if (err.code === 'SQLITE_CONSTRAINT' && err.message.includes('UNIQUE')) {
       console.log('✓ Demo data already exists (parallel test detected)');
+      // Still try to generate schedules if they don't exist
+      try {
+        await generateTrainSchedules(30);
+      } catch (scheduleErr) {
+        console.log('ℹ️  Schedules may already exist');
+      }
       return;
     }
     console.error('Error inserting demo data:', err.message);
     throw err;
+  }
+}
+
+/**
+ * Generate train schedules and seats for the next N days
+ * @param {number} days - Number of days to generate (default: 30)
+ */
+export async function generateTrainSchedules(days = 30) {
+  try {
+    const db = getDb();
+    
+    // Get all active trains
+    const trains = await db.allAsync('SELECT * FROM trains WHERE is_active = 1');
+    
+    if (trains.length === 0) {
+      console.log('⚠️  No active trains found, skipping schedule generation');
+      return;
+    }
+    
+    console.log(`📅 Generating schedules for ${trains.length} trains over ${days} days...`);
+    
+    let scheduleCount = 0;
+    let seatCount = 0;
+    
+    // Generate schedules for each day
+    for (let dayOffset = 0; dayOffset < days; dayOffset++) {
+      const date = new Date();
+      date.setDate(date.getDate() + dayOffset);
+      const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+      
+      for (const train of trains) {
+        // Check if schedule already exists
+        const existing = await db.getAsync(
+          'SELECT id FROM train_schedules WHERE train_id = ? AND departure_date = ?',
+          train.id, dateStr
+        );
+        
+        if (existing) {
+          continue; // Skip if already exists
+        }
+        
+        // Parse departure time (HH:MM format)
+        const [depHour, depMin] = train.departure_time.split(':').map(Number);
+        const departureDatetime = new Date(date);
+        departureDatetime.setHours(depHour, depMin, 0, 0);
+        
+        // Calculate arrival datetime
+        const [arrHour, arrMin] = train.arrival_time.split(':').map(Number);
+        const arrivalDatetime = new Date(date);
+        arrivalDatetime.setDate(arrivalDatetime.getDate() + train.arrival_day);
+        arrivalDatetime.setHours(arrHour, arrMin, 0, 0);
+        
+        // Insert schedule
+        const scheduleResult = await db.runAsync(`
+          INSERT INTO train_schedules (train_id, departure_date, departure_datetime, arrival_datetime, status)
+          VALUES (?, ?, ?, ?, 'scheduled')
+        `, train.id, dateStr, departureDatetime.toISOString(), arrivalDatetime.toISOString());
+        
+        const scheduleId = scheduleResult.lastID;
+        scheduleCount++;
+        
+        // Generate seats for this schedule
+        // Get seat types from train_seats table
+        const seatTypes = await db.allAsync(
+          'SELECT * FROM train_seats WHERE train_id = ?',
+          train.id
+        );
+        
+        for (const seatType of seatTypes) {
+          if (seatType.total_seats === 0) continue;
+          
+          // Generate individual seats
+          const carsPerType = Math.ceil(seatType.total_seats / 100); // Assume 100 seats per car
+          let seatNum = 1;
+          
+          for (let car = 1; car <= carsPerType; car++) {
+            const seatsInCar = Math.min(100, seatType.total_seats - (car - 1) * 100);
+            
+            for (let s = 1; s <= seatsInCar; s++) {
+              const seatNumber = `${String(s).padStart(2, '0')}${['A', 'B', 'C', 'D', 'F'][s % 5]}`;
+              
+              await db.runAsync(`
+                INSERT OR IGNORE INTO seats (schedule_id, seat_type, car_number, seat_number, price, status)
+                VALUES (?, ?, ?, ?, ?, 'available')
+              `, scheduleId, seatType.seat_type, car, seatNumber, seatType.price);
+              
+              seatCount++;
+              seatNum++;
+            }
+          }
+        }
+      }
+    }
+    
+    console.log(`✅ Generated ${scheduleCount} train schedules with ${seatCount} seats`);
+  } catch (err) {
+    console.error('Error generating train schedules:', err);
+    throw err;
+  }
+}
+
+/**
+ * Clean up expired schedules (older than 30 days)
+ */
+export async function cleanupOldSchedules() {
+  try {
+    const db = getDb();
+    
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const cutoffDate = thirtyDaysAgo.toISOString().split('T')[0];
+    
+    // Delete old order_seats
+    await db.runAsync(`
+      DELETE FROM order_seats 
+      WHERE order_id IN (
+        SELECT o.id FROM orders o
+        JOIN train_schedules ts ON o.schedule_id = ts.id
+        WHERE ts.departure_date < ?
+      )
+    `, cutoffDate);
+    
+    // Delete old orders
+    await db.runAsync(`
+      DELETE FROM orders 
+      WHERE schedule_id IN (
+        SELECT id FROM train_schedules WHERE departure_date < ?
+      )
+    `, cutoffDate);
+    
+    // Delete old seats
+    await db.runAsync(`
+      DELETE FROM seats 
+      WHERE schedule_id IN (
+        SELECT id FROM train_schedules WHERE departure_date < ?
+      )
+    `, cutoffDate);
+    
+    // Delete old schedules
+    const result = await db.runAsync(
+      'DELETE FROM train_schedules WHERE departure_date < ?',
+      cutoffDate
+    );
+    
+    console.log(`✓ Cleaned up ${result.changes} old train schedules`);
+  } catch (err) {
+    console.error('Error cleaning up old schedules:', err);
   }
 }
 
@@ -335,6 +600,10 @@ export async function insertDemoData() {
 export async function clearDatabase() {
   try {
     const db = getDb();
+    await db.runAsync('DELETE FROM order_seats');
+    await db.runAsync('DELETE FROM orders');
+    await db.runAsync('DELETE FROM seats');
+    await db.runAsync('DELETE FROM train_schedules');
     await db.runAsync('DELETE FROM train_seats');
     await db.runAsync('DELETE FROM trains');
     await db.runAsync('DELETE FROM stations');

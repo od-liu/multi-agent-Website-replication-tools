@@ -98,11 +98,34 @@ const PassengerInfo: React.FC<PassengerInfoProps> = ({
   const fetchPassengers = async () => {
     // @calls API-GET-PASSENGERS
     try {
-      const response = await fetch('/api/passengers');
+      // 从 localStorage 获取用户ID
+      const userInfoStr = localStorage.getItem('user_info');
+      if (!userInfoStr) {
+        console.error('❌ 未登录，无法获取乘客列表');
+        return;
+      }
+      
+      const userInfo = JSON.parse(userInfoStr);
+      const userId = userInfo.userId;
+      
+      console.log('📋 [订单填写] 获取常用乘客, userId:', userId);
+      
+      // 在请求头中传递 userId
+      const response = await fetch('/api/passengers', {
+        headers: {
+          'X-User-Id': userId
+        }
+      });
       const data = await response.json();
-      setPassengerList(data.passengers || []);
+      
+      if (data.success) {
+        console.log(`✅ [订单填写] 获取到 ${data.passengers?.length || 0} 个常用乘客`);
+        setPassengerList(data.passengers || []);
+      } else {
+        console.error('❌ [订单填写] 获取乘客列表失败:', data.message);
+      }
     } catch (error) {
-      console.error('获取乘客列表失败:', error);
+      console.error('❌ [订单填写] 网络错误:', error);
     }
   };
 

@@ -1,0 +1,10 @@
+1. ui-analyzer-prompt-simplified-需要在agent打开网页的时候，手动将网页全屏设置；需要在agent完成组件特写截图后检查agent截图质量，如果有错误，需要指出
+    user prompt：新增需求：【初始需求文档.yaml】，请开始工作
+2. interface_designer：
+    user prompt：新增需求：[ui-requirements.yaml][ui-style-guide.md]，请开始工作
+3. tdd_developer_prompt：
+    user prompt：新增需求：[ui-requirements.yaml][ui-style-guide.md]，请开始工作
+4. cny补充
+使用agent：opus 4.5- max mode
+需要下载browser MCP并用任务队列mcp管理任务
+使用时请确保网络链接良好

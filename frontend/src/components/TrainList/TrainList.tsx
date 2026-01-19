@@ -34,9 +34,11 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './TrainList.css';
 
 interface Train {
+  scheduleId?: number; // 🆕 列车时刻表ID（用于下单）
   trainNumber: string;
   trainType: string; // 'GC'/'D'等
   departureStation: string;
@@ -47,6 +49,7 @@ interface Train {
   arrivalTime: string;
   duration: string;
   arrivalDay: string; // '当日到达'/'次日到达'
+  departureDate?: string; // 🆕 出发日期（YYYY-MM-DD）
   seats: {
     [key: string]: string | number; // 支持中文键名，如 '商务座': '10'/'有'/'无'/'--'
   };
@@ -113,15 +116,29 @@ const TrainList: React.FC<TrainListProps> = ({
     );
   };
 
+  const navigate = useNavigate();
+
   /**
-   * @feature "无票时预订按钮置灰不可点击"
+   * @feature "点击预订按钮跳转到订单填写页面"
+   * 传递车次信息到订单填写页面
    */
   const handleBook = (train: Train) => {
     if (!hasAvailableSeats(train)) {
       return;
     }
     console.log(`预订车次 ${train.trainNumber}`);
-    alert(`预订车次 ${train.trainNumber}（骨架实现）`);
+    
+    // 跳转到订单填写页面，通过 state 传递车次信息
+    navigate('/order', {
+      state: {
+        train: train,
+        searchParams: {
+          fromCity: train.departureCity,
+          toCity: train.arrivalCity,
+          departureDate: train.departureDate
+        }
+      }
+    });
   };
 
   /**

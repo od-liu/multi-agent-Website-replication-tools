@@ -353,16 +353,46 @@ export async function sendRegistrationVerificationCode(phoneNumber, userData) {
     const db = getDb();
     
     // Check if phone is already registered
-    const existingUser = await db.getAsync(
+    const existingPhone = await db.getAsync(
       'SELECT id FROM users WHERE phone = ?',
       phoneNumber
     );
     
-    if (existingUser) {
+    if (existingPhone) {
       return {
         success: false,
         message: '该手机号已被注册'
       };
+    }
+    
+    // Check if username is already registered (if provided in userData)
+    if (userData && userData.username) {
+      const existingUsername = await db.getAsync(
+        'SELECT id FROM users WHERE username = ?',
+        userData.username
+      );
+      
+      if (existingUsername) {
+        return {
+          success: false,
+          message: '该用户名已被注册，请更换用户名'
+        };
+      }
+    }
+    
+    // Check if email is already registered (if provided in userData)
+    if (userData && userData.email) {
+      const existingEmail = await db.getAsync(
+        'SELECT id FROM users WHERE email = ?',
+        userData.email
+      );
+      
+      if (existingEmail) {
+        return {
+          success: false,
+          message: '该邮箱已被注册，请使用其他邮箱'
+        };
+      }
     }
     
     // Generate 6-digit random code
@@ -582,6 +612,47 @@ export async function verifyRegistrationCode(phoneNumber, code) {
     // Extract last 4 digits of ID number
     const idCardLast4 = userData.idNumber ? userData.idNumber.slice(-4) : '';
     
+    // Check if username already exists
+    const existingUsername = await db.getAsync(
+      'SELECT id FROM users WHERE username = ?',
+      userData.username
+    );
+    
+    if (existingUsername) {
+      return {
+        success: false,
+        message: '该用户名已被注册，请更换用户名'
+      };
+    }
+    
+    // Check if email already exists (if email is provided)
+    if (userData.email) {
+      const existingEmail = await db.getAsync(
+        'SELECT id FROM users WHERE email = ?',
+        userData.email
+      );
+      
+      if (existingEmail) {
+        return {
+          success: false,
+          message: '该邮箱已被注册，请使用其他邮箱'
+        };
+      }
+    }
+    
+    // Check if phone already exists
+    const existingPhone = await db.getAsync(
+      'SELECT id FROM users WHERE phone = ?',
+      phoneNumber
+    );
+    
+    if (existingPhone) {
+      return {
+        success: false,
+        message: '该手机号已被注册'
+      };
+    }
+    
     // Insert user
     const result = await db.runAsync(
       `INSERT INTO users (username, password_hash, name, id_type, id_number, id_card_last4, phone, email, passenger_type, created_at)
@@ -600,14 +671,49 @@ export async function verifyRegistrationCode(phoneNumber, code) {
     // Delete used verification code
     await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
     
-    console.log(`✅ 用户 ${userData.username} 注册完成 (ID: ${result.lastID})`);
+    const newUserId = result.lastID;
+    console.log(`✅ 用户 ${userData.username} 注册完成 (ID: ${newUserId})`);
+    
+    // 🆕 自动添加用户本人为常用乘客
+    try {
+      await db.runAsync(`
+        INSERT INTO passengers (user_id, name, id_type, id_number, phone, passenger_type, is_self)
+        VALUES (?, ?, ?, ?, ?, ?, 1)
+      `, newUserId, userData.name, userData.idType || '1', userData.idNumber, phoneNumber, userData.passengerType || '1');
+      
+      console.log(`✅ 已自动添加用户 ${userData.name} 为常用乘客`);
+    } catch (passengerErr) {
+      console.error('⚠️  添加常用乘客失败（不影响注册）:', passengerErr.message);
+      // 不中断注册流程
+    }
     
     return {
       success: true,
-      userId: result.lastID
+      userId: newUserId
     };
   } catch (error) {
     console.error('验证注册验证码失败:', error);
+    
+    // Handle specific database constraint errors
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      if (error.message.includes('users.username')) {
+        return {
+          success: false,
+          message: '该用户名已被注册，请更换用户名'
+        };
+      } else if (error.message.includes('users.email')) {
+        return {
+          success: false,
+          message: '该邮箱已被注册，请使用其他邮箱'
+        };
+      } else if (error.message.includes('users.phone')) {
+        return {
+          success: false,
+          message: '该手机号已被注册'
+        };
+      }
+    }
+    
     return {
       success: false,
       message: '系统错误，请稍后再试'
@@ -636,9 +742,13 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 查询车次（连接trains、stations、cities表）
+    // 获取当前时间
+    const now = new Date().toISOString();
+    
+    // 查询车次（使用新的 train_schedules 表，只返回未来发车的车次）
     let query = `
       SELECT 
+        ts.id as schedule_id,
         t.id as train_id,
         t.train_number,
         t.train_type,
@@ -649,16 +759,25 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         t.departure_time,
         t.arrival_time,
         t.duration,
-        t.arrival_day
-      FROM trains t
+        t.arrival_day,
+        ts.departure_date,
+        ts.departure_datetime,
+        ts.arrival_datetime
+      FROM train_schedules ts
+      JOIN trains t ON ts.train_id = t.id
       JOIN stations s1 ON t.departure_station_id = s1.id
       JOIN stations s2 ON t.arrival_station_id = s2.id
       JOIN cities c1 ON s1.city_id = c1.id
       JOIN cities c2 ON s2.city_id = c2.id
-      WHERE c1.city_name = ? AND c2.city_name = ? AND t.is_active = 1
+      WHERE c1.city_name = ? 
+        AND c2.city_name = ? 
+        AND ts.departure_date = ?
+        AND ts.departure_datetime > ?
+        AND t.is_active = 1
+        AND ts.status = 'scheduled'
     `;
     
-    const params = [fromCity, toCity];
+    const params = [fromCity, toCity, departureDate, now];
     
     // 如果只查高铁/动车
     if (isHighSpeed) {
@@ -670,33 +789,44 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     const trains = await db.allAsync(query, ...params);
     
     if (!trains || trains.length === 0) {
+      console.log(`ℹ️  未找到符合条件的车次 (可能都已发车)`);
       return {
         success: true,
         trains: []
       };
     }
     
-    // 查询每个车次的座位信息
+    console.log(`✅ 找到 ${trains.length} 个未发车的车次`);
+    
+    // 查询每个车次的座位信息（从新的 seats 表统计）
     const trainsWithSeats = [];
     for (const train of trains) {
-      const seats = await db.allAsync(`
-        SELECT seat_type, total_seats, available_seats, price
-        FROM train_seats
-        WHERE train_id = ?
-      `, train.train_id);
+      // 统计每种座位类型的可用情况
+      const seatStats = await db.allAsync(`
+        SELECT 
+          seat_type,
+          price,
+          COUNT(*) as total,
+          SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available,
+          SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
+          SUM(CASE WHEN status = 'sold' THEN 1 ELSE 0 END) as sold
+        FROM seats
+        WHERE schedule_id = ?
+        GROUP BY seat_type, price
+      `, train.schedule_id);
       
       // 将座位信息转换为对象格式
       const seatsObj = {};
-      seats.forEach(seat => {
+      seatStats.forEach(seat => {
         const key = seat.seat_type;
-        if (seat.available_seats === 0) {
+        const available = seat.available;
+        
+        if (available === 0) {
           seatsObj[key] = '无';
-        } else if (seat.available_seats >= 20) {
+        } else if (available >= 20) {
           seatsObj[key] = '有';
-        } else if (seat.available_seats > 0) {
-          seatsObj[key] = seat.available_seats.toString();
         } else {
-          seatsObj[key] = '--';
+          seatsObj[key] = available.toString();
         }
         
         // 保存价格信息
@@ -706,6 +836,7 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
       });
       
       trainsWithSeats.push({
+        scheduleId: train.schedule_id,
         trainNumber: train.train_number,
         trainType: train.train_type,
         departureStation: train.departure_station,
@@ -716,6 +847,7 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         arrivalTime: train.arrival_time,
         duration: train.duration,
         arrivalDay: train.arrival_day === 0 ? '当日到达' : '次日到达',
+        departureDate: train.departure_date,
         seats: seatsObj,
         supportsStudent: true // 简化实现：所有车次都支持学生票
       });
@@ -874,35 +1006,31 @@ export async function getTrainDetails(trainNumber) {
  */
 export async function getPassengers(userId) {
   try {
-    // Mock data for now (数据库实现待后续完成)
-    // const { getDb } = await import('./db.js');
-    // const db = getDb();
-    // const passengers = await db.allAsync(
-    //   'SELECT * FROM passengers WHERE user_id = ?',
-    //   userId
-    // );
+    const { getDb } = await import('./db.js');
+    const db = getDb();
     
-    // Mock常用乘客数据
-    const mockPassengers = [
-      {
-        id: 'passenger-001',
-        name: '王三',
-        idType: '居民身份证',
-        idNumber: '3301**************222',
-        passengerType: '成人票'
-      },
-      {
-        id: 'passenger-002',
-        name: '刘嘉敏',
-        idType: '居民身份证',
-        idNumber: '4201**************103',
-        passengerType: '成人票'
-      }
-    ];
+    // 从数据库查询用户的常用乘客
+    const passengers = await db.allAsync(
+      'SELECT * FROM passengers WHERE user_id = ? ORDER BY is_self DESC, created_at DESC',
+      userId
+    );
+    
+    console.log(`📋 查询到 ${passengers.length} 个常用乘客 (userId: ${userId})`);
+    
+    // 转换数据格式
+    const formattedPassengers = passengers.map(p => ({
+      id: p.id,
+      name: p.name,
+      idType: p.id_type === '1' ? '居民身份证' : '其他证件',
+      idNumber: p.id_number,
+      phone: p.phone,
+      passengerType: p.passenger_type === '1' ? '成人票' : (p.passenger_type === '2' ? '儿童票' : '学生票'),
+      isSelf: p.is_self === 1
+    }));
     
     return {
       success: true,
-      passengers: mockPassengers
+      passengers: formattedPassengers
     };
   } catch (error) {
     console.error('获取乘客列表失败:', error);
