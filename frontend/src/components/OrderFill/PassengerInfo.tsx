@@ -56,23 +56,7 @@ interface Passenger {
   isSelf?: boolean; // 🆕 添加用户本人标识
 }
 
-// 目标页面/需求截图的默认乘车人（用于接口无数据时的 UI 回退，保证页面视觉一致）
-const DEFAULT_PASSENGERS: Passenger[] = [
-  {
-    id: 'default-1',
-    name: '王三',
-    idType: '居民身份证',
-    idNumber: '3301************222',
-    passengerType: '成人票'
-  },
-  {
-    id: 'default-2',
-    name: '刘嘉敏',
-    idType: '居民身份证',
-    idNumber: '3301************222',
-    passengerType: '成人票'
-  }
-];
+// 🗑️ 已删除硬编码的假数据，始终使用真实的API数据
 
 interface SeatOption {
   type: '二等座' | '一等座' | '商务座';
@@ -128,15 +112,24 @@ const PassengerInfo: React.FC<PassengerInfoProps> = ({
         return;
       }
       
-      const response = await fetch(`/api/passengers?userId=${userId}`);
+      console.log('📋 [乘客列表] 获取乘客列表, userId:', userId);
+      
+      const response = await fetch(`/api/passengers?userId=${userId}`, {
+        headers: {
+          'X-User-Id': String(userId)
+        }
+      });
       const data = await response.json();
       const passengersFromApi: Passenger[] = Array.isArray(data?.passengers) ? data.passengers : [];
-      // 视觉优先：目标截图中“乘车人”区至少展示 2 个乘车人
-      setPassengerList(passengersFromApi.length >= 2 ? passengersFromApi : DEFAULT_PASSENGERS);
+      
+      console.log(`✅ [乘客列表] 获取到 ${passengersFromApi.length} 个乘客:`, passengersFromApi.map(p => p.name).join(', '));
+      
+      // 🔧 修复：始终显示真实数据，不使用假数据
+      setPassengerList(passengersFromApi);
     } catch (error) {
-      console.error('获取乘客列表失败:', error);
-      // UI 回退：保证页面视觉结构完整
-      setPassengerList(DEFAULT_PASSENGERS);
+      console.error('❌ [乘客列表] 获取失败:', error);
+      // 失败时显示空列表，而不是假数据
+      setPassengerList([]);
     }
   };
 

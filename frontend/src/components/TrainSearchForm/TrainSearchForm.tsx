@@ -41,6 +41,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import apiClient from '../../api';
+import DatePicker from '../DatePicker/DatePicker';
 import './TrainSearchForm.css';
 
 interface TrainSearchFormProps {
@@ -441,6 +442,19 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
                 />
                 <span className="calendar-icon" aria-hidden="true" />
               </div>
+              {/* 日期选择器组件 */}
+              {showDatePicker && (
+                <div className="date-picker-dropdown">
+                  <DatePicker
+                    value={departureDate}
+                    onChange={(date) => {
+                      setDepartureDate(date);
+                      setShowDatePicker(false);
+                    }}
+                    onClose={() => setShowDatePicker(false)}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

@@ -497,3 +497,15 @@
 .city-dropdown-item:hover {
   background-color: #f5f5f5 !important;
 }
+
+/* ========== 日期选择器下拉框 ========== */
+.date-picker-dropdown {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  z-index: 1000 !important;
+  margin-top: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  background: white !important;
+  border-radius: 4px !important;
+}

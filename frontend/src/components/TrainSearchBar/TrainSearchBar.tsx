@@ -51,6 +51,9 @@ import DatePicker from '../DatePicker/DatePicker';
 
 interface TrainSearchBarProps {
   onSearch?: (params: SearchParams) => void;
+  initialFromCity?: string;
+  initialToCity?: string;
+  initialDepartureDate?: string;
 }
 
 interface SearchParams {
@@ -62,14 +65,19 @@ interface SearchParams {
   passengerType: 'normal' | 'student';
 }
 
-const TrainSearchBar: React.FC<TrainSearchBarProps> = ({ onSearch }) => {
+const TrainSearchBar: React.FC<TrainSearchBarProps> = ({ 
+  onSearch, 
+  initialFromCity, 
+  initialToCity, 
+  initialDepartureDate 
+}) => {
   // ========== State Management ==========
-  // 参考图/对齐用：默认填充北京→上海（原站 leftTicket 默认会保留上次查询值）
-  const [fromCity, setFromCity] = useState('北京');
-  const [toCity, setToCity] = useState('上海');
+  // 🆕 优先使用从首页传递的参数，否则使用默认值
+  const [fromCity, setFromCity] = useState(initialFromCity || '北京');
+  const [toCity, setToCity] = useState(initialToCity || '上海');
   
-  // 对齐用：默认给一个稳定日期，便于像素级对比（可由用户再手动选择）
-  const [departureDate, setDepartureDate] = useState('2026-01-19');
+  // 🆕 优先使用从首页传递的日期，否则使用默认值
+  const [departureDate, setDepartureDate] = useState(initialDepartureDate || '2026-01-19');
   const [returnDate, setReturnDate] = useState('');
   const [tripType, setTripType] = useState<'single' | 'round'>('single');
   const [passengerType, setPassengerType] = useState<'normal' | 'student'>('normal');

@@ -31,7 +31,8 @@
  *   - 内容居中: max-width 1512px
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
 import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import TrainSearchBar from '../components/TrainSearchBar/TrainSearchBar';
@@ -58,6 +59,16 @@ interface Train {
 }
 
 const TrainListPage: React.FC = () => {
+  // ========== 获取首页传递的参数 ==========
+  const location = useLocation();
+  const locationState = location.state as {
+    fromCity?: string;
+    toCity?: string;
+    departureDate?: string;
+    isStudent?: boolean;
+    isHighSpeed?: boolean;
+  } | null;
+  
   // ========== State Management ==========
   // 从 localStorage 读取登录状态
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -67,9 +78,9 @@ const TrainListPage: React.FC = () => {
     return localStorage.getItem('username') || '';
   });
   const [searchParams, setSearchParams] = useState({
-    fromCity: '',
-    toCity: '',
-    date: ''
+    fromCity: locationState?.fromCity || '',
+    toCity: locationState?.toCity || '',
+    date: locationState?.departureDate || ''
   });
   const [trains, setTrains] = useState<Train[]>([]);
   const [allTrains, setAllTrains] = useState<Train[]>([]); // 保存原始查询结果
@@ -79,7 +90,7 @@ const TrainListPage: React.FC = () => {
   // ========== Lifecycle ==========
   
   // 监听 localStorage 变化（用于跨标签页同步登录状态）
-  React.useEffect(() => {
+  useEffect(() => {
     const handleStorageChange = () => {
       const userId = localStorage.getItem('userId');
       const storedUsername = localStorage.getItem('username');
@@ -91,7 +102,19 @@ const TrainListPage: React.FC = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // 页面加载时不自动查询，等待用户输入条件后再查询
+  // 🆕 页面加载时，如果有首页传递的参数，自动执行搜索
+  useEffect(() => {
+    if (locationState?.fromCity && locationState?.toCity && locationState?.departureDate) {
+      console.log('🔍 接收到首页查询参数:', locationState);
+      handleSearch({
+        fromCity: locationState.fromCity,
+        toCity: locationState.toCity,
+        departureDate: locationState.departureDate,
+        passengerType: locationState.isStudent ? 'student' : 'normal',
+        tripType: 'single'
+      });
+    }
+  }, []); // 只在组件挂载时执行一次
 
   /**
    * 5分钟过期检测
@@ -314,7 +337,12 @@ const TrainListPage: React.FC = () => {
         {/* 查询和筛选整合容器 */}
         <div className="search-filter-container">
           {/* @feature "整合查询条件栏" */}
-          <TrainSearchBar onSearch={handleSearch} />
+          <TrainSearchBar 
+            onSearch={handleSearch}
+            initialFromCity={searchParams.fromCity}
+            initialToCity={searchParams.toCity}
+            initialDepartureDate={searchParams.date}
+          />
 
           {/* @feature "整合筛选条件区域" */}
           <TrainFilterPanel onFilter={handleFilter} onDateChange={handleDateChange} />
