@@ -1244,15 +1244,12 @@ export async function confirmPayment(orderId) {
     const expiresAt = new Date(order.expires_at);
     
     if (now > expiresAt) {
-      // 订单已超时,释放座位并删除订单
+      // 订单已超时,更新订单状态为已取消
       await db.runAsync(`
-        UPDATE train_seats 
-        SET seat_status = '空闲', order_id = NULL
-        WHERE order_id = ?
+        UPDATE orders 
+        SET status = '已取消'
+        WHERE id = ?
       `, orderId);
-      
-      await db.runAsync('DELETE FROM order_passengers WHERE order_id = ?', orderId);
-      await db.runAsync('DELETE FROM orders WHERE id = ?', orderId);
       
       return {
         success: false,
@@ -1266,13 +1263,6 @@ export async function confirmPayment(orderId) {
       UPDATE orders 
       SET status = '已支付', paid_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `, orderId);
-    
-    // 确认座位状态为已被预定
-    await db.runAsync(`
-      UPDATE train_seats 
-      SET seat_status = '已被预定'
-      WHERE order_id = ?
     `, orderId);
     
     return {
