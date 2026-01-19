@@ -69,9 +69,21 @@ const LoginPage: React.FC = () => {
     if (data.token) {
       localStorage.setItem('auth_token', data.token);
     }
-    // 保存用户信息到 localStorage
+    // 保存用户信息到 localStorage（多种格式，兼容不同组件）
     if (currentUserId) {
+      // 方式1：单独存储（TopNavigation使用）
       localStorage.setItem('userId', String(currentUserId));
+      
+      // 方式2：JSON格式存储（OrderHistoryPanel、PassengerManagePanel使用）
+      const userInfo = {
+        userId: String(currentUserId),
+        username: currentUsername,
+        name: currentName,
+        isLoggedIn: true
+      };
+      localStorage.setItem('user_info', JSON.stringify(userInfo));
+      
+      console.log('✅ 用户信息已保存到localStorage:', userInfo);
     }
     // 保存用户名（显示在导航栏）- 优先使用真实姓名
     const displayName = currentName || currentUsername;
