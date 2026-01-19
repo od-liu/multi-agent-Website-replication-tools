@@ -140,8 +140,12 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
           arrivalTime: trainInfo.arrivalTime,       // 后端需要到达时间
           passengers: passengers.map(p => ({
             passengerId: p.id,
-            seatType: p.seatType,
-            price: 0 // 价格从后端获取
+            name: p.name,                    // 后端期望 name
+            idType: p.idType,                // 后端期望 idType
+            idNumber: p.idNumber,            // 后端期望 idNumber
+            ticketType: p.ticketType,        // 后端期望 ticketType
+            seatClass: p.seatType,           // 后端期望 seatClass（前端叫 seatType）
+            price: 0                         // 价格从后端获取
           }))
         })
       });
