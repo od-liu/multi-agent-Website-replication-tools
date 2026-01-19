@@ -59,8 +59,13 @@ interface Train {
 
 const TrainListPage: React.FC = () => {
   // ========== State Management ==========
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  // 从 localStorage 读取登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('userId');
+  });
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
   const [searchParams, setSearchParams] = useState({
     fromCity: '',
     toCity: '',
@@ -73,6 +78,19 @@ const TrainListPage: React.FC = () => {
 
   // ========== Lifecycle ==========
   
+  // 监听 localStorage 变化（用于跨标签页同步登录状态）
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      const userId = localStorage.getItem('userId');
+      const storedUsername = localStorage.getItem('username');
+      setIsLoggedIn(!!userId);
+      setUsername(storedUsername || '');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   // 页面加载时不自动查询，等待用户输入条件后再查询
 
   /**
@@ -213,7 +231,11 @@ const TrainListPage: React.FC = () => {
   /**
    * @feature "用户登录/退出"
    */
+  // 处理退出登录
   const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('username');
     setIsLoggedIn(false);
     setUsername('');
   };

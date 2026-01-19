@@ -1,0 +1,102 @@
+{
+  "page": "purchase-success",
+  "downloadDate": "2026-01-17T04:46:00.000Z",
+  "totalImages": 14,
+  "images": [
+    {
+      "filename": "购票成功页-成功提示-成功图标.png",
+      "alt": "成功",
+      "naturalSize": "420x420",
+      "displaySize": "40x40",
+      "usage": "成功提示区域成功图标"
+    },
+    {
+      "filename": "购票成功页-温馨提示-微信二维码.png",
+      "alt": "微信二维码",
+      "naturalSize": "249x242",
+      "displaySize": "150x150",
+      "usage": "温馨提示区域微信二维码"
+    },
+    {
+      "filename": "购票成功页-温馨提示-支付宝二维码.png",
+      "alt": "支付宝二维码",
+      "naturalSize": "240x232",
+      "displaySize": "150x150",
+      "usage": "温馨提示区域支付宝二维码"
+    },
+    {
+      "filename": "购票成功页-温馨提示-广告横幅.png",
+      "alt": "广告",
+      "naturalSize": "1961x300",
+      "displaySize": "1058x162",
+      "usage": "温馨提示区域广告横幅"
+    },
+    {
+      "filename": "底部导航-友情链接-中国国家铁路集团.png",
+      "alt": "中国国家铁路集团有限公司",
+      "naturalSize": "300x51",
+      "displaySize": "176x30",
+      "usage": "底部导航友情链接"
+    },
+    {
+      "filename": "底部导航-友情链接-中国铁路客户保险.png",
+      "alt": "中国铁路客户保险总公司",
+      "naturalSize": "400x68",
+      "displaySize": "176x30",
+      "usage": "底部导航友情链接"
+    },
+    {
+      "filename": "底部导航-友情链接-中铁银通支付.png",
+      "alt": "中铁银通支付有限公司",
+      "naturalSize": "800x136",
+      "displaySize": "176x30",
+      "usage": "底部导航友情链接"
+    },
+    {
+      "filename": "底部导航-友情链接-中铁程科技.png",
+      "alt": "中铁程科技有限责任公司",
+      "naturalSize": "400x68",
+      "displaySize": "176x30",
+      "usage": "底部导航友情链接"
+    },
+    {
+      "filename": "底部导航-二维码-中国铁路官方微信.png",
+      "alt": "中国铁路官方微信",
+      "naturalSize": "344x344",
+      "displaySize": "80x80",
+      "usage": "底部导航官方二维码"
+    },
+    {
+      "filename": "底部导航-二维码-中国铁路官方微博.png",
+      "alt": "中国铁路官方微博",
+      "naturalSize": "800x800",
+      "displaySize": "80x80",
+      "usage": "底部导航官方二维码"
+    },
+    {
+      "filename": "底部导航-二维码-12306公众号.png",
+      "alt": "12306 公众号",
+      "naturalSize": "258x258",
+      "displaySize": "80x80",
+      "usage": "底部导航官方二维码"
+    },
+    {
+      "filename": "底部导航-二维码-铁路12306.png",
+      "alt": "铁路12306",
+      "naturalSize": "258x258",
+      "displaySize": "80x80",
+      "usage": "底部导航官方二维码"
+    }
+  ],
+  "screenshots": {
+    "fullPage": ["整体页面截图/购票成功页面.png"],
+    "components": [
+      "组件特写截图/顶部导航栏.png",
+      "组件特写截图/成功提示区域.png",
+      "组件特写截图/订单详情区域.png",
+      "组件特写截图/操作按钮区域.png",
+      "组件特写截图/温馨提示区域.png",
+      "组件特写截图/底部导航.png"
+    ]
+  }
+}

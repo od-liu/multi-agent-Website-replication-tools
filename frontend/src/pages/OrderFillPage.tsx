@@ -24,9 +24,8 @@
 
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
-import MainNavigation from '../components/MainNavigation/MainNavigation';
+import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import TrainInfo from '../components/OrderFill/TrainInfo';
 import PassengerInfo from '../components/OrderFill/PassengerInfo';
@@ -52,60 +51,60 @@ const OrderFillPage: React.FC = () => {
   // ========== State Management ==========
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, username, handleLogout } = useAuth();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedPassengers, setSelectedPassengers] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false); // 订单提交中状态
   
-  // 从路由state中获取车次信息
-  const train = location.state?.train;
-  // const searchParams = location.state?.searchParams; // 备用：如果需要显示搜索参数
+  // 从 localStorage 读取登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('userId');
+  });
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
   
-  // 如果没有车次信息，显示错误或返回
-  if (!train) {
-    console.error('❌ 未接收到车次信息，返回车次列表页');
-    // 可以选择跳转回车次列表页或显示错误
-    // navigate('/trains');
-  }
+  // 从 localStorage 获取当前登录用户ID
+  const userId = localStorage.getItem('userId');
   
-  console.log('📋 接收到的车次信息:', train);
-  
-  // 转换TrainList传递的数据格式为OrderFillPage需要的格式
-  const trainData = train ? {
-    date: train.departureDate || '2026-01-18',
-    trainNo: train.trainNumber || 'G103',
-    departureStation: train.departureStation || '北京南',
-    departureTime: train.departureTime || '06:20',
-    arrivalStation: train.arrivalStation || '上海虹桥',
-    arrivalTime: train.arrivalTime || '11:58',
-    scheduleId: train.scheduleId, // 🆕 添加scheduleId用于后续下单
-    prices: {
-      secondClass: { 
-        price: train.seats?.['二等座_price'] || 553.5, 
-        available: train.seats?.['二等座'] === '有' ? 100 : (parseInt(train.seats?.['二等座']) || 0)
-      },
-      firstClass: { 
-        price: train.seats?.['一等座_price'] || 933.0, 
-        available: train.seats?.['一等座'] === '有' ? 50 : (parseInt(train.seats?.['一等座']) || 0)
-      },
-      businessClass: { 
-        price: train.seats?.['商务座_price'] || 1748.5, 
-        available: train.seats?.['商务座'] === '有' ? 20 : (parseInt(train.seats?.['商务座']) || 0)
-      }
-    }
-  } : {
+  // 默认列车数据（用于直接访问 /order 页面时的展示）
+  const defaultTrainData = {
     date: '2026-01-18（周日）',
     trainNo: 'G103',
     departureStation: '北京南',
     departureTime: '06:20',
     arrivalStation: '上海虹桥',
     arrivalTime: '11:58',
-    scheduleId: null,
     prices: {
       secondClass: { price: 662.0, available: 960 },
-      firstClass: { price: 1060.0, available: 80 },
-      businessClass: { price: 2318.0, available: 10 }
+      firstClass: { price: 1060.0, available: 805 },
+      businessClass: { price: 2318.0, available: 105 }
+    }
+  };
+  
+  // 从路由state中获取车次信息，对每个属性进行回退
+  const routeData = location.state?.trainData;
+  const trainData = {
+    date: routeData?.date || defaultTrainData.date,
+    trainNo: routeData?.trainNo || defaultTrainData.trainNo,
+    departureStation: routeData?.departureStation || defaultTrainData.departureStation,
+    departureTime: routeData?.departureTime || defaultTrainData.departureTime,
+    arrivalStation: routeData?.arrivalStation || defaultTrainData.arrivalStation,
+    arrivalTime: routeData?.arrivalTime || defaultTrainData.arrivalTime,
+    prices: {
+      secondClass: {
+        price: routeData?.prices?.secondClass?.price ?? defaultTrainData.prices.secondClass.price,
+        available: routeData?.prices?.secondClass?.available ?? defaultTrainData.prices.secondClass.available
+      },
+      firstClass: {
+        price: routeData?.prices?.firstClass?.price ?? defaultTrainData.prices.firstClass.price,
+        available: routeData?.prices?.firstClass?.available ?? defaultTrainData.prices.firstClass.available
+      },
+      businessClass: {
+        price: routeData?.prices?.businessClass?.price ?? defaultTrainData.prices.businessClass.price,
+        available: routeData?.prices?.businessClass?.available ?? defaultTrainData.prices.businessClass.available
+      }
     }
   };
 
@@ -116,7 +115,30 @@ const OrderFillPage: React.FC = () => {
     { type: '商务座' as const, price: trainData.prices.businessClass.price, available: trainData.prices.businessClass.available }
   ];
 
+  // ========== Lifecycle ==========
+  // 监听 localStorage 变化（用于跨标签页同步登录状态）
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      const userId = localStorage.getItem('userId');
+      const storedUsername = localStorage.getItem('username');
+      setIsLoggedIn(!!userId);
+      setUsername(storedUsername || '');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   // ========== Event Handlers ==========
+  // 处理退出登录
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('username');
+    setIsLoggedIn(false);
+    setUsername('');
+    navigate('/');
+  };
   const handleSubmitOrder = () => {
     // 验证是否选择了乘客
     if (selectedPassengers.length === 0) {
@@ -133,9 +155,12 @@ const OrderFillPage: React.FC = () => {
     setSelectedPassengers(passengers);
   };
 
+  /**
+   * 订单确认处理函数
+   * 由 OrderConfirmModal 调用，接收订单ID并跳转到支付页面
+   * 订单提交逻辑在 OrderConfirmModal 内部处理
+   */
   const handleConfirmOrder = (orderId: string) => {
-    // 🔧 修改：直接接收订单ID并跳转到支付页面
-    // OrderConfirmModal 已经提交了订单，这里只需要跳转
     console.log('🎫 [OrderFillPage] 收到订单确认，订单号:', orderId);
     console.log('🎫 [OrderFillPage] orderId 类型:', typeof orderId);
     console.log('🎫 [OrderFillPage] orderId 值:', JSON.stringify(orderId));
@@ -158,7 +183,10 @@ const OrderFillPage: React.FC = () => {
   };
 
   const handleCloseModal = () => {
-    setShowConfirmModal(false);
+    // 提交过程中不允许关闭弹窗
+    if (!isSubmitting) {
+      setShowConfirmModal(false);
+    }
   };
 
   const handleCloseErrorModal = () => {
@@ -168,15 +196,15 @@ const OrderFillPage: React.FC = () => {
   // ========== UI Render ==========
   return (
     <div className="order-fill-page">
-      {/* 顶部导航栏（复用首页） */}
-      <HomeTopBar 
-        isLoggedIn={isLoggedIn}
-        username={username}
-        onLogout={handleLogout}
-      />
-      
-      {/* 主导航菜单 */}
-      <MainNavigation />
+      {/* 顶部导航区域（白色背景） */}
+      <header className="order-fill-header">
+        <HomeTopBar 
+          isLoggedIn={isLoggedIn} 
+          username={username}
+          onLogout={handleLogout}
+        />
+        <SecondaryNav activeItem="车票" />
+      </header>
       
       {/* 主内容区域 */}
       <div className="order-fill-main-content">
@@ -196,6 +224,7 @@ const OrderFillPage: React.FC = () => {
           trainNo={trainData.trainNo}
           availableSeats={availableSeats}
           onPassengersChange={handlePassengersChange}
+          userId={userId || undefined}
         />
         
         {/* REQ-ORDER-SUBMIT: 提交订单区域 */}
@@ -237,6 +266,7 @@ const OrderFillPage: React.FC = () => {
           }}
           onClose={handleCloseModal}
           onConfirm={handleConfirmOrder}
+          isSubmitting={isSubmitting}
         />
       )}
       

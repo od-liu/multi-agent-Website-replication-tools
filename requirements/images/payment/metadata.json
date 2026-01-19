@@ -1,0 +1,44 @@
+{
+  "page": "payment",
+  "downloadDate": "2026-01-17T05:01:00.000Z",
+  "totalImages": 4,
+  "images": [
+    {
+      "filename": "支付和成功页-顶部导航-Logo.png",
+      "alt": "中国铁路12306",
+      "naturalSize": "55x63",
+      "displaySize": "60x60",
+      "usage": "顶部导航Logo"
+    },
+    {
+      "filename": "支付和成功页-顶部导航-搜索图标.svg",
+      "alt": "搜索",
+      "naturalSize": "200x200",
+      "displaySize": "30x30",
+      "usage": "顶部导航搜索图标"
+    },
+    {
+      "filename": "支付页面-倒计时-锁定图标.png",
+      "alt": "锁定",
+      "naturalSize": "450x462",
+      "displaySize": "40x40",
+      "usage": "倒计时横幅锁定图标"
+    },
+    {
+      "filename": "支付页面-订单信息-保险广告.png",
+      "alt": "添加铁路乘意险保障",
+      "naturalSize": "2718x584",
+      "displaySize": "1058x227",
+      "usage": "订单信息区域保险广告横幅"
+    }
+  ],
+  "screenshots": {
+    "fullPage": ["整体页面截图/支付页面.png"],
+    "components": [
+      "组件特写截图/支付倒计时横幅.png",
+      "组件特写截图/订单信息区域.png",
+      "组件特写截图/支付按钮区域.png",
+      "组件特写截图/温馨提示区域.png"
+    ]
+  }
+}

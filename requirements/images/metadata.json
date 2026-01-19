@@ -1,0 +1,107 @@
+{
+  "downloadDate": "2026-01-17T04:46:45.057Z",
+  "totalImages": 14,
+  "successCount": 14,
+  "failedCount": 0,
+  "images": [
+    {
+      "filename": "支付和成功页-顶部导航-Logo.png",
+      "url": "http://localhost:5173/images/logo.png",
+      "alt": "中国铁路12306",
+      "naturalSize": "55x63",
+      "displaySize": "60x60"
+    },
+    {
+      "filename": "支付和成功页-顶部导航-搜索图标.svg",
+      "url": "http://localhost:5173/images/search.svg",
+      "alt": "搜索",
+      "naturalSize": "200x200",
+      "displaySize": "30x30"
+    },
+    {
+      "filename": "购票成功页-成功提示-成功图标.png",
+      "url": "http://localhost:5173/images/tick.png",
+      "alt": "成功",
+      "naturalSize": "420x420",
+      "displaySize": "40x40"
+    },
+    {
+      "filename": "购票成功页-温馨提示-微信二维码.png",
+      "url": "http://localhost:5173/images/%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "微信二维码",
+      "naturalSize": "249x242",
+      "displaySize": "150x150"
+    },
+    {
+      "filename": "购票成功页-温馨提示-支付宝二维码.png",
+      "url": "http://localhost:5173/images/%E6%94%AF%E4%BB%98%E5%AE%9D%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "支付宝二维码",
+      "naturalSize": "240x232",
+      "displaySize": "150x150"
+    },
+    {
+      "filename": "购票成功页-温馨提示-广告横幅.png",
+      "url": "http://localhost:5173/images/%E5%B9%BF%E5%91%8A.png",
+      "alt": "广告",
+      "naturalSize": "1961x300",
+      "displaySize": "1058x162"
+    },
+    {
+      "filename": "底部导航-友情链接-中国国家铁路集团.png",
+      "url": "http://localhost:5173/images/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5-%E5%B7%A6%E4%B8%8A.png",
+      "alt": "中国国家铁路集团有限公司",
+      "naturalSize": "300x51",
+      "displaySize": "176x30"
+    },
+    {
+      "filename": "底部导航-友情链接-中国铁路客户保险.png",
+      "url": "http://localhost:5173/images/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5-%E5%8F%B3%E4%B8%8A.png",
+      "alt": "中国铁路客户保险总公司",
+      "naturalSize": "400x68",
+      "displaySize": "176x30"
+    },
+    {
+      "filename": "底部导航-友情链接-中铁银通支付.png",
+      "url": "http://localhost:5173/images/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5-%E5%B7%A6%E4%B8%8B.png",
+      "alt": "中铁银通支付有限公司",
+      "naturalSize": "800x136",
+      "displaySize": "176x30"
+    },
+    {
+      "filename": "底部导航-友情链接-中铁程科技.png",
+      "url": "http://localhost:5173/images/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5-%E5%8F%B3%E4%B8%8B.png",
+      "alt": "中铁程科技有限责任公司",
+      "naturalSize": "400x68",
+      "displaySize": "176x30"
+    },
+    {
+      "filename": "底部导航-二维码-中国铁路官方微信.png",
+      "url": "http://localhost:5173/images/%E4%B8%AD%E5%9B%BD%E9%93%81%E8%B7%AF%E5%AE%98%E6%96%B9%E5%BE%AE%E4%BF%A1%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "中国铁路官方微信",
+      "naturalSize": "344x344",
+      "displaySize": "80x80"
+    },
+    {
+      "filename": "底部导航-二维码-中国铁路官方微博.png",
+      "url": "http://localhost:5173/images/%E4%B8%AD%E5%9B%BD%E9%93%81%E8%B7%AF%E5%AE%98%E6%96%B9%E5%BE%AE%E5%8D%9A%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "中国铁路官方微博",
+      "naturalSize": "800x800",
+      "displaySize": "80x80"
+    },
+    {
+      "filename": "底部导航-二维码-12306公众号.png",
+      "url": "http://localhost:5173/images/12306%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "12306 公众号",
+      "naturalSize": "258x258",
+      "displaySize": "80x80"
+    },
+    {
+      "filename": "底部导航-二维码-铁路12306.png",
+      "url": "http://localhost:5173/images/%E9%93%81%E8%B7%AF12306%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
+      "alt": "铁路12306",
+      "naturalSize": "258x258",
+      "displaySize": "80x80"
+    }
+  ],
+  "failedImages": []
+}

@@ -3,15 +3,25 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #F5F5F5;
+  background-color: #ffffff; /* 与其他页面一致：纯白背景 */
+}
+
+/* ========== 顶部导航区域（白色背景） ========== */
+.payment-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .payment-main-content {
   flex: 1;
-  max-width: 1512px;
+  /* 📸 参考截图: requirements/images/payment/整体页面截图/支付页面.png */
+  max-width: 1000px;
   width: 100%;
   margin: 0 auto;
-  padding: 20px 30px;
+  padding: 20px 0 40px;
   box-sizing: border-box;
 }
 
@@ -28,9 +38,9 @@
 /* ========== 温馨提示区域 ========== */
 .payment-warm-tips {
   background-color: #FFFBE5;
-  border: 1px solid #D0D0D0;
-  border-radius: 4px;
-  padding: 20px 30px;
+  border: 1px solid #E5D7A1;
+  border-radius: 2px;
+  padding: 18px 20px;
   margin-top: 30px;
   font-size: 13px;
   color: #333333;
@@ -39,18 +49,18 @@
 
 .tips-title {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: #000000;
   margin-bottom: 10px;
 }
 
 .tips-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 22px;
 }
 
 .tips-list li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .tips-link {

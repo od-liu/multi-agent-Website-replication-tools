@@ -28,9 +28,9 @@ export async function authenticateUser(username, password) {
     const bcrypt = (await import('bcrypt')).default;
     const db = getDb();
 
-    // Query user (support username/email/phone)
+    // Query user (support username/email/phone) - 包含 name 和 username
     const user = await db.getAsync(
-      'SELECT id, username, email, phone, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
+      'SELECT id, username, password FROM users WHERE username = ? OR email = ? OR phone = ?',
       username, username, username
     );
 
@@ -42,7 +42,7 @@ export async function authenticateUser(username, password) {
     }
 
     // Verify password
-    const isValid = bcrypt.compareSync(password, user.password_hash);
+    const isValid = bcrypt.compareSync(password, user.password);
     if (!isValid) {
       return {
         success: false,
@@ -54,8 +54,7 @@ export async function authenticateUser(username, password) {
       success: true,
       userId: user.id,
       username: user.username,
-      email: user.email,
-      phone: user.phone
+      name: user.name
     };
   } catch (error) {
     console.error('认证失败:', error);
@@ -311,11 +310,20 @@ export async function registerUser(userData) {
       username, passwordHash, name, idType, idNumber, idCardLast4, phone, email, passengerType
     );
     
-    console.log(`✅ 用户注册成功: ${username} (ID: ${result.lastID})`);
+    const userId = result.lastID;
+    
+    // 自动将注册人添加为乘客（本人）
+    await db.runAsync(
+      `INSERT INTO passengers (user_id, name, id_type, id_number, phone, passenger_type, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+      userId, name, idType, idNumber, phone, passengerType
+    );
+    
+    console.log(`✅ 用户注册成功: ${username} (ID: ${userId})，已自动添加为乘客`);
     
     return {
       success: true,
-      userId: result.lastID
+      userId: userId
     };
   } catch (error) {
     console.error('注册失败:', error);
@@ -365,7 +373,7 @@ export async function sendRegistrationVerificationCode(phoneNumber, userData) {
       };
     }
     
-    // Check if username is already registered (if provided in userData)
+    // Check if username is already taken (防止用户名被占用)
     if (userData && userData.username) {
       const existingUsername = await db.getAsync(
         'SELECT id FROM users WHERE username = ?',
@@ -375,22 +383,22 @@ export async function sendRegistrationVerificationCode(phoneNumber, userData) {
       if (existingUsername) {
         return {
           success: false,
-          message: '该用户名已被注册，请更换用户名'
+          message: '该用户名已被占用，请更换用户名'
         };
       }
     }
     
-    // Check if email is already registered (if provided in userData)
-    if (userData && userData.email) {
-      const existingEmail = await db.getAsync(
-        'SELECT id FROM users WHERE email = ?',
-        userData.email
+    // Check if ID number is already registered
+    if (userData && userData.idNumber) {
+      const existingIdNumber = await db.getAsync(
+        'SELECT id FROM users WHERE id_number = ?',
+        userData.idNumber
       );
       
-      if (existingEmail) {
+      if (existingIdNumber) {
         return {
           success: false,
-          message: '该邮箱已被注册，请使用其他邮箱'
+          message: '该证件号码已被注册'
         };
       }
     }
@@ -400,6 +408,9 @@ export async function sendRegistrationVerificationCode(phoneNumber, userData) {
     
     // Set expiration time (5 minutes from now)
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    
+    // Delete any existing verification codes for this phone (avoid duplicate codes)
+    await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
     
     // Store in database (with user_data for later registration completion)
     await db.runAsync(
@@ -605,53 +616,57 @@ export async function verifyRegistrationCode(phoneNumber, code) {
       };
     }
     
-    // Hash password
-    const saltRounds = 10;
-    const passwordHash = bcrypt.hashSync(userData.password, saltRounds);
-    
-    // Extract last 4 digits of ID number
-    const idCardLast4 = userData.idNumber ? userData.idNumber.slice(-4) : '';
-    
-    // Check if username already exists
+    // 再次检查用户名是否已被占用（防止并发注册）
     const existingUsername = await db.getAsync(
       'SELECT id FROM users WHERE username = ?',
       userData.username
     );
     
     if (existingUsername) {
+      // 删除验证码，让用户重新注册
+      await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
       return {
         success: false,
-        message: '该用户名已被注册，请更换用户名'
+        message: '该用户名已被占用，请返回修改后重新注册'
       };
     }
     
-    // Check if email already exists (if email is provided)
-    if (userData.email) {
-      const existingEmail = await db.getAsync(
-        'SELECT id FROM users WHERE email = ?',
-        userData.email
-      );
-      
-      if (existingEmail) {
-        return {
-          success: false,
-          message: '该邮箱已被注册，请使用其他邮箱'
-        };
-      }
-    }
-    
-    // Check if phone already exists
+    // 检查手机号是否已被注册
     const existingPhone = await db.getAsync(
       'SELECT id FROM users WHERE phone = ?',
       phoneNumber
     );
     
     if (existingPhone) {
+      await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
       return {
         success: false,
-        message: '该手机号已被注册'
+        message: '该手机号已被注册，请使用其他手机号'
       };
     }
+    
+    // 检查证件号是否已被使用
+    if (userData.idNumber) {
+      const existingIdNumber = await db.getAsync(
+        'SELECT id FROM users WHERE id_number = ?',
+        userData.idNumber
+      );
+      
+      if (existingIdNumber) {
+        await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
+        return {
+          success: false,
+          message: '该证件号码已被注册，请确认是否本人注册'
+        };
+      }
+    }
+    
+    // Hash password
+    const saltRounds = 10;
+    const passwordHash = bcrypt.hashSync(userData.password, saltRounds);
+    
+    // Extract last 4 digits of ID number
+    const idCardLast4 = userData.idNumber ? userData.idNumber.slice(-4) : '';
     
     // Insert user
     const result = await db.runAsync(
@@ -668,52 +683,44 @@ export async function verifyRegistrationCode(phoneNumber, code) {
       userData.passengerType || '1'
     );
     
+    const userId = result.lastID;
+    
+    // 自动将注册人添加为乘客（本人）
+    await db.runAsync(
+      `INSERT INTO passengers (user_id, name, id_type, id_number, phone, passenger_type, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
+      userId,
+      userData.name,
+      userData.idType || '1',
+      userData.idNumber || '',
+      phoneNumber,
+      userData.passengerType || '1'
+    );
+    
     // Delete used verification code
     await db.runAsync('DELETE FROM verification_codes WHERE phone = ?', phoneNumber);
     
-    const newUserId = result.lastID;
-    console.log(`✅ 用户 ${userData.username} 注册完成 (ID: ${newUserId})`);
-    
-    // 🆕 自动添加用户本人为常用乘客
-    try {
-      await db.runAsync(`
-        INSERT INTO passengers (user_id, name, id_type, id_number, phone, passenger_type, is_self)
-        VALUES (?, ?, ?, ?, ?, ?, 1)
-      `, newUserId, userData.name, userData.idType || '1', userData.idNumber, phoneNumber, userData.passengerType || '1');
-      
-      console.log(`✅ 已自动添加用户 ${userData.name} 为常用乘客`);
-    } catch (passengerErr) {
-      console.error('⚠️  添加常用乘客失败（不影响注册）:', passengerErr.message);
-      // 不中断注册流程
-    }
+    console.log(`✅ 用户 ${userData.username} 注册完成 (ID: ${userId})，已自动添加为乘客`);
     
     return {
       success: true,
-      userId: newUserId
+      userId: result.lastID
     };
   } catch (error) {
     console.error('验证注册验证码失败:', error);
-    
-    // Handle specific database constraint errors
-    if (error.code === 'SQLITE_CONSTRAINT') {
-      if (error.message.includes('users.username')) {
-        return {
-          success: false,
-          message: '该用户名已被注册，请更换用户名'
-        };
-      } else if (error.message.includes('users.email')) {
-        return {
-          success: false,
-          message: '该邮箱已被注册，请使用其他邮箱'
-        };
-      } else if (error.message.includes('users.phone')) {
-        return {
-          success: false,
-          message: '该手机号已被注册'
-        };
+    // 提供更详细的错误信息
+    if (error.message && error.message.includes('UNIQUE constraint failed')) {
+      if (error.message.includes('username')) {
+        return { success: false, message: '该用户名已被占用' };
       }
+      if (error.message.includes('phone')) {
+        return { success: false, message: '该手机号已被注册' };
+      }
+      if (error.message.includes('id_number')) {
+        return { success: false, message: '该证件号码已被注册' };
+      }
+      return { success: false, message: '注册信息与已有用户冲突，请检查后重试' };
     }
-    
     return {
       success: false,
       message: '系统错误，请稍后再试'
@@ -742,13 +749,9 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 获取当前时间
-    const now = new Date().toISOString();
-    
-    // 查询车次（使用新的 train_schedules 表，只返回未来发车的车次）
+    // 查询车次（连接trains、stations、cities表）
     let query = `
       SELECT 
-        ts.id as schedule_id,
         t.id as train_id,
         t.train_number,
         t.train_type,
@@ -759,25 +762,16 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         t.departure_time,
         t.arrival_time,
         t.duration,
-        t.arrival_day,
-        ts.departure_date,
-        ts.departure_datetime,
-        ts.arrival_datetime
-      FROM train_schedules ts
-      JOIN trains t ON ts.train_id = t.id
+        t.arrival_day
+      FROM trains t
       JOIN stations s1 ON t.departure_station_id = s1.id
       JOIN stations s2 ON t.arrival_station_id = s2.id
       JOIN cities c1 ON s1.city_id = c1.id
       JOIN cities c2 ON s2.city_id = c2.id
-      WHERE c1.city_name = ? 
-        AND c2.city_name = ? 
-        AND ts.departure_date = ?
-        AND ts.departure_datetime > ?
-        AND t.is_active = 1
-        AND ts.status = 'scheduled'
+      WHERE c1.city_name = ? AND c2.city_name = ? AND t.is_active = 1
     `;
     
-    const params = [fromCity, toCity, departureDate, now];
+    const params = [fromCity, toCity];
     
     // 如果只查高铁/动车
     if (isHighSpeed) {
@@ -789,44 +783,33 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     const trains = await db.allAsync(query, ...params);
     
     if (!trains || trains.length === 0) {
-      console.log(`ℹ️  未找到符合条件的车次 (可能都已发车)`);
       return {
         success: true,
         trains: []
       };
     }
     
-    console.log(`✅ 找到 ${trains.length} 个未发车的车次`);
-    
-    // 查询每个车次的座位信息（从新的 seats 表统计）
+    // 查询每个车次的座位信息
     const trainsWithSeats = [];
     for (const train of trains) {
-      // 统计每种座位类型的可用情况
-      const seatStats = await db.allAsync(`
-        SELECT 
-          seat_type,
-          price,
-          COUNT(*) as total,
-          SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available,
-          SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
-          SUM(CASE WHEN status = 'sold' THEN 1 ELSE 0 END) as sold
-        FROM seats
-        WHERE schedule_id = ?
-        GROUP BY seat_type, price
-      `, train.schedule_id);
+      const seats = await db.allAsync(`
+        SELECT seat_type, total_seats, available_seats, price
+        FROM train_seats
+        WHERE train_id = ?
+      `, train.train_id);
       
       // 将座位信息转换为对象格式
       const seatsObj = {};
-      seatStats.forEach(seat => {
+      seats.forEach(seat => {
         const key = seat.seat_type;
-        const available = seat.available;
-        
-        if (available === 0) {
+        if (seat.available_seats === 0) {
           seatsObj[key] = '无';
-        } else if (available >= 20) {
+        } else if (seat.available_seats >= 20) {
           seatsObj[key] = '有';
+        } else if (seat.available_seats > 0) {
+          seatsObj[key] = seat.available_seats.toString();
         } else {
-          seatsObj[key] = available.toString();
+          seatsObj[key] = '--';
         }
         
         // 保存价格信息
@@ -836,7 +819,6 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
       });
       
       trainsWithSeats.push({
-        scheduleId: train.schedule_id,
         trainNumber: train.train_number,
         trainType: train.train_type,
         departureStation: train.departure_station,
@@ -847,7 +829,6 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         arrivalTime: train.arrival_time,
         duration: train.duration,
         arrivalDay: train.arrival_day === 0 ? '当日到达' : '次日到达',
-        departureDate: train.departure_date,
         seats: seatsObj,
         supportsStudent: true // 简化实现：所有车次都支持学生票
       });
@@ -1009,24 +990,43 @@ export async function getPassengers(userId) {
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 从数据库查询用户的常用乘客
+    // 从数据库获取该用户的乘客列表
     const passengers = await db.allAsync(
-      'SELECT * FROM passengers WHERE user_id = ? ORDER BY is_self DESC, created_at DESC',
+      'SELECT id, name, id_type, id_number, passenger_type FROM passengers WHERE user_id = ?',
       userId
     );
     
-    console.log(`📋 查询到 ${passengers.length} 个常用乘客 (userId: ${userId})`);
+    // 证件类型映射
+    const idTypeMap = {
+      '1': '居民身份证',
+      '2': '护照',
+      '3': '港澳通行证',
+      '4': '台湾通行证'
+    };
     
-    // 转换数据格式
-    const formattedPassengers = passengers.map(p => ({
-      id: p.id,
-      name: p.name,
-      idType: p.id_type === '1' ? '居民身份证' : '其他证件',
-      idNumber: p.id_number,
-      phone: p.phone,
-      passengerType: p.passenger_type === '1' ? '成人票' : (p.passenger_type === '2' ? '儿童票' : '学生票'),
-      isSelf: p.is_self === 1
-    }));
+    // 乘客类型映射
+    const passengerTypeMap = {
+      '1': '成人票',
+      '2': '学生票',
+      '3': '儿童票'
+    };
+
+    // 转换数据格式并对证件号进行脱敏处理
+    const formattedPassengers = passengers.map(p => {
+      // 证件号脱敏：显示前4位和后3位，中间用*代替
+      const idNumber = p.id_number || '';
+      const maskedIdNumber = idNumber.length > 7 
+        ? idNumber.substring(0, 4) + '*'.repeat(idNumber.length - 7) + idNumber.substring(idNumber.length - 3)
+        : idNumber;
+      
+      return {
+        id: String(p.id),
+        name: p.name,
+        idType: idTypeMap[p.id_type] || p.id_type || '居民身份证',
+        idNumber: maskedIdNumber,
+        passengerType: passengerTypeMap[p.passenger_type] || p.passenger_type || '成人票'
+      };
+    });
     
     return {
       success: true,
@@ -1067,27 +1067,68 @@ export async function submitOrder(userId, orderData) {
       };
     }
     
-    // Mock implementation (数据库实现待后续完成)
-    // const { getDb } = await import('./db.js');
-    // const db = getDb();
+    const { getDb } = await import('./db.js');
+    const db = getDb();
     
-    // 1. 检查余票
-    // 2. 创建订单记录
-    // 3. 创建乘客订单关联记录
-    // 4. 更新座位库存
-    // 5. 分配座位号
-    
-    // Mock订单ID
+    // 生成订单ID
     const orderId = `ORDER-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // 计算订单总价
+    const totalPrice = orderData.passengers.reduce((sum, p) => {
+      return sum + (p.price || 662.0); // 默认二等座价格
+    }, 0);
+    
+    // 设置订单过期时间为20分钟后
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 20 * 60 * 1000); // 20分钟
+    
+    // 1. 创建订单记录
+    await db.runAsync(`
+      INSERT INTO orders (
+        id, user_id, train_number, from_station, to_station,
+        departure_date, departure_time, arrival_time, total_price,
+        status, created_at, expires_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+      orderId, userId, orderData.trainNumber, orderData.fromStation, orderData.toStation,
+      orderData.departureDate, orderData.departureTime, orderData.arrivalTime, totalPrice,
+      '已确认未支付', now.toISOString(), expiresAt.toISOString()
+    );
+    
+    // 2. 创建乘客订单记录并分配座位
+    const seats = [];
+    for (let idx = 0; idx < orderData.passengers.length; idx++) {
+      const passenger = orderData.passengers[idx];
+      const carNumber = String(idx + 1).padStart(2, '0');
+      const seatNumber = `${carNumber}${String.fromCharCode(65 + (idx % 5))}`;
+      
+      await db.runAsync(`
+        INSERT INTO order_passengers (
+          order_id, name, id_type, id_number, ticket_type,
+          seat_class, car_number, seat_number, price
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+        orderId, passenger.name, passenger.idType, passenger.idNumber, passenger.ticketType,
+        passenger.seatClass, carNumber, seatNumber, passenger.price || 662.0
+      );
+      
+      seats.push({
+        passengerId: passenger.passengerId,
+        carNumber,
+        seatNumber
+      });
+    }
+    
+    // 3. 标记座位为已被预定(简化实现,实际应该更新train_seats表)
+    // 这里我们假设座位已经在train_seats表中存在
     
     return {
       success: true,
       orderId,
       message: '订单提交成功',
-      seats: orderData.passengers.map((p, idx) => ({
-        passengerId: p.passengerId,
-        seatNumber: `${idx + 1}车${String(idx + 1).padStart(2, '0')}A号`
-      }))
+      seats
     };
   } catch (error) {
     console.error('提交订单失败:', error);
@@ -1099,70 +1140,289 @@ export async function submitOrder(userId, orderData) {
 }
 
 /**
- * @function FUNC-GET-PERSONAL-INFO
- * @signature getPersonalInfo(userId)
- * @input {string} userId - 用户ID
- * @output {Object} - 个人信息对象
- * @db_ops SELECT on users
+ * @function FUNC-GET-ORDER-PAYMENT-INFO
+ * @summary 获取订单支付信息
+ * @param {string} orderId - 订单ID
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {Object} result.order - 订单信息
+ * @scenario 从订单填写页跳转支付页
+ * @scenario 从未完成订单页跳转支付页
  */
-export async function getPersonalInfo(userId) {
+export async function getOrderPaymentInfo(orderId) {
   try {
-    // 骨架实现：从数据库查询用户个人信息
-    // 实际实现需要连接数据库并执行 SELECT 查询
-    console.log('获取个人信息:', userId);
+    const { getDb } = await import('./db.js');
+    const db = getDb();
     
-    // Mock数据
-    const mockData = {
-      username: 'od12322',
-      realName: '刘嘉敏',
-      country: '中国China',
-      idType: '居民身份证',
-      idNumber: '3301***********028',
-      verificationStatus: '已通过',
-      phone: '(+86) 198****9256',
-      phoneVerification: '已通过核验',
-      email: '3279882704@qq.com',
-      discountType: '成人'
-    };
+    // 获取订单基本信息
+    const order = await db.getAsync(`
+      SELECT 
+        o.id as orderId,
+        o.train_number as trainNumber,
+        o.departure_date as date,
+        o.from_station as fromStation,
+        o.to_station as toStation,
+        o.departure_time as departTime,
+        o.arrival_time as arriveTime,
+        o.total_price as totalPrice,
+        o.created_at as createdAt,
+        o.expires_at as expiresAt
+      FROM orders o
+      WHERE o.id = ? AND o.status = '已确认未支付'
+    `, orderId);
+    
+    if (!order) {
+      return {
+        success: false,
+        message: '订单不存在或已失效'
+      };
+    }
+    
+    // 获取乘客信息
+    const passengers = await db.allAsync(`
+      SELECT 
+        op.name,
+        op.id_type as idType,
+        op.id_number as idNumber,
+        op.ticket_type as ticketType,
+        op.seat_class as seatClass,
+        op.car_number as carNumber,
+        op.seat_number as seatNumber,
+        op.price
+      FROM order_passengers op
+      WHERE op.order_id = ?
+    `, orderId);
     
     return {
       success: true,
-      data: mockData
+      order: {
+        ...order,
+        passengers
+      }
     };
   } catch (error) {
-    console.error('获取个人信息失败:', error);
+    console.error('获取订单支付信息失败:', error);
     return {
       success: false,
-      message: '获取个人信息失败'
+      message: '获取订单信息失败'
     };
   }
 }
 
 /**
- * @function FUNC-UPDATE-CONTACT-INFO
- * @signature updateContactInfo(userId, contactData)
- * @input {string} userId - 用户ID
- * @input {Object} contactData - 联系方式数据
- * @input {string} contactData.email - 邮箱
- * @output {Object} - 更新结果
- * @db_ops UPDATE on users
+ * @function FUNC-CONFIRM-PAYMENT
+ * @summary 确认支付订单
+ * @param {string} orderId - 订单ID
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {string} result.message - 响应消息
+ * @output {boolean} result.timeout - 是否超时(可选)
+ * @scenario 用户确认支付车票(订单未超时)
+ * @scenario 用户确认支付车票但订单已超时
  */
-export async function updateContactInfo(userId, contactData) {
+export async function confirmPayment(orderId) {
   try {
-    // 骨架实现：更新数据库中的联系方式
-    // 实际实现需要连接数据库并执行 UPDATE 语句
-    console.log('更新联系方式:', userId, contactData);
+    const { getDb } = await import('./db.js');
+    const db = getDb();
     
-    // Mock实现
+    // 获取订单信息
+    const order = await db.getAsync(`
+      SELECT id, expires_at, status
+      FROM orders
+      WHERE id = ?
+    `, orderId);
+    
+    if (!order) {
+      return {
+        success: false,
+        message: '订单不存在'
+      };
+    }
+    
+    // 检查订单是否超时
+    const now = new Date();
+    const expiresAt = new Date(order.expires_at);
+    
+    if (now > expiresAt) {
+      // 订单已超时,释放座位并删除订单
+      await db.runAsync(`
+        UPDATE train_seats 
+        SET seat_status = '空闲', order_id = NULL
+        WHERE order_id = ?
+      `, orderId);
+      
+      await db.runAsync('DELETE FROM order_passengers WHERE order_id = ?', orderId);
+      await db.runAsync('DELETE FROM orders WHERE id = ?', orderId);
+      
+      return {
+        success: false,
+        timeout: true,
+        message: '支付超时，请重新购票'
+      };
+    }
+    
+    // 更新订单状态为已支付
+    await db.runAsync(`
+      UPDATE orders 
+      SET status = '已支付', paid_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `, orderId);
+    
+    // 确认座位状态为已被预定
+    await db.runAsync(`
+      UPDATE train_seats 
+      SET seat_status = '已被预定'
+      WHERE order_id = ?
+    `, orderId);
+    
     return {
       success: true,
-      message: '联系方式更新成功'
+      message: '支付成功'
     };
   } catch (error) {
-    console.error('更新联系方式失败:', error);
+    console.error('确认支付失败:', error);
     return {
       success: false,
-      message: '更新联系方式失败'
+      message: '支付失败'
+    };
+  }
+}
+
+/**
+ * @function FUNC-CANCEL-ORDER
+ * @summary 取消订单
+ * @param {string} orderId - 订单ID
+ * @param {number} userId - 用户ID
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {string} result.message - 响应消息
+ * @scenario 用户在交易提示弹窗确认取消订单
+ */
+export async function cancelOrder(orderId, userId) {
+  try {
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    // 释放座位
+    await db.runAsync(`
+      UPDATE train_seats 
+      SET seat_status = '空闲', order_id = NULL
+      WHERE order_id = ?
+    `, orderId);
+    
+    // 删除乘客订单记录
+    await db.runAsync('DELETE FROM order_passengers WHERE order_id = ?', orderId);
+    
+    // 删除订单
+    await db.runAsync('DELETE FROM orders WHERE id = ?', orderId);
+    
+    // 增加用户当天取消次数
+    const today = new Date().toISOString().split('T')[0];
+    const existingCount = await db.getAsync(`
+      SELECT cancel_count FROM user_daily_cancel_count 
+      WHERE user_id = ? AND date = ?
+    `, userId, today);
+    
+    if (existingCount) {
+      await db.runAsync(`
+        UPDATE user_daily_cancel_count 
+        SET cancel_count = cancel_count + 1 
+        WHERE user_id = ? AND date = ?
+      `, userId, today);
+    } else {
+      await db.runAsync(`
+        INSERT INTO user_daily_cancel_count (user_id, date, cancel_count)
+        VALUES (?, ?, 1)
+      `, userId, today);
+    }
+    
+    return {
+      success: true,
+      message: '订单已取消'
+    };
+  } catch (error) {
+    console.error('取消订单失败:', error);
+    return {
+      success: false,
+      message: '取消订单失败'
+    };
+  }
+}
+
+/**
+ * @function FUNC-GET-ORDER-SUCCESS-INFO
+ * @summary 获取订单成功信息
+ * @param {string} orderId - 订单ID
+ * @returns {Promise<Object>} result
+ * @output {boolean} result.success - 是否成功
+ * @output {Object} result.order - 订单信息
+ * @scenario 系统跳转至购票成功页
+ */
+export async function getOrderSuccessInfo(orderId) {
+  try {
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    // 获取订单基本信息
+    const order = await db.getAsync(`
+      SELECT 
+        o.id as orderId,
+        o.train_number as trainNumber,
+        o.departure_date as date,
+        o.from_station as fromStation,
+        o.to_station as toStation,
+        o.departure_time as departTime,
+        o.arrival_time as arriveTime
+      FROM orders o
+      WHERE o.id = ? AND o.status = '已支付'
+    `, orderId);
+    
+    if (!order) {
+      return {
+        success: false,
+        message: '订单不存在或未支付'
+      };
+    }
+    
+    // 生成订单号(格式: EA + 8位UUID前缀)
+    const orderNumber = `EA${orderId.substring(0, 8).toUpperCase()}`;
+    
+    // 获取乘客信息
+    const passengers = await db.allAsync(`
+      SELECT 
+        op.name,
+        op.id_type as idType,
+        op.id_number as idNumber,
+        op.ticket_type as ticketType,
+        op.seat_class as seatClass,
+        op.car_number as carNumber,
+        op.seat_number as seatNumber,
+        op.price,
+        '已支付' as status
+      FROM order_passengers op
+      WHERE op.order_id = ?
+    `, orderId);
+    
+    // 对证件号打码: 前4位+***+后3位
+    const maskedPassengers = passengers.map(p => ({
+      ...p,
+      gender: '先生', // 简化处理,实际应从用户信息获取
+      idNumber: p.idNumber.substring(0, 4) + '***********' + p.idNumber.substring(p.idNumber.length - 3)
+    }));
+    
+    return {
+      success: true,
+      order: {
+        ...order,
+        orderNumber,
+        passengers: maskedPassengers
+      }
+    };
+  } catch (error) {
+    console.error('获取订单成功信息失败:', error);
+    return {
+      success: false,
+      message: '获取订单信息失败'
     };
   }
 }

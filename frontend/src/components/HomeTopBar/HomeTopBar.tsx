@@ -212,24 +212,17 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
         {isLoggedIn ? (
           <>
             <span className="home-top-greeting">您好，</span>
-            <a
-              href="#"
-              className="home-top-link home-top-username-link"
-              onClick={(e) => {
-                e.preventDefault();
-                handleMyAccount();
-              }}
-              style={{ color: '#0066CC', cursor: 'pointer' }}
-            >
-              {username}
-            </a>
+            <a href="#" className="home-top-link home-top-username-link" onClick={(e) => {
+              e.preventDefault();
+              handleMyAccount();
+            }}>{username}</a>
             <span className="home-top-sep">|</span>
             <a
               href="#"
               className="home-top-link home-top-auth-link-text"
               onClick={(e) => {
                 e.preventDefault();
-                onLogout && onLogout();
+                if (onLogout) onLogout();
               }}
             >
               退出
@@ -237,7 +230,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
           </>
         ) : (
           <>
-            <span className="home-top-greeting">请</span>
+            <span className="home-top-greeting">您好，请</span>
             <a
               href="#"
               className="home-top-link home-top-auth-link-text"
@@ -248,7 +241,7 @@ const HomeTopBar: React.FC<HomeTopBarProps> = ({
             >
               登录
             </a>
-            <span className="home-top-sep">|</span>
+            <span className="home-top-auth-space" aria-hidden="true" />
             <a
               href="#"
               className="home-top-link home-top-auth-link-text"

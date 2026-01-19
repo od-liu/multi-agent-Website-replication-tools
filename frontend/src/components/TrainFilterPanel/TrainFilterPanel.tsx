@@ -78,12 +78,12 @@ const TrainFilterPanel: React.FC<TrainFilterPanelProps> = ({ onFilter, onDateCha
 
   // ========== Data Configuration ==========
   
-  // 日期列表（动态生成15天，显示“MM-DD + 周X”以更贴近 12306）
+  // 日期列表（动态生成15天，显示"MM-DD + 周X"以更贴近 12306）
   const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] as const;
-  // 与目标截图对齐：日期条从“昨天（目标站 server today）”开始，连续 15 天
+  // 日期条从今天开始，连续 15 天
   const dates = Array.from({ length: 15 }, (_, i) => {
     const date = new Date();
-    date.setDate(date.getDate() + i - 1);
+    date.setDate(date.getDate() + i); // 从今天开始（i=0是今天，i=1是明天...）
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const weekDay = weekDays[date.getDay()];

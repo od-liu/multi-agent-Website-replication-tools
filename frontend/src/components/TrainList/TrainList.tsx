@@ -38,7 +38,6 @@ import { useNavigate } from 'react-router-dom';
 import './TrainList.css';
 
 interface Train {
-  scheduleId?: number; // 🆕 列车时刻表ID（用于下单）
   trainNumber: string;
   trainType: string; // 'GC'/'D'等
   departureStation: string;
@@ -49,7 +48,6 @@ interface Train {
   arrivalTime: string;
   duration: string;
   arrivalDay: string; // '当日到达'/'次日到达'
-  departureDate?: string; // 🆕 出发日期（YYYY-MM-DD）
   seats: {
     [key: string]: string | number; // 支持中文键名，如 '商务座': '10'/'有'/'无'/'--'
   };
@@ -67,10 +65,11 @@ const TrainList: React.FC<TrainListProps> = ({
   trains = [], 
   fromCity = '北京', 
   toCity = '上海', 
-  // 与原站一致：使用 YYYY-MM-DD（默认给一个稳定值，避免“1月xx日 周x”格式）
+  // 与原站一致：使用 YYYY-MM-DD（默认给一个稳定值，避免"1月xx日 周x"格式）
   date = '2026-01-19'
 }) => {
   // ========== State Management ==========
+  const navigate = useNavigate();
   const [showDiscount, setShowDiscount] = useState(false);
   const [showPoints, setShowPoints] = useState(false);
   const [showAllBookable, setShowAllBookable] = useState(false);
@@ -116,29 +115,61 @@ const TrainList: React.FC<TrainListProps> = ({
     );
   };
 
-  const navigate = useNavigate();
-
   /**
-   * @feature "点击预订按钮跳转到订单填写页面"
-   * 传递车次信息到订单填写页面
+   * @feature "无票时预订按钮置灰不可点击"
+   * 点击预订按钮，跳转到订单填写页面
    */
   const handleBook = (train: Train) => {
     if (!hasAvailableSeats(train)) {
       return;
     }
-    console.log(`预订车次 ${train.trainNumber}`);
     
-    // 跳转到订单填写页面，通过 state 传递车次信息
-    navigate('/order', {
-      state: {
-        train: train,
-        searchParams: {
-          fromCity: train.departureCity,
-          toCity: train.arrivalCity,
-          departureDate: train.departureDate
+    // 辅助函数：获取席别价格（从 train.seats['xxx_price'] 获取，如果没有则使用默认值）
+    const getSeatPrice = (seatType: string, defaultPrice: number): number => {
+      const priceKey = `${seatType}_price`;
+      const priceValue = train.seats[priceKey];
+      if (priceValue !== undefined && priceValue !== null && priceValue !== '--') {
+        return parseFloat(String(priceValue)) || defaultPrice;
+      }
+      return defaultPrice;
+    };
+    
+    // 辅助函数：获取席别余票数
+    const getSeatAvailable = (seatType: string): number => {
+      const seatValue = train.seats[seatType];
+      if (seatValue === '有') return 999;
+      if (seatValue === '无' || seatValue === '--' || seatValue === undefined) return 0;
+      return parseInt(String(seatValue)) || 0;
+    };
+    
+    // 构造订单填写页需要的车次数据
+    const trainData = {
+      date: date, // 使用传入的日期
+      trainNo: train.trainNumber,
+      departureStation: train.fromStation,
+      departureTime: train.departureTime,
+      arrivalStation: train.toStation,
+      arrivalTime: train.arrivalTime,
+      duration: train.duration,
+      arrivalDay: train.arrivalDay,
+      prices: {
+        secondClass: { 
+          price: getSeatPrice('二等座', 662.0), 
+          available: getSeatAvailable('二等座')
+        },
+        firstClass: { 
+          price: getSeatPrice('一等座', 1060.0), 
+          available: getSeatAvailable('一等座')
+        },
+        businessClass: { 
+          price: getSeatPrice('商务座', 2318.0), 
+          available: getSeatAvailable('商务座')
         }
       }
-    });
+    };
+    
+    // 跳转到订单填写页面，通过 state 传递车次数据
+    navigate('/order', { state: { trainData } });
   };
 
   /**

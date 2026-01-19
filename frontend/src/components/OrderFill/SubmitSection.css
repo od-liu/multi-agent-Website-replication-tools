@@ -1,8 +1,8 @@
 /* ========== 提交订单区域容器 ========== */
 .order-submit-section {
   display: block !important;
-  width: 1100px !important;
-  margin: 20px 186px !important;
+  width: 980px !important;
+  margin: 10px 0 0 !important;
 }
 
 /* ========== 同意条款提示 ========== */
@@ -29,20 +29,21 @@
 /* ========== 按钮区 ========== */
 .submit-buttons {
   display: flex !important;
-  gap: 20px !important;
-  justify-content: flex-end !important;
+  gap: 40px !important;
+  justify-content: center !important;
+  padding: 0 0 10px !important;
 }
 
 /* 上一步按钮 */
 .order-back-button {
   min-width: 120px !important;
-  height: 40px !important;
+  height: 30px !important;
   padding: 0 20px !important;
   background-color: rgb(255, 255, 255) !important; /* 白色背景 */
   color: rgb(51, 51, 51) !important; /* 深灰文字 */
   border: 1px solid rgb(192, 192, 192) !important; /* 灰色边框 */
-  border-radius: 3px !important;
-  font-size: 15px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
 }
@@ -55,13 +56,13 @@
 /* 提交订单按钮 */
 .order-submit-button {
   min-width: 120px !important;
-  height: 40px !important;
+  height: 30px !important;
   padding: 0 20px !important;
   background-color: rgb(253, 129, 0) !important; /* 橙色背景 */
   color: rgb(255, 255, 255) !important; /* 白色文字 */
   border: none !important;
-  border-radius: 3px !important;
-  font-size: 15px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
   font-weight: bold !important;
   cursor: pointer !important;
   transition: all 0.2s !important;

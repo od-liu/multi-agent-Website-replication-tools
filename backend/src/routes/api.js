@@ -20,8 +20,10 @@ import {
   getTrainDetails,
   getPassengers,
   submitOrder,
-  getPersonalInfo,
-  updateContactInfo
+  getOrderPaymentInfo,
+  confirmPayment,
+  cancelOrder,
+  getOrderSuccessInfo
 } from '../database/operations.js';
 
 const router = express.Router();
@@ -57,8 +59,7 @@ router.post('/api/auth/login', async (req, res) => {
       success: true,
       userId: result.userId,
       username: result.username,
-      email: result.email,
-      phone: result.phone
+      name: result.name
     });
   } else {
     return res.status(401).json({
@@ -496,17 +497,17 @@ router.get('/api/trains/:trainNumber/details', async (req, res) => {
  * @calls FUNC-GET-PASSENGERS - 委托给数据库查询函数
  */
 router.get('/api/passengers', async (req, res) => {
-  // 从请求头中获取用户ID（前端从 localStorage 传递）
-  const userId = req.headers['x-user-id'] || req.query.userId;
+  // 从session、query参数或header中获取用户ID
+  const userId = req.session?.userId || req.query.userId || req.headers['x-user-id'];
   
+  // 如果没有用户ID，返回空列表（未登录状态）
   if (!userId) {
-    return res.status(401).json({
-      success: false,
-      message: '未登录，请先登录'
+    return res.status(200).json({
+      success: true,
+      passengers: [],
+      message: '未登录，请先登录后查看乘客列表'
     });
   }
-  
-  console.log('📋 [乘客列表] 获取乘客列表, userId:', userId);
   
   try {
     // 调用 FUNC-GET-PASSENGERS 从数据库获取
@@ -526,7 +527,6 @@ router.get('/api/passengers', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('❌ [乘客列表] 获取失败:', error);
     return res.status(500).json({
       success: false,
       message: '获取乘客列表失败'
@@ -553,26 +553,28 @@ router.get('/api/passengers', async (req, res) => {
  * @calls FUNC-SUBMIT-ORDER - 委托给订单处理函数
  */
 router.post('/api/orders/submit', async (req, res) => {
-  const { trainNo, date, departureStation, arrivalStation, passengers } = req.body;
+  const { trainNumber, departureDate, fromStation, toStation, departureTime, arrivalTime, passengers } = req.body;
   
   // 参数验证
-  if (!trainNo || !date || !departureStation || !arrivalStation || !passengers || passengers.length === 0) {
+  if (!trainNumber || !departureDate || !fromStation || !toStation || !passengers || passengers.length === 0) {
     return res.status(400).json({
       success: false,
       message: '订单信息不完整'
     });
   }
   
-  // 从session或token中获取用户ID
-  const userId = req.session?.userId || 'mock-user-id';
+  // 从session或token中获取用户ID (暂时使用固定ID，实际应从session获取)
+  const userId = req.session?.userId || 1;
   
   try {
     // 调用 FUNC-SUBMIT-ORDER 处理订单
     const result = await submitOrder(userId, {
-      trainNo,
-      date,
-      departureStation,
-      arrivalStation,
+      trainNumber,
+      departureDate,
+      fromStation,
+      toStation,
+      departureTime,
+      arrivalTime,
       passengers
     });
     
@@ -597,385 +599,123 @@ router.post('/api/orders/submit', async (req, res) => {
 });
 
 /**
- * @api API-GET-PERSONAL-INFO GET /api/personal-info
- * @summary 获取个人信息接口
- * @param {Object} query - 查询参数
- * @param {string} query.userId - 用户ID
+ * @api API-GET-ORDER-PAYMENT-INFO GET /api/payment/:orderId
+ * @summary 获取订单支付信息
+ * @param {string} orderId - 订单ID (URL参数)
  * @returns {Object} response - 响应体
  * @returns {boolean} response.success - 是否成功
- * @returns {Object} response.data - 个人信息数据
- * @calls FUNC-GET-PERSONAL-INFO
+ * @returns {Object} response.order - 订单信息
+ * @calls FUNC-GET-ORDER-PAYMENT-INFO
  */
-router.get('/api/personal-info', async (req, res) => {
-  const { userId } = req.query;
+router.get('/api/payment/:orderId', async (req, res) => {
+  const { orderId } = req.params;
   
-  if (!userId) {
+  if (!orderId) {
     return res.status(400).json({
       success: false,
-      message: '用户ID不能为空'
+      message: '订单ID不能为空'
     });
   }
   
-  // 调用 FUNC-GET-PERSONAL-INFO（骨架实现）
-  // 实际实现需要从数据库查询
-  const mockData = {
-    username: 'od12322',
-    realName: '刘嘉敏',
-    country: '中国China',
-    idType: '居民身份证',
-    idNumber: '3301***********028',
-    verificationStatus: '已通过',
-    phone: '(+86) 198****9256',
-    phoneVerification: '已通过核验',
-    email: '3279882704@qq.com',
-    discountType: '成人'
-  };
+  const result = await getOrderPaymentInfo(orderId);
   
-  return res.status(200).json({
-    success: true,
-    data: mockData
-  });
+  if (result.success) {
+    return res.status(200).json(result);
+  } else {
+    return res.status(404).json(result);
+  }
 });
 
 /**
- * @api API-UPDATE-CONTACT-INFO PUT /api/personal-info/contact
- * @summary 更新联系方式接口
- * @param {Object} body - 请求体
- * @param {string} body.userId - 用户ID
- * @param {string} body.email - 邮箱
+ * @api API-CONFIRM-PAYMENT POST /api/payment/:orderId/confirm
+ * @summary 确认支付订单
+ * @param {string} orderId - 订单ID (URL参数)
  * @returns {Object} response - 响应体
  * @returns {boolean} response.success - 是否成功
  * @returns {string} response.message - 响应消息
- * @calls FUNC-UPDATE-CONTACT-INFO
+ * @returns {boolean} response.timeout - 是否超时(可选)
+ * @calls FUNC-CONFIRM-PAYMENT
  */
-router.put('/api/personal-info/contact', async (req, res) => {
-  const { userId, email } = req.body;
+router.post('/api/payment/:orderId/confirm', async (req, res) => {
+  const { orderId } = req.params;
   
-  if (!userId) {
+  if (!orderId) {
     return res.status(400).json({
       success: false,
-      message: '用户ID不能为空'
+      message: '订单ID不能为空'
     });
   }
   
-  // 邮箱格式验证
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({
-      success: false,
-      message: '邮箱格式不正确'
-    });
+  const result = await confirmPayment(orderId);
+  
+  if (result.success) {
+    return res.status(200).json(result);
+  } else {
+    if (result.timeout) {
+      return res.status(400).json(result);
+    }
+    return res.status(500).json(result);
   }
-  
-  // 调用 FUNC-UPDATE-CONTACT-INFO（骨架实现）
-  // 实际实现需要更新数据库
-  console.log('更新联系方式:', { userId, email });
-  
-  return res.status(200).json({
-    success: true,
-    message: '联系方式更新成功'
-  });
 });
 
 /**
- * @api API-VERIFY-PASSWORD POST /api/auth/verify-password
- * @summary 验证用户登录密码
- * @param {Object} body - 请求体
- * @param {string} body.password - 登录密码
- * @returns {Object} response - 响应体
- * @returns {boolean} response.success - 验证是否成功
- */
-router.post('/api/auth/verify-password', async (req, res) => {
-  const { password } = req.body;
-  
-  console.log('🔐 [密码验证] 收到验证请求');
-  
-  if (!password) {
-    console.log('❌ [密码验证] 密码为空');
-    return res.status(400).json({
-      success: false,
-      message: '密码不能为空'
-    });
-  }
-  
-  // 骨架实现：验证密码
-  // 实际实现需要从 session 或 JWT 中获取当前用户信息，并验证密码
-  // 这里返回模拟数据（始终验证成功）
-  console.log('✅ [密码验证] 验证成功（骨架实现）');
-  return res.status(200).json({
-    success: true,
-    message: '密码验证成功'
-  });
-});
-
-/**
- * @api API-SEND-PHONE-VERIFICATION POST /api/auth/send-phone-verification
- * @summary 发送手机验证码（用于修改手机号）
- * @param {Object} body - 请求体
- * @param {string} body.phone - 新手机号
- * @returns {Object} response - 响应体
- * @returns {boolean} response.success - 发送是否成功
- * @returns {string} response.code - 验证码（开发环境返回）
- */
-router.post('/api/auth/send-phone-verification', async (req, res) => {
-  const { phone } = req.body;
-  
-  console.log(`📱 [手机验证] 收到验证码发送请求: ${phone}`);
-  
-  if (!phone) {
-    console.log('❌ [手机验证] 手机号为空');
-    return res.status(400).json({
-      success: false,
-      message: '手机号不能为空'
-    });
-  }
-  
-  // 骨架实现：发送验证码
-  // 实际实现需要调用短信服务发送验证码
-  const code = Math.floor(100000 + Math.random() * 900000).toString();
-  
-  console.log(`✅ [手机验证] 向 ${phone} 发送验证码: ${code}`);
-  
-  return res.status(200).json({
-    success: true,
-    message: '验证码已发送',
-    code: code // 开发环境返回验证码，生产环境应删除
-  });
-});
-
-/**
- * @api API-VERIFY-PHONE-CODE POST /api/auth/verify-phone-code
- * @summary 验证手机验证码并更新手机号
- * @param {Object} body - 请求体
- * @param {string} body.phone - 新手机号
- * @param {string} body.code - 验证码
- * @returns {Object} response - 响应体
- * @returns {boolean} response.success - 验证是否成功
- */
-router.post('/api/auth/verify-phone-code', async (req, res) => {
-  const { phone, code } = req.body;
-  
-  console.log(`🔢 [验证码验证] 收到验证请求: ${phone}, 验证码: ${code}`);
-  
-  if (!phone || !code) {
-    console.log('❌ [验证码验证] 手机号或验证码为空');
-    return res.status(400).json({
-      success: false,
-      message: '手机号和验证码不能为空'
-    });
-  }
-  
-  // 骨架实现：验证验证码并更新手机号
-  // 实际实现需要：
-  // 1. 验证验证码是否正确
-  // 2. 更新数据库中的手机号
-  // 3. 更新 session 或 JWT
-  console.log(`✅ [验证码验证] 验证成功，手机号已更新为: ${phone}`);
-  
-  return res.status(200).json({
-    success: true,
-    message: '手机号更新成功'
-  });
-});
-
-/**
- * @api API-ADD-PASSENGER POST /api/passengers
- * @summary 添加乘客
- * @param {Object} body - 请求体
- * @param {string} body.name - 姓名
- * @param {string} body.idType - 证件类型
- * @param {string} body.idNumber - 证件号码
- * @param {string} body.phone - 手机号
- * @param {string} body.discountType - 优惠类型
+ * @api API-CANCEL-ORDER POST /api/payment/:orderId/cancel
+ * @summary 取消订单
+ * @param {string} orderId - 订单ID (URL参数)
  * @returns {Object} response - 响应体
  * @returns {boolean} response.success - 是否成功
+ * @returns {string} response.message - 响应消息
+ * @calls FUNC-CANCEL-ORDER
  */
-router.post('/api/passengers', async (req, res) => {
-  const { name, idType, idNumber, phone, discountType } = req.body;
+router.post('/api/payment/:orderId/cancel', async (req, res) => {
+  const { orderId } = req.params;
   
-  console.log('➕ [添加乘客] 收到请求:', { name, idType, phone });
-  
-  if (!name || !idType || !idNumber || !phone) {
+  if (!orderId) {
     return res.status(400).json({
       success: false,
-      message: '必填字段不能为空'
+      message: '订单ID不能为空'
     });
   }
   
-  // 骨架实现：检查乘客是否已存在
-  // 实际实现需要查询数据库
-  // 这里模拟乘客已存在的情况（用于测试）
-  if (name === '测试重复') {
-    console.log('❌ [添加乘客] 乘客已存在');
-    return res.status(400).json({
-      success: false,
-      message: '该联系人已存在，请使用不同的姓名和证件。'
-    });
-  }
+  // TODO: 从session获取userId
+  // 临时方案：从请求体或query获取，实际应该从session中获取
+  const userId = req.body.userId || req.query.userId || 1;
   
-  // 骨架实现：添加到数据库
-  console.log('✅ [添加乘客] 添加成功');
+  const result = await cancelOrder(orderId, userId);
   
-  return res.status(200).json({
-    success: true,
-    message: '添加成功',
-    data: {
-      id: Date.now(), // 模拟生成的ID
-      name,
-      idType,
-      idNumber,
-      phone,
-      discountType,
-      verificationStatus: '待核验',
-      addedDate: new Date().toISOString().split('T')[0]
-    }
-  });
-});
-
-/**
- * @api API-UPDATE-PASSENGER PUT /api/passengers/:id
- * @summary 更新乘客信息
- * @param {number} id - 乘客ID
- * @param {Object} body - 请求体
- * @param {string} body.phone - 手机号
- * @param {string} body.discountType - 优惠类型
- * @returns {Object} response - 响应体
- * @returns {boolean} response.success - 是否成功
- */
-router.put('/api/passengers/:id', async (req, res) => {
-  const { id } = req.params;
-  const { phone, discountType } = req.body;
-  
-  console.log(`✏️ [编辑乘客] 更新乘客 ${id}:`, { phone, discountType });
-  
-  if (!phone || !discountType) {
-    return res.status(400).json({
-      success: false,
-      message: '必填字段不能为空'
-    });
-  }
-  
-  // 骨架实现：更新数据库
-  console.log(`✅ [编辑乘客] 更新成功`);
-  
-  return res.status(200).json({
-    success: true,
-    message: '更新成功'
-  });
-});
-
-/**
- * @api API-DELETE-PASSENGER DELETE /api/passengers/:id
- * @summary 删除乘客
- * @param {number} id - 乘客ID
- * @returns {Object} response - 响应体
- * @returns {boolean} response.success - 是否成功
- */
-router.delete('/api/passengers/:id', async (req, res) => {
-  const { id } = req.params;
-  const userId = req.headers['x-user-id'] || req.query.userId;
-  
-  console.log(`🗑️ [删除乘客] 删除乘客 ${id}, userId: ${userId}`);
-  
-  if (!userId) {
-    return res.status(401).json({
-      success: false,
-      message: '未登录，请先登录'
-    });
-  }
-  
-  try {
-    const { getDb } = await import('./database/db.js');
-    const db = getDb();
-    
-    // 🆕 检查是否为用户本人
-    const passenger = await db.getAsync(
-      'SELECT is_self FROM passengers WHERE id = ? AND user_id = ?',
-      id, userId
-    );
-    
-    if (!passenger) {
-      return res.status(404).json({
-        success: false,
-        message: '乘客不存在'
-      });
-    }
-    
-    if (passenger.is_self === 1) {
-      console.log('❌ [删除乘客] 不能删除用户本人');
-      return res.status(403).json({
-        success: false,
-        message: '不能删除您本人的乘车人信息'
-      });
-    }
-    
-    // 从数据库删除
-    await db.runAsync(
-      'DELETE FROM passengers WHERE id = ? AND user_id = ?',
-      id, userId
-    );
-    
-    console.log(`✅ [删除乘客] 删除成功`);
-    
-    return res.status(200).json({
-      success: true,
-      message: '删除成功'
-    });
-  } catch (error) {
-    console.error('❌ [删除乘客] 删除失败:', error);
-    return res.status(500).json({
-      success: false,
-      message: '删除失败，请稍后再试'
-    });
+  if (result.success) {
+    return res.status(200).json(result);
+  } else {
+    return res.status(500).json(result);
   }
 });
 
 /**
- * @api API-GET-ORDERS GET /api/orders
- * @summary 获取用户订单列表
+ * @api API-GET-ORDER-SUCCESS-INFO GET /api/orders/:orderId/success
+ * @summary 获取订单成功信息
+ * @param {string} orderId - 订单ID (URL参数)
  * @returns {Object} response - 响应体
  * @returns {boolean} response.success - 是否成功
- * @returns {Array} response.data - 订单列表
+ * @returns {Object} response.order - 订单信息
+ * @calls FUNC-GET-ORDER-SUCCESS-INFO
  */
-router.get('/api/orders', async (req, res) => {
-  console.log('📋 [订单列表] 获取订单列表');
+router.get('/api/orders/:orderId/success', async (req, res) => {
+  const { orderId } = req.params;
   
-  // 骨架实现：返回模拟数据
-  // 实际实现需要从数据库查询当前用户的订单
-  const mockOrders = [
-    {
-      id: 'ORDER001',
-      trainNumber: 'G1234',
-      departureStation: '北京南',
-      arrivalStation: '上海虹桥',
-      departureDate: '2024-01-20',
-      departureTime: '08:00',
-      arrivalTime: '13:28',
-      passengers: ['刘嘉敏', '王三'],
-      seatType: '二等座',
-      seatNumber: '05车06A, 05车06B',
-      price: 553.5,
-      status: '已出行'
-    },
-    {
-      id: 'ORDER002',
-      trainNumber: 'D5678',
-      departureStation: '杭州东',
-      arrivalStation: '南京南',
-      departureDate: '2024-01-18',
-      departureTime: '14:30',
-      arrivalTime: '16:45',
-      passengers: ['刘嘉敏'],
-      seatType: '一等座',
-      seatNumber: '03车02A',
-      price: 184.0,
-      status: '已完成'
-    }
-  ];
+  if (!orderId) {
+    return res.status(400).json({
+      success: false,
+      message: '订单ID不能为空'
+    });
+  }
   
-  return res.status(200).json({
-    success: true,
-    data: mockOrders
-  });
+  const result = await getOrderSuccessInfo(orderId);
+  
+  if (result.success) {
+    return res.status(200).json(result);
+  } else {
+    return res.status(404).json(result);
+  }
 });
 
 /**

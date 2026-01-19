@@ -703,6 +703,13 @@ const RegistrationForm: React.FC = () => {
             </label>
           </div>
 
+          {/* 表单级错误提示 */}
+          {formError && (
+            <div className="form-row form-error-row">
+              <div className="form-error-message">{formError}</div>
+            </div>
+          )}
+
           {/* 提交按钮 */}
           <div className="form-row form-row-submit">
             <button type="submit" className="submit-button" disabled={isSubmitting}>

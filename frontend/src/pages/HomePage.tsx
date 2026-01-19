@@ -38,37 +38,39 @@ import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import './HomePage.css';
 
 const HomePage: React.FC = () => {
-  // ========== State Management ==========
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+  
+  // ========== State Management ==========
+  // 从 localStorage 读取登录状态
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('userId');
+  });
+  const [username, setUsername] = useState(() => {
+    return localStorage.getItem('username') || '';
+  });
 
-  // ========== Load User Info from localStorage ==========
+  // 监听 localStorage 变化（用于跨标签页同步）
   useEffect(() => {
-    const userInfoStr = localStorage.getItem('user_info');
-    if (userInfoStr) {
-      try {
-        const userInfo = JSON.parse(userInfoStr);
-        setIsLoggedIn(userInfo.isLoggedIn || false);
-        setUsername(userInfo.username || '');
-      } catch (error) {
-        console.error('Failed to parse user info:', error);
-      }
-    }
+    const handleStorageChange = () => {
+      const userId = localStorage.getItem('userId');
+      const storedUsername = localStorage.getItem('username');
+      setIsLoggedIn(!!userId);
+      setUsername(storedUsername || '');
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // ========== Logout Handler ==========
+  // 处理退出登录
   const handleLogout = () => {
-    // 清除localStorage中的用户信息
+    localStorage.removeItem('userId');
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_info');
-    
-    // 更新状态
+    localStorage.removeItem('username');
     setIsLoggedIn(false);
     setUsername('');
-    
-    // 跳转到登录页
-    navigate('/login');
+    // 可选：跳转到首页或刷新
+    navigate('/');
   };
 
   // ========== Page Layout ==========

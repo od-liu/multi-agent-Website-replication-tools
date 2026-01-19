@@ -70,7 +70,7 @@ const PaymentOrderInfo: React.FC<PaymentOrderInfoProps> = ({ orderInfo }) => {
         <span className="train-number">{orderInfo.trainNumber}次</span>
         <span className="station-name">{orderInfo.fromStation}站</span>
         <span className="train-time"> ({orderInfo.departTime} 开) </span>
-        <span className="arrow">→</span>
+        <span className="arrow">—</span>
         <span className="station-name">{orderInfo.toStation}站</span>
         <span className="train-time"> ({orderInfo.arriveTime} 到)</span>
       </div>

@@ -322,3 +322,21 @@
   margin: 15px 0;
   width: 100%;
 }
+
+/* ========== 表单级错误提示 ========== */
+.form-error-row {
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.form-error-message {
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  padding: 10px 20px;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+}

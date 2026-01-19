@@ -15,11 +15,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5175;
 
 // CORS配置 - 允许前端跨域访问
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174'],
   credentials: true
 }));
 
@@ -51,30 +51,20 @@ app.use((err, req, res, next) => {
 });
 
 // Initialize database and start server
-async function startServer() {
+(async () => {
   try {
-    console.log('🔧 正在初始化数据库...');
     await initDatabase();
-    console.log('✅ 数据库表创建完成');
-    
-    console.log('📦 正在插入演示数据...');
     await insertDemoData();
-    console.log('✅ 演示数据插入完成');
-    
-    app.listen(PORT, () => {
-      console.log(`✅ 服务器已启动，监听端口 ${PORT}`);
-      console.log(`📍 健康检查: http://localhost:${PORT}/health`);
-      console.log(`📊 数据库路径: ${process.cwd()}/database.db`);
-      console.log(`🆕 已启用自动添加用户本人为常用乘客功能`);
-    });
+    console.log('✅ Database initialized successfully');
   } catch (error) {
-    console.error('❌ 服务器启动失败:', error);
-    console.error('错误详情:', error.stack);
+    console.error('Failed to initialize database:', error);
     process.exit(1);
   }
-}
-
-startServer();
+  
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+})();
 
 export default app;
 

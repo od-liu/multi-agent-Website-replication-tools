@@ -61,7 +61,10 @@ const TrainInfo: React.FC<TrainInfoProps> = ({
     <div className="train-info-section" id="ui-train-info-full">
       {/* 标题栏：蓝色背景 */}
       <div className="train-info-header">
-        <h2 className="section-title">列车信息（以下余票信息仅供参考）</h2>
+        <div className="train-info-title">
+          列车信息
+          <span className="train-info-titleSmall">（以下余票信息仅供参考）</span>
+        </div>
       </div>
       
       {/* 内容区：白色背景 */}
@@ -92,12 +95,16 @@ const TrainInfo: React.FC<TrainInfoProps> = ({
           </div>
           <div className="fare-item">
             <span className="seat-type-label">一等座</span>
+            <span className="seat-price-bracket">（</span>
             <span className="seat-price">¥{prices.firstClass.price.toFixed(1)}元</span>
+            <span className="seat-price-bracket">）</span>
             <span className="seat-available"> {prices.firstClass.available}张票</span>
           </div>
           <div className="fare-item">
             <span className="seat-type-label">商务座</span>
+            <span className="seat-price-bracket">（</span>
             <span className="seat-price">¥{prices.businessClass.price.toFixed(1)}元</span>
+            <span className="seat-price-bracket">）</span>
             <span className="seat-available"> {prices.businessClass.available}张票</span>
           </div>
         </div>
