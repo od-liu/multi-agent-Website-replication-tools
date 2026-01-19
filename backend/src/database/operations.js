@@ -30,7 +30,7 @@ export async function authenticateUser(username, password) {
 
     // Query user (support username/email/phone) - 包含 name 和 username
     const user = await db.getAsync(
-      'SELECT id, username, name, password_hash FROM users WHERE username = ? OR email = ? OR phone = ?',
+      'SELECT id, username, password FROM users WHERE username = ? OR email = ? OR phone = ?',
       username, username, username
     );
 
@@ -42,7 +42,7 @@ export async function authenticateUser(username, password) {
     }
 
     // Verify password
-    const isValid = bcrypt.compareSync(password, user.password_hash);
+    const isValid = bcrypt.compareSync(password, user.password);
     if (!isValid) {
       return {
         success: false,
