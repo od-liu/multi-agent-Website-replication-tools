@@ -47,7 +47,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
-import MainNavigation from '../components/MainNavigation/MainNavigation';
+import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import BottomNavigation from '../components/BottomNavigation/BottomNavigation';
 import PaymentCountdown from '../components/Payment/PaymentCountdown';
 import PaymentOrderInfo from '../components/Payment/PaymentOrderInfo';
@@ -296,8 +296,10 @@ const PaymentPage: React.FC = () => {
   if (loading) {
     return (
       <div className="payment-page">
-        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
-        <MainNavigation />
+        <header className="payment-header">
+          <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+          <SecondaryNav activeItem="车票" />
+        </header>
         <div className="payment-loading">加载中...</div>
       </div>
     );
@@ -309,9 +311,11 @@ const PaymentPage: React.FC = () => {
 
   return (
     <div className="payment-page">
-      {/* 顶部导航 - 复用共享组件 */}
-      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
-      <MainNavigation />
+      {/* 顶部导航区域（白色背景） */}
+      <header className="payment-header">
+        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+        <SecondaryNav activeItem="车票" />
+      </header>
 
       {/* 主内容区 */}
       <div className="payment-main-content">
