@@ -139,14 +139,13 @@ export async function submitOrderV2(userId, orderData) {
     
     const orderResult = await db.runAsync(`
       INSERT INTO orders (
-        id, order_number, user_id, schedule_id, 
+        order_number, user_id, schedule_id, 
         train_number, from_station, to_station,
         departure_date, departure_time, arrival_time,
         from_stop_seq, to_stop_seq,
         total_price, status, created_at, expires_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
-      orderNumber, // id (使用订单号作为主键)
       orderNumber, // order_number
       userId, 
       schedule.id,
@@ -164,7 +163,7 @@ export async function submitOrderV2(userId, orderData) {
       expiresAt.toISOString()
     );
     
-    const orderId = orderNumber; // 使用订单号作为 orderId
+    const orderId = orderResult.lastID; // 使用数据库自动生成的 ID
     
     console.log(`📦 [订单提交V2] 订单创建成功: ${orderNumber} (ID=${orderId})`);
     

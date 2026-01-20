@@ -78,6 +78,21 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
   // ========== Scenario Implementations ==========
 
   /**
+   * 格式化日期显示（YYYY-MM-DD → YYYY-MM-DD 周X）
+   */
+  const formatDateDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    
+    const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekDay = weekDays[date.getDay()];
+    
+    return `${dateStr} 周${weekDay}`;
+  };
+
+  /**
    * @scenario SCENARIO-008 "出发日期自动填入当前日期"
    * @given 用户在车票查询页面
    * @when 用户未输入出发日期或还未进行输入出发日期操作
@@ -437,7 +452,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
                   readOnly 
                   placeholder="请输入日期" 
                   className="date-input" 
-                  value={departureDate}
+                  value={formatDateDisplay(departureDate)}
                   onClick={handleDateClick}
                 />
                 <span className="calendar-icon" aria-hidden="true" />
@@ -448,6 +463,7 @@ const TrainSearchForm: React.FC<TrainSearchFormProps> = ({ onSearch }) => {
                   <DatePicker
                     value={departureDate}
                     onChange={(date) => {
+                      console.log('📅 [日期选择] 选择的日期:', date);
                       setDepartureDate(date);
                       setShowDatePicker(false);
                     }}
