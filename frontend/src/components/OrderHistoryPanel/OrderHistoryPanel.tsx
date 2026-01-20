@@ -30,6 +30,7 @@
  */
 
 import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './OrderHistoryPanel.css';
 
 interface OrderPassenger {
@@ -58,8 +59,10 @@ interface Order {
 }
 
 const OrderHistoryPanel: React.FC = () => {
+  const navigate = useNavigate();
+  
   // ========== State Management ==========
-  // 目标页默认高亮“未出行订单”
+  // 目标页默认高亮"未出行订单"
   const [activeTab, setActiveTab] = useState<'uncompleted' | 'upcoming' | 'history'>('upcoming'); // 🆕 Tab状态
   const [queryType, setQueryType] = useState('按订票日期查询');
   const [startDate, setStartDate] = useState('');
@@ -270,6 +273,53 @@ const OrderHistoryPanel: React.FC = () => {
 
   const formatOrderHeaderDate = (order: Order): string => {
     return formatYmd(order.createdAt) || order.departureDate || '';
+  };
+
+  // ========== 订单操作处理函数 ==========
+  
+  /**
+   * 处理去支付按钮点击
+   * 跳转到支付页面
+   */
+  const handlePayOrder = (orderId: string) => {
+    console.log('💳 [订单历史] 去支付，订单ID:', orderId);
+    navigate(`/payment/${orderId}`);
+  };
+
+  /**
+   * 处理取消订单按钮点击
+   * 调用后端API取消订单
+   */
+  const handleCancelOrder = async (orderId: string) => {
+    if (!window.confirm('确定要取消该订单吗？取消后座位将被释放。')) {
+      return;
+    }
+    
+    console.log('❌ [订单历史] 取消订单，订单ID:', orderId);
+    
+    try {
+      const userId = localStorage.getItem('userId');
+      const response = await fetch(`/api/payment/${orderId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-Id': userId || ''
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('订单已取消');
+        // 刷新订单列表
+        fetchOrders();
+      } else {
+        alert(data.message || '取消订单失败');
+      }
+    } catch (error) {
+      console.error('❌ [订单历史] 取消订单失败:', error);
+      alert('网络错误，请稍后重试');
+    }
   };
 
   const getTabEmpty = () => {
@@ -487,8 +537,18 @@ const OrderHistoryPanel: React.FC = () => {
 
                   {isUncompletedTab ? (
                     <div className="order-payActions">
-                      <button className="order-payCancel">取消订单</button>
-                      <button className="order-payPrimary">去支付</button>
+                      <button 
+                        className="order-payCancel"
+                        onClick={() => handleCancelOrder(order.id)}
+                      >
+                        取消订单
+                      </button>
+                      <button 
+                        className="order-payPrimary"
+                        onClick={() => handlePayOrder(order.id)}
+                      >
+                        去支付
+                      </button>
                     </div>
                   ) : (
                     <div className="order-card-actions">
