@@ -302,114 +302,131 @@ const PassengerManagePanel: React.FC = () => {
 
   return (
     <div className="passenger-manage-panel">
-      {/* 搜索栏 */}
-      <div className="passenger-search-bar">
-        <div className="search-input-wrapper">
-          <input
-            type="text"
-            className="passenger-search-input"
-            placeholder="请输入乘客姓名"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-          {searchKeyword && (
-            <button className="search-clear-btn" onClick={clearSearch}>
-              ×
-            </button>
-          )}
-        </div>
-        <button className="passenger-search-btn" onClick={handleSearch}>
-          查询
-        </button>
-      </div>
-
-      {/* 乘客列表表格 */}
-      {filteredPassengers.length > 0 ? (
-        <>
-          <table className="passenger-table">
-            <thead>
-              <tr>
-                <th className="col-checkbox"></th>
-                <th className="col-sequence">序号</th>
-                <th className="col-name">姓名</th>
-                <th className="col-id-type">证件类型</th>
-                <th className="col-id-number">证件号码</th>
-                <th className="col-phone">手机/电话</th>
-                <th className="col-status">核验状态</th>
-                <th className="col-actions">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPassengers.map((passenger, index) => (
-                <tr key={passenger.id}>
-                <td className="col-checkbox">
-                  {/* 🚫 禁止选择本人 */}
-                  {!passenger.isSelf && (
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(passenger.id)}
-                      onChange={() => handleCheckboxChange(passenger.id)}
-                    />
-                  )}
-                </td>
-                  <td className="col-sequence">{index + 1}</td>
-                  <td className="col-name">{passenger.name}</td>
-                  <td className="col-id-type">{passenger.idType}</td>
-                  <td className="col-id-number">{passenger.idNumber}</td>
-                  <td className="col-phone">{passenger.phone}</td>
-                  <td className="col-status">
-                    <span className="status-badge status-verified">✓</span>
-                  </td>
-                  <td className="col-actions">
-                    <button
-                      className="action-btn action-btn-edit"
-                      onClick={() => handleEditClick(passenger)}
-                      title="编辑"
-                    >
-                      ✎
-                    </button>
-                    <button
-                      className="action-btn action-btn-delete"
-                      onClick={() => handleDeleteClick(passenger.id, passenger.isSelf || false)}
-                      title={passenger.isSelf ? "不能删除您本人" : "删除"}
-                      disabled={passenger.isSelf}
-                      style={{ 
-                        opacity: passenger.isSelf ? 0.5 : 1,
-                        cursor: passenger.isSelf ? 'not-allowed' : 'pointer'
-                      }}
-                    >
-                      🗑
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* 操作按钮栏 */}
-          <div className="passenger-actions-bar">
-            <button className="action-bar-btn action-bar-btn-add" onClick={handleAddClick}>
-              <span className="btn-icon">+</span> 添加
-            </button>
+      <div className="passenger-manage-panelBorder">
+        {/* 搜索栏 */}
+        <div className="passenger-search-bar">
+          <div className="passenger-search-inputBox">
+            <input
+              type="text"
+              className="passenger-search-input"
+              placeholder="请输入乘客姓名"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
             <button
-              className="action-bar-btn action-bar-btn-delete"
-              onClick={handleBatchDelete}
-              disabled={selectedIds.length === 0}
+              type="button"
+              className="passenger-search-clear"
+              onClick={clearSearch}
+              aria-label="清空查询条件"
+              title="清空"
             >
-              <span className="btn-icon">🗑</span> 批量删除
+              <i className="icon icon-clear" aria-hidden="true" />
             </button>
           </div>
-        </>
-      ) : (
-        /* 空状态 */
-        <div className="passenger-empty-state">
-          <p className="empty-message">暂无常用乘车人</p>
-          <p className="empty-hint">请点击"添加"按钮添加常用乘车人</p>
-          <button className="empty-add-btn" onClick={handleAddClick}>
-            + 添加乘车人
+          <button type="button" className="passenger-search-btn" onClick={handleSearch}>
+            查询
           </button>
         </div>
-      )}
+
+        {/* 乘客列表表格 */}
+        {filteredPassengers.length > 0 ? (
+          <div className="passenger-tablePanel">
+            <table className="passenger-table passenger-tableHead">
+              <thead>
+                <tr>
+                  <th className="col-sequence">序号</th>
+                  <th className="col-name">姓名</th>
+                  <th className="col-id-type">证件类型</th>
+                  <th className="col-id-number">证件号码</th>
+                  <th className="col-phone">手机/电话</th>
+                  <th className="col-status">核验状态</th>
+                  <th className="col-actions">操作</th>
+                </tr>
+              </thead>
+            </table>
+
+            <div className="passenger-tableActionsRow">
+              <button type="button" className="passenger-tableAction passenger-tableActionAdd" onClick={handleAddClick}>
+                <i className="icon icon-add-fill passenger-icon-success passenger-icon-mr" aria-hidden="true" />
+                添加
+              </button>
+              <button
+                type="button"
+                className="passenger-tableAction passenger-tableActionDelete"
+                onClick={handleBatchDelete}
+                disabled={selectedIds.length === 0}
+              >
+                <i className="icon icon-del passenger-icon-error passenger-icon-mr" aria-hidden="true" />
+                批量删除
+              </button>
+            </div>
+
+            <table className="passenger-table passenger-tableBody" aria-label="乘车人列表">
+              <tbody>
+                {filteredPassengers.map((passenger, index) => (
+                  <tr key={passenger.id}>
+                    <td className="col-sequence">
+                      <div className="passenger-seqCell">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(passenger.id)}
+                          onChange={() => handleCheckboxChange(passenger.id)}
+                          disabled={passenger.isSelf}
+                        />
+                        <span className="passenger-seqText">{index + 1}</span>
+                      </div>
+                    </td>
+                    <td className="col-name">{passenger.name}</td>
+                    <td className="col-id-type">{passenger.idType}</td>
+                    <td className="col-id-number">{passenger.idNumber}</td>
+                    <td className="col-phone">{passenger.phone}</td>
+                    <td className="col-status">
+                      <span
+                        className="passenger-statusIcon passenger-statusIconSuccess"
+                        aria-label="已通过"
+                        title="已通过"
+                      />
+                    </td>
+                    <td className="col-actions">
+                      {!passenger.isSelf && (
+                        <>
+                          <button
+                            type="button"
+                            className="action-btn action-btn-edit"
+                            onClick={() => handleEditClick(passenger)}
+                            title="编辑"
+                            aria-label="编辑"
+                          >
+                            <i className="icon icon-edit" aria-hidden="true" />
+                          </button>
+                          <button
+                            type="button"
+                            className="action-btn action-btn-delete"
+                            onClick={() => handleDeleteClick(passenger.id, false)}
+                            title="删除"
+                            aria-label="删除"
+                          >
+                            <i className="icon icon-del" aria-hidden="true" />
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          /* 空状态 */
+          <div className="passenger-empty-state">
+            <p className="empty-message">暂无常用乘车人</p>
+            <p className="empty-hint">请点击"添加"按钮添加常用乘车人</p>
+            <button type="button" className="empty-add-btn" onClick={handleAddClick}>
+              + 添加乘车人
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* 确认弹窗 */}
       <ConfirmModal
