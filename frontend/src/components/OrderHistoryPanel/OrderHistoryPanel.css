@@ -164,6 +164,13 @@
   user-select: none;
 }
 
+/* 🆕 日历图标内容 */
+.date-calendarIcon::before {
+  content: "\e6c1"; /* 日历图标 Unicode 字符 */
+  display: block;
+  font-family: 'cn12306-iconfont';
+}
+
 .order-pagination {
   display: flex;
   align-items: center;
