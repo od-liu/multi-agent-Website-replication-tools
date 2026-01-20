@@ -1040,9 +1040,9 @@ export async function getPassengers(userId) {
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 从数据库获取该用户的乘客列表（包含 is_self 字段）
+    // 从数据库获取该用户的乘客列表（包含 is_self 和 phone 字段）
     const passengers = await db.allAsync(
-      'SELECT id, name, id_type, id_number, passenger_type, is_self FROM passengers WHERE user_id = ?',
+      'SELECT id, name, id_type, id_number, phone, passenger_type, is_self FROM passengers WHERE user_id = ?',
       userId
     );
     
@@ -1074,6 +1074,7 @@ export async function getPassengers(userId) {
         name: p.name,
         idType: idTypeMap[p.id_type] || p.id_type || '居民身份证',
         idNumber: maskedIdNumber,
+        phone: p.phone || '',  // 🆕 添加手机号字段
         passengerType: passengerTypeMap[p.passenger_type] || p.passenger_type || '成人票',
         isSelf: p.is_self === 1  // 🆕 是否为用户本人
       };
