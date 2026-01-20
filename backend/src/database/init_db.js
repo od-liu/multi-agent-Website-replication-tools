@@ -128,19 +128,24 @@ const createPassengersTable = `
 const createOrdersTable = `
   CREATE TABLE IF NOT EXISTS orders (
     id TEXT PRIMARY KEY,
+    order_number TEXT UNIQUE NOT NULL,
     user_id INTEGER NOT NULL,
+    schedule_id INTEGER,
     train_number TEXT NOT NULL,
     from_station TEXT NOT NULL,
     to_station TEXT NOT NULL,
     departure_date TEXT NOT NULL,
     departure_time TEXT NOT NULL,
     arrival_time TEXT NOT NULL,
+    from_stop_seq INTEGER,
+    to_stop_seq INTEGER,
     total_price REAL NOT NULL,
     status TEXT DEFAULT '已确认未支付',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     expires_at DATETIME NOT NULL,
     paid_at DATETIME,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (schedule_id) REFERENCES train_schedules(id)
   )
 `;
 
