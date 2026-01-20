@@ -26,9 +26,9 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
     const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
     const isToday = departureDate === currentDate;
     
-    // 2. 查询车次基本信息
+    // 2. 🔧 修复：使用 train_stops 表查询区间票（支持途经站）
     let query = `
-      SELECT 
+      SELECT DISTINCT
         t.id as train_id,
         t.train_number,
         t.train_type,
@@ -36,22 +36,30 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
         s2.station_name as arrival_station,
         c1.city_name as departure_city,
         c2.city_name as arrival_city,
-        t.departure_time,
-        t.arrival_time,
+        ts1.departure_time as departure_time,
+        ts2.arrival_time as arrival_time,
         t.duration,
-        t.arrival_day
+        t.arrival_day,
+        ts1.stop_sequence as from_seq,
+        ts2.stop_sequence as to_seq
       FROM trains t
-      JOIN stations s1 ON t.departure_station_id = s1.id
-      JOIN stations s2 ON t.arrival_station_id = s2.id
+      -- 出发站
+      JOIN train_stops ts1 ON t.id = ts1.train_id
+      JOIN stations s1 ON ts1.station_id = s1.id
       JOIN cities c1 ON s1.city_id = c1.id
+      -- 到达站
+      JOIN train_stops ts2 ON t.id = ts2.train_id
+      JOIN stations s2 ON ts2.station_id = s2.id
       JOIN cities c2 ON s2.city_id = c2.id
-      WHERE c1.city_name = ? AND c2.city_name = ? AND t.is_active = 1
+      WHERE c1.city_name = ? AND c2.city_name = ? 
+        AND t.is_active = 1
+        AND ts1.stop_sequence < ts2.stop_sequence
     `;
     
     const params = [fromCity, toCity];
     
     if (isToday) {
-      query += ` AND t.departure_time > ?`;
+      query += ` AND ts1.departure_time > ?`;
       params.push(currentTime);
     }
     
@@ -59,7 +67,7 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
       query += ` AND (t.train_type = 'GC' OR t.train_type = 'D')`;
     }
     
-    query += ` ORDER BY t.departure_time`;
+    query += ` ORDER BY ts1.departure_time`;
     
     const trains = await db.allAsync(query, ...params);
     
@@ -85,45 +93,29 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
         continue;
       }
       
-      // 获取起止站点序号
-      const fromStop = await db.getAsync(`
-        SELECT ts.stop_sequence
-        FROM train_stops ts
-        JOIN stations s ON ts.station_id = s.id
-        WHERE ts.train_id = ? AND s.station_name = ?
-      `, train.train_id, train.departure_station);
-      
-      const toStop = await db.getAsync(`
-        SELECT ts.stop_sequence
-        FROM train_stops ts
-        JOIN stations s ON ts.station_id = s.id
-        WHERE ts.train_id = ? AND s.station_name = ?
-      `, train.train_id, train.arrival_station);
-      
-      if (!fromStop || !toStop) {
-        console.warn(`⚠️  车次 ${train.train_number} 缺少站点序号信息`);
-        continue;
-      }
+      // 🔧 优化：直接使用查询结果中的站点序号（不再需要额外查询）
+      const fromStopSeq = train.from_seq;
+      const toStopSeq = train.to_seq;
       
       // 🆕 使用区间座位管理计算余票
       const secondClassCount = await countAvailableSeats(
         schedule.id,
-        fromStop.stop_sequence,
-        toStop.stop_sequence,
+        fromStopSeq,
+        toStopSeq,
         '二等座'
       );
       
       const firstClassCount = await countAvailableSeats(
         schedule.id,
-        fromStop.stop_sequence,
-        toStop.stop_sequence,
+        fromStopSeq,
+        toStopSeq,
         '一等座'
       );
       
       const businessClassCount = await countAvailableSeats(
         schedule.id,
-        fromStop.stop_sequence,
-        toStop.stop_sequence,
+        fromStopSeq,
+        toStopSeq,
         '商务座'
       );
       
