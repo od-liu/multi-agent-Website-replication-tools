@@ -1092,6 +1092,95 @@ export async function getPassengers(userId) {
 }
 
 /**
+ * 添加乘客
+ * @param {number} userId - 用户ID
+ * @param {Object} passengerData - 乘客信息
+ * @param {string} passengerData.name - 姓名
+ * @param {string} passengerData.idType - 证件类型（中文）
+ * @param {string} passengerData.idNumber - 证件号码
+ * @param {string} passengerData.phone - 手机号
+ * @param {string} passengerData.discountType - 优惠类型（中文）
+ * @returns {Promise<Object>} 添加结果
+ */
+export async function addPassenger(userId, passengerData) {
+  try {
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    // 证件类型映射（中文 -> 数字代码）
+    const idTypeMap = {
+      '居民身份证': '1',
+      '护照': '2',
+      '港澳通行证': '3',
+      '台湾通行证': '4'
+    };
+    
+    // 乘客类型映射（中文 -> 数字代码）
+    const passengerTypeMap = {
+      '成人': '1',
+      '学生': '2',
+      '儿童': '3'
+    };
+    
+    const idTypeCode = idTypeMap[passengerData.idType] || '1';
+    const passengerTypeCode = passengerTypeMap[passengerData.discountType] || '1';
+    
+    console.log(`📝 [添加乘客] 用户${userId} 添加乘客: ${passengerData.name} (${passengerData.idType})`);
+    
+    // 检查是否已存在相同证件号的乘客
+    const existing = await db.getAsync(
+      'SELECT id FROM passengers WHERE user_id = ? AND id_number = ?',
+      userId, passengerData.idNumber
+    );
+    
+    if (existing) {
+      console.warn(`⚠️ [添加乘客] 乘客已存在: ${passengerData.name} (${passengerData.idNumber})`);
+      return {
+        success: false,
+        message: '该乘客已存在，请勿重复添加'
+      };
+    }
+    
+    // 插入新乘客
+    const result = await db.runAsync(`
+      INSERT INTO passengers (
+        user_id, name, id_type, id_number, phone, passenger_type
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `,
+      userId,
+      passengerData.name,
+      idTypeCode,
+      passengerData.idNumber,
+      passengerData.phone || null,
+      passengerTypeCode
+    );
+    
+    console.log(`✅ [添加乘客] 成功: ID=${result.lastID}, 姓名=${passengerData.name}`);
+    
+    return {
+      success: true,
+      passengerId: result.lastID,
+      message: '添加成功'
+    };
+  } catch (error) {
+    console.error('❌ [添加乘客失败]:', error);
+    
+    // 处理 UNIQUE 约束违反
+    if (error.message && error.message.includes('UNIQUE constraint failed')) {
+      return {
+        success: false,
+        message: '该乘客已存在，请勿重复添加'
+      };
+    }
+    
+    return {
+      success: false,
+      message: '添加失败，请稍后重试'
+    };
+  }
+}
+
+/**
  * @function FUNC-SUBMIT-ORDER
  * @signature submitOrder(userId, orderData)
  * @input {string} userId - 用户ID

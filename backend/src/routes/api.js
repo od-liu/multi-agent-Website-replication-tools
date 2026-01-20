@@ -19,6 +19,7 @@ import {
   searchTrains,
   getTrainDetails,
   getPassengers,
+  addPassenger,
   submitOrder,
   getOrderPaymentInfo,
   confirmPayment,
@@ -542,6 +543,67 @@ router.get('/api/passengers', async (req, res) => {
     return res.status(500).json({
       success: false,
       message: '获取乘客列表失败'
+    });
+  }
+});
+
+/**
+ * @api POST /api/passengers
+ * @summary 添加常用乘客
+ * @param {Object} body - 请求体
+ * @param {string} body.name - 姓名
+ * @param {string} body.idType - 证件类型（中文：居民身份证/护照/港澳通行证/台湾通行证）
+ * @param {string} body.idNumber - 证件号码
+ * @param {string} body.phone - 手机号
+ * @param {string} body.discountType - 优惠类型（中文：成人/学生/儿童）
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {number} response.passengerId - 乘客ID（成功时）
+ * @returns {string} response.message - 响应消息
+ * @calls addPassenger - 委托给数据库操作函数
+ */
+router.post('/api/passengers', async (req, res) => {
+  const { name, idType, idNumber, phone, discountType } = req.body;
+  
+  // 从 session 或 header 获取用户ID
+  const userId = req.session?.userId || req.headers['x-user-id'];
+  
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: '请先登录'
+    });
+  }
+  
+  // 参数验证
+  if (!name || !idType || !idNumber) {
+    return res.status(400).json({
+      success: false,
+      message: '乘客信息不完整'
+    });
+  }
+  
+  try {
+    console.log(`📝 [API] 添加乘客: 用户=${userId}, 姓名=${name}`);
+    
+    const result = await addPassenger(userId, {
+      name,
+      idType,
+      idNumber,
+      phone,
+      discountType
+    });
+    
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('❌ [API] 添加乘客失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '添加失败，请稍后重试'
     });
   }
 });
