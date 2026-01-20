@@ -1168,21 +1168,16 @@ export async function submitOrder(userId, orderData) {
     // 3. 创建订单记录（使用数据库实际的表结构）
     const orderResult = await db.runAsync(`
       INSERT INTO orders (
-        id, order_number, user_id, schedule_id, 
-        train_number, from_station, to_station,
-        departure_date, departure_time, arrival_time,
-        total_price, status, created_at, expires_at
+        order_number, user_id, schedule_id, total_price,
+        status, created_at, expires_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
-      orderNumber, orderNumber, userId, schedule.id,
-      orderData.trainNumber, orderData.fromStation, orderData.toStation,
-      orderData.departureDate, orderData.departureTime || '00:00', orderData.arrivalTime || '23:59',
-      totalPrice, 'unpaid', now.toISOString(), expiresAt.toISOString()
+      orderNumber, userId, schedule.id, totalPrice,
+      'unpaid', now.toISOString(), expiresAt.toISOString()
     );
     
-    // 注意：orders.id 是 TEXT 类型，使用 orderNumber 作为 orderId
-    const orderId = orderNumber;
+    const orderId = orderResult.lastID;
     
     // 4. 创建乘客订单记录并分配座位
     const seats = [];

@@ -34,7 +34,7 @@
  * }
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './OrderConfirmModal.css';
 
 interface PassengerData {
@@ -81,13 +81,59 @@ interface OrderConfirmModalProps {
 const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
   trainInfo,
   passengers,
-  seatAvailability,
+  seatAvailability: initialSeatAvailability,
   onClose,
   onConfirm,
   isSubmitting: isSubmittingProp = false
 }) => {
   // 本地提交状态管理
   const [isSubmitting, setIsSubmitting] = useState(isSubmittingProp);
+  
+  // 🆕 实时余票数状态（动态更新）
+  const [seatAvailability, setSeatAvailability] = useState(initialSeatAvailability);
+  const [loadingSeats, setLoadingSeats] = useState(true);
+  
+  // ========== Effect: 获取实时余票数 ==========
+  
+  useEffect(() => {
+    /**
+     * 获取实时的区间可用座位数
+     * 根据车次、出发站、到达站查询V2系统的实际可用座位
+     */
+    const fetchAvailableSeats = async () => {
+      try {
+        setLoadingSeats(true);
+        
+        // 提取纯日期格式
+        const pureDepartureDate = trainInfo.date.split('（')[0].split('(')[0].trim();
+        
+        const params = new URLSearchParams({
+          trainNumber: trainInfo.trainNo,
+          departureDate: pureDepartureDate,
+          fromStation: trainInfo.departureStation,
+          toStation: trainInfo.arrivalStation
+        });
+        
+        const response = await fetch(`/api/trains/available-seats?${params.toString()}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          console.log(`🎫 [订单确认] 获取实时余票:`, data.data);
+          setSeatAvailability(data.data);
+        } else {
+          console.error('❌ [订单确认] 获取余票失败:', data.message);
+          // 失败时使用初始值
+        }
+      } catch (error) {
+        console.error('❌ [订单确认] 获取余票错误:', error);
+        // 失败时使用初始值
+      } finally {
+        setLoadingSeats(false);
+      }
+    };
+    
+    fetchAvailableSeats();
+  }, [trainInfo]);
   
   // ========== Scenario Implementations ==========
 
@@ -289,11 +335,15 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
           
           {/* 余票信息展示 */}
           <div className="seat-availability-display">
-            <p className="availability-text">
-              本次列车，<span>商务座余票 <span className="seat-count">{seatAvailability.businessClass}</span> 张</span>
-              <span>，二等座余票 <span className="seat-count">{seatAvailability.secondClass}</span> 张</span>
-              <span>，一等座余票 <span className="seat-count">{seatAvailability.firstClass}</span> 张</span>。
-            </p>
+            {loadingSeats ? (
+              <p className="availability-text">正在获取最新余票信息...</p>
+            ) : (
+              <p className="availability-text">
+                本次列车，<span>商务座余票 <span className="seat-count">{seatAvailability.businessClass}</span> 张</span>
+                <span>，二等座余票 <span className="seat-count">{seatAvailability.secondClass}</span> 张</span>
+                <span>，一等座余票 <span className="seat-count">{seatAvailability.firstClass}</span> 张</span>。
+              </p>
+            )}
           </div>
         </div>
         

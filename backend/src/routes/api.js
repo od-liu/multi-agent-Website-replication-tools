@@ -32,6 +32,7 @@ import {
 // 🆕 导入 V2 版本的函数（使用新的座位管理系统）
 import { searchTrainsV2 } from '../database/search_trains_v2.js';
 import { submitOrderV2, confirmPaymentV2, cancelOrderV2 } from '../database/submit_order_v2.js';
+import { countAvailableSeats } from '../database/seat_management.js';
 
 const router = express.Router();
 
@@ -590,6 +591,122 @@ router.get('/api/orders', async (req, res) => {
     return res.status(500).json({
       success: false,
       message: '获取订单列表失败'
+    });
+  }
+});
+
+/**
+ * @api GET /api/trains/available-seats
+ * @summary 获取指定车次区间的实时余票数
+ * @param {string} query.trainNumber - 车次号
+ * @param {string} query.departureDate - 出发日期 (YYYY-MM-DD)
+ * @param {string} query.fromStation - 出发站
+ * @param {string} query.toStation - 到达站
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {Object} response.data - 余票数据
+ * @returns {number} response.data.businessClass - 商务座余票
+ * @returns {number} response.data.firstClass - 一等座余票
+ * @returns {number} response.data.secondClass - 二等座余票
+ */
+router.get('/api/trains/available-seats', async (req, res) => {
+  const { trainNumber, departureDate, fromStation, toStation } = req.query;
+  
+  if (!trainNumber || !departureDate || !fromStation || !toStation) {
+    return res.status(400).json({
+      success: false,
+      message: '参数不完整'
+    });
+  }
+  
+  try {
+    const { getDb } = await import('../database/db.js');
+    const db = getDb();
+    
+    // 1. 获取车次ID
+    const train = await db.getAsync(`
+      SELECT id FROM trains WHERE train_number = ?
+    `, trainNumber);
+    
+    if (!train) {
+      return res.status(404).json({
+        success: false,
+        message: '车次不存在'
+      });
+    }
+    
+    // 2. 获取班次ID
+    const schedule = await db.getAsync(`
+      SELECT id FROM train_schedules 
+      WHERE train_id = ? AND departure_date = ?
+    `, train.id, departureDate);
+    
+    if (!schedule) {
+      return res.status(404).json({
+        success: false,
+        message: '该日期没有班次'
+      });
+    }
+    
+    // 3. 获取起止站点序号
+    const fromStop = await db.getAsync(`
+      SELECT ts.stop_sequence
+      FROM train_stops ts
+      JOIN stations s ON ts.station_id = s.id
+      WHERE ts.train_id = ? AND s.station_name = ?
+    `, train.id, fromStation);
+    
+    const toStop = await db.getAsync(`
+      SELECT ts.stop_sequence
+      FROM train_stops ts
+      JOIN stations s ON ts.station_id = s.id
+      WHERE ts.train_id = ? AND s.station_name = ?
+    `, train.id, toStation);
+    
+    if (!fromStop || !toStop) {
+      return res.status(404).json({
+        success: false,
+        message: '站点信息不存在'
+      });
+    }
+    
+    // 4. 使用 V2 系统计算区间可用座位
+    const businessClassCount = await countAvailableSeats(
+      schedule.id,
+      fromStop.stop_sequence,
+      toStop.stop_sequence,
+      '商务座'
+    );
+    
+    const firstClassCount = await countAvailableSeats(
+      schedule.id,
+      fromStop.stop_sequence,
+      toStop.stop_sequence,
+      '一等座'
+    );
+    
+    const secondClassCount = await countAvailableSeats(
+      schedule.id,
+      fromStop.stop_sequence,
+      toStop.stop_sequence,
+      '二等座'
+    );
+    
+    console.log(`🎫 [余票查询] ${trainNumber} ${fromStation}→${toStation}: 商务座${businessClassCount}, 一等座${firstClassCount}, 二等座${secondClassCount}`);
+    
+    return res.status(200).json({
+      success: true,
+      data: {
+        businessClass: businessClassCount,
+        firstClass: firstClassCount,
+        secondClass: secondClassCount
+      }
+    });
+  } catch (error) {
+    console.error('❌ [余票查询失败]:', error);
+    return res.status(500).json({
+      success: false,
+      message: '查询失败'
     });
   }
 });
