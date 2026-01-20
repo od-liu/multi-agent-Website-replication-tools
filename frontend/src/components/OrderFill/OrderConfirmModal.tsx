@@ -139,6 +139,9 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
       
       // 调用 API-SUBMIT-ORDER
       // 注意：后端API期望的字段名与前端不同，需要映射
+      // 提取纯日期格式（去除中文括号和星期信息，如 "2026-01-18（周日）" -> "2026-01-18"）
+      const pureDepartureDate = trainInfo.date.split('（')[0].split('(')[0].trim();
+      
       const response = await fetch('/api/orders/submit', {
         method: 'POST',
         headers: { 
@@ -147,7 +150,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
         },
         body: JSON.stringify({
           trainNumber: trainInfo.trainNo,           // 后端期望 trainNumber
-          departureDate: trainInfo.date,            // 后端期望 departureDate
+          departureDate: pureDepartureDate,         // 后端期望 departureDate（纯日期格式）
           fromStation: trainInfo.departureStation,  // 后端期望 fromStation
           toStation: trainInfo.arrivalStation,      // 后端期望 toStation
           departureTime: trainInfo.departureTime,   // 后端需要出发时间
