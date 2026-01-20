@@ -161,7 +161,7 @@ const PurchaseSuccessPage: React.FC = () => {
     return (
       <div className="purchase-success-page">
         <header className="purchase-success-header">
-          <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
           <SecondaryNav activeItem="车票" />
         </header>
         <div className="success-loading">加载中...</div>
@@ -177,7 +177,7 @@ const PurchaseSuccessPage: React.FC = () => {
     <div className="purchase-success-page">
       {/* 顶部导航区域（白色背景） */}
       <header className="purchase-success-header">
-        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
         <SecondaryNav activeItem="车票" />
       </header>
 

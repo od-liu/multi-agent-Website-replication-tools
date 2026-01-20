@@ -126,17 +126,19 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
           '二等座'
         );
         
-        // 获取价格
+        // 🔧 根据区间计算价格（累加所有经过站点的分段价格）
         const prices = await db.allAsync(`
-          SELECT seat_type, price
-          FROM schedule_seats
-          WHERE schedule_id = ? AND seat_type IN ('软卧', '硬卧', '二等座')
-          GROUP BY seat_type, price
-        `, schedule.id);
+          SELECT seat_type, SUM(price) as total_price
+          FROM train_segment_prices
+          WHERE train_id = ? 
+            AND from_stop_seq >= ? 
+            AND to_stop_seq <= ?
+          GROUP BY seat_type
+        `, train.train_id, fromStopSeq, toStopSeq);
         
         const priceMap = {};
         prices.forEach(p => {
-          priceMap[p.seat_type] = p.price;
+          priceMap[p.seat_type] = p.total_price;
         });
         
         seatsObj = {
@@ -170,17 +172,19 @@ export async function searchTrainsV2(fromCity, toCity, departureDate, isStudent 
           '商务座'
         );
         
-        // 获取价格
+        // 🔧 根据区间计算价格（累加所有经过站点的分段价格）
         const prices = await db.allAsync(`
-          SELECT seat_type, price
-          FROM schedule_seats
-          WHERE schedule_id = ? AND seat_type IN ('二等座', '一等座', '商务座')
-          GROUP BY seat_type, price
-        `, schedule.id);
+          SELECT seat_type, SUM(price) as total_price
+          FROM train_segment_prices
+          WHERE train_id = ? 
+            AND from_stop_seq >= ? 
+            AND to_stop_seq <= ?
+          GROUP BY seat_type
+        `, train.train_id, fromStopSeq, toStopSeq);
         
         const priceMap = {};
         prices.forEach(p => {
-          priceMap[p.seat_type] = p.price;
+          priceMap[p.seat_type] = p.total_price;
         });
         
         seatsObj = {

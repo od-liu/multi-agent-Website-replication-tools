@@ -46,6 +46,29 @@ export async function findAvailableSeats(scheduleId, fromStopSeq, toStopSeq, sea
   
   console.log(`🔍 查找可用座位: 班次=${scheduleId}, 区间=[${fromStopSeq}, ${toStopSeq}), 类型=${seatType}, 数量=${count}`);
   
+  // 🔧 先获取 train_id 以计算区间价格
+  const schedule = await db.getAsync(`
+    SELECT train_id FROM train_schedules WHERE id = ?
+  `, scheduleId);
+  
+  if (!schedule) {
+    console.error(`❌ 未找到班次: ${scheduleId}`);
+    return [];
+  }
+  
+  // 🔧 计算区间价格（累加分段价格）
+  const priceResult = await db.getAsync(`
+    SELECT SUM(price) as segment_price
+    FROM train_segment_prices
+    WHERE train_id = ? 
+      AND seat_type = ?
+      AND from_stop_seq >= ? 
+      AND to_stop_seq <= ?
+  `, schedule.train_id, seatType, fromStopSeq, toStopSeq);
+  
+  const segmentPrice = priceResult?.segment_price || 0;
+  console.log(`💰 区间价格: ${seatType} = ${segmentPrice}元`);
+  
   // 查询所有该类型的座位，排除在指定区间有冲突的座位
   const seats = await db.allAsync(`
     SELECT 
@@ -53,7 +76,7 @@ export async function findAvailableSeats(scheduleId, fromStopSeq, toStopSeq, sea
       ss.car_number,
       ss.seat_number,
       ss.seat_type,
-      ss.price
+      ss.price as full_price
     FROM schedule_seats ss
     WHERE ss.schedule_id = ?
       AND ss.seat_type = ?
@@ -70,9 +93,15 @@ export async function findAvailableSeats(scheduleId, fromStopSeq, toStopSeq, sea
     LIMIT ?
   `, scheduleId, seatType, toStopSeq, fromStopSeq, count);
   
-  console.log(`✅ 找到 ${seats.length} 个可用座位`);
+  // 🔧 使用区间价格替换全程价格
+  const seatsWithSegmentPrice = seats.map(seat => ({
+    ...seat,
+    price: segmentPrice > 0 ? segmentPrice : seat.full_price  // 如果没有分段价格，回退到全程价格
+  }));
   
-  return seats;
+  console.log(`✅ 找到 ${seatsWithSegmentPrice.length} 个可用座位，区间价格: ${segmentPrice}元`);
+  
+  return seatsWithSegmentPrice;
 }
 
 /**
