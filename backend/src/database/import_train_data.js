@@ -115,7 +115,7 @@ async function importSingleTrain(db, trainData) {
   await importTrainStops(db, trainId, trainData.stops);
   
   // 4. 插入车厢配置
-  await importTrainCars(db, trainId, trainData.cars);
+  await importTrainCars(db, trainId, trainData.cars, trainData.train_no);
   
   // 5. 插入票价信息（分段票价，如果有）
   if (trainData.fares && trainData.fares.segments) {
@@ -190,20 +190,41 @@ async function importTrainStops(db, trainId, stops) {
 /**
  * 导入车厢配置
  */
-async function importTrainCars(db, trainId, cars) {
+async function importTrainCars(db, trainId, cars, trainNumber) {
   // 如果 cars 不存在或不是数组，使用默认配置
   if (!Array.isArray(cars) || cars.length === 0) {
-    console.warn(`⚠️  车次 ${trainId} 缺少车厢配置，使用默认配置`);
-    cars = [
-      { "car_no": 1, "type": "商务座" },
-      { "car_no": 2, "type": "一等座" },
-      { "car_no": 3, "type": "一等座" },
-      { "car_no": 4, "type": "二等座" },
-      { "car_no": 5, "type": "二等座" },
-      { "car_no": 6, "type": "二等座" },
-      { "car_no": 7, "type": "二等座" },
-      { "car_no": 8, "type": "二等座" }
-    ];
+    console.warn(`⚠️  车次 ${trainNumber} 缺少车厢配置，使用默认配置`);
+    
+    // 根据车次类型选择默认配置
+    const trainType = trainNumber ? trainNumber.charAt(0) : 'G';
+    
+    if (trainType === 'D') {
+      // D开头：动车组，配置软卧、硬卧、二等座
+      cars = [
+        { "car_no": 1, "type": "软卧" },
+        { "car_no": 2, "type": "软卧" },
+        { "car_no": 3, "type": "硬卧" },
+        { "car_no": 4, "type": "硬卧" },
+        { "car_no": 5, "type": "硬卧" },
+        { "car_no": 6, "type": "餐车" },
+        { "car_no": 7, "type": "二等座" },
+        { "car_no": 8, "type": "二等座" },
+        { "car_no": 9, "type": "二等座" },
+        { "car_no": 10, "type": "二等座" }
+      ];
+    } else {
+      // G/C开头：高铁/城际，配置商务座、一等座、二等座
+      cars = [
+        { "car_no": 1, "type": "商务座" },
+        { "car_no": 2, "type": "一等座" },
+        { "car_no": 3, "type": "一等座" },
+        { "car_no": 4, "type": "二等座" },
+        { "car_no": 5, "type": "二等座" },
+        { "car_no": 6, "type": "二等座" },
+        { "car_no": 7, "type": "二等座" },
+        { "car_no": 8, "type": "二等座" }
+      ];
+    }
   }
   
   for (const car of cars) {

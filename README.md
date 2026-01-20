@@ -163,30 +163,42 @@ npm install
 
 #### 3. 初始化数据库
 
+⚠️ **重要**：首次运行必须先初始化数据库
+
 ```bash
 cd backend
-npm run setup  # 初始化数据库、导入车次数据、生成座位
+npm run setup-db  # 初始化数据库、导入车次数据、生成30天的班次和座位
 ```
+
+**选项**：
+- `npm run setup-db:7` - 生成未来 7 天的数据
+- `npm run setup-db:30` - 生成未来 30 天的数据（推荐）
+
+详细说明请查看：[数据库初始化指南](./DATABASE_SETUP.md)
 
 #### 4. 启动开发服务器
 
 **终端 1 - 后端服务**：
 ```bash
 cd backend
-npm run dev  # 启动后端服务（端口 5175）
+npm run dev  # 启动后端服务（端口 3000）
 ```
 
 **终端 2 - 前端服务**：
 ```bash
 cd frontend
-npm run dev  # 启动前端服务（端口 3000）
+npm run dev  # 启动前端服务（端口 5174）
 ```
 
 #### 5. 访问应用
 
 打开浏览器访问：
-- 前端：http://localhost:3000
-- 后端 API：http://localhost:5175/api
+- 前端：http://localhost:5174
+- 后端 API：http://localhost:3000/api
+
+**演示账号**：
+- 用户名：`demo`
+- 密码：`demo123`
 
 ---
 

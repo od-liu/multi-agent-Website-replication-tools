@@ -194,7 +194,10 @@ async function getPrice(db, trainId, seatType) {
   const defaultPrices = {
     '商务座': 2318,
     '一等座': 1060,
-    '二等座': 662
+    '二等座': 662,
+    '软卧': 800,
+    '硬卧': 500,
+    '硬座': 300
   };
   
   return defaultPrices[seatType] || 0;

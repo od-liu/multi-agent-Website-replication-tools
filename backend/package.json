@@ -18,7 +18,10 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "setup-db": "node src/database/setup_database.js",
+    "setup-db:7": "node src/database/setup_database.js 7",
+    "setup-db:30": "node src/database/setup_database.js 30"
   },
   "dependencies": {
     "express": "^4.18.2",

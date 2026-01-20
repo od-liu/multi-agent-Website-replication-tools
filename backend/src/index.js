@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5175;
+const PORT = process.env.PORT || 3000;
 
 // CORS配置 - 允许前端跨域访问
 app.use(cors({

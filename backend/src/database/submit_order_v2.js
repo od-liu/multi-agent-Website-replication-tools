@@ -23,7 +23,10 @@ import {
 export async function submitOrderV2(userId, orderData) {
   const db = getDb();
   
-  console.log(`📝 [订单提交V2] 用户 ${userId} 提交订单:`, {
+  // 🔧 确保 userId 是整数类型
+  const userIdInt = parseInt(userId, 10);
+  
+  console.log(`📝 [订单提交V2] 用户 ${userIdInt} 提交订单:`, {
     trainNumber: orderData.trainNumber,
     date: orderData.departureDate,
     from: orderData.fromStation,
@@ -33,7 +36,7 @@ export async function submitOrderV2(userId, orderData) {
   
   try {
     // ========== 验证输入 ==========
-    if (!userId || !orderData || !orderData.passengers || orderData.passengers.length === 0) {
+    if (!userIdInt || isNaN(userIdInt) || !orderData || !orderData.passengers || orderData.passengers.length === 0) {
       return { success: false, message: '订单信息不完整' };
     }
     
@@ -151,7 +154,7 @@ export async function submitOrderV2(userId, orderData) {
     `,
       orderId,     // id (TEXT 类型，使用 orderNumber)
       orderNumber, // order_number
-      userId, 
+      userIdInt,   // 🔧 使用转换后的整数
       schedule.id,
       orderData.trainNumber,       // train_number
       orderData.fromStation,       // from_station
@@ -249,7 +252,10 @@ export async function submitOrderV2(userId, orderData) {
 export async function cancelOrderV2(orderId, userId) {
   const db = getDb();
   
-  console.log(`❌ [取消订单V2] orderId: ${orderId}, userId: ${userId}`);
+  // 🔧 确保 userId 是整数类型
+  const userIdInt = parseInt(userId, 10);
+  
+  console.log(`❌ [取消订单V2] orderId: ${orderId}, userId: ${userIdInt}`);
   
   try {
     await db.runAsync('BEGIN TRANSACTION');
@@ -258,7 +264,7 @@ export async function cancelOrderV2(orderId, userId) {
     const order = await db.getAsync(`
       SELECT id, status FROM orders
       WHERE id = ? AND user_id = ?
-    `, orderId, userId);
+    `, orderId, userIdInt);
     
     if (!order) {
       await db.runAsync('ROLLBACK');
@@ -288,19 +294,19 @@ export async function cancelOrderV2(orderId, userId) {
     const existingCount = await db.getAsync(`
       SELECT cancel_count FROM user_daily_cancel_count 
       WHERE user_id = ? AND date = ?
-    `, userId, today);
+    `, userIdInt, today);
     
     if (existingCount) {
       await db.runAsync(`
         UPDATE user_daily_cancel_count 
         SET cancel_count = cancel_count + 1 
         WHERE user_id = ? AND date = ?
-      `, userId, today);
+      `, userIdInt, today);
     } else {
       await db.runAsync(`
         INSERT INTO user_daily_cancel_count (user_id, date, cancel_count)
         VALUES (?, ?, 1)
-      `, userId, today);
+      `, userIdInt, today);
     }
     
     await db.runAsync('COMMIT');
