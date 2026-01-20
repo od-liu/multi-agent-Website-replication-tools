@@ -93,9 +93,17 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const selectDate = (day: number) => {
     const selected = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
     
-    // 检查是否在可选范围内
-    if (minDate && selected < minDate) return;
-    if (maxDate && selected > maxDate) return;
+    // 🔧 检查是否在可选范围内（只比较日期部分，忽略时间）
+    if (minDate) {
+      const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+      const selectedOnly = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
+      if (selectedOnly < minDateOnly) return;
+    }
+    if (maxDate) {
+      const maxDateOnly = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+      const selectedOnly = new Date(selected.getFullYear(), selected.getMonth(), selected.getDate());
+      if (selectedOnly > maxDateOnly) return;
+    }
     
     setSelectedDate(selected);
     
@@ -123,8 +131,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
   // 判断日期是否可选
   const isDateSelectable = (day: number) => {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-    if (minDate && date < minDate) return false;
-    if (maxDate && date > maxDate) return false;
+    
+    // 🔧 只比较日期部分，忽略时间
+    if (minDate) {
+      const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
+      const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      if (dateOnly < minDateOnly) return false;
+    }
+    if (maxDate) {
+      const maxDateOnly = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+      const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      if (dateOnly > maxDateOnly) return false;
+    }
+    
     return true;
   };
 

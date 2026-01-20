@@ -210,8 +210,10 @@ const OrderHistoryPanel: React.FC = () => {
    */
   const getFilteredOrders = (): Order[] => {
     const keyword = searchKeyword.trim();
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+    
+    // 🔧 将日期归零时间部分，只比较日期
+    const start = startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)) : null;
+    const end = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)) : null;
 
     return orders.filter(order => {
       // 🔧 注意：数据库状态是英文（paid/unpaid/cancelled/completed）
@@ -246,14 +248,32 @@ const OrderHistoryPanel: React.FC = () => {
         passengerNames.includes(keyword)
       );
     }).filter(order => {
+      // 🔧 日期范围筛选：只有设置了开始和结束日期才进行筛选
       if (!start || !end) return true;
+      
       const compareDateStr =
         queryType === '按订票日期查询'
           ? (order.createdAt || '')
           : (order.departureDate || '');
+      
       if (!compareDateStr) return true;
-      const d = new Date(compareDateStr.slice(0, 10));
-      return d >= start && d <= end;
+      
+      // 🔧 提取日期部分（YYYY-MM-DD），创建本地时间日期对象
+      const dateOnly = compareDateStr.slice(0, 10); // "2026-01-20"
+      const [year, month, day] = dateOnly.split('-').map(Number);
+      const orderDate = new Date(year, month - 1, day); // 本地时间，时分秒为 00:00:00
+      
+      console.log('📅 [日期筛选]', {
+        queryType,
+        compareDateStr,
+        dateOnly,
+        orderDate: orderDate.toISOString(),
+        start: start.toISOString(),
+        end: end.toISOString(),
+        inRange: orderDate >= start && orderDate <= end
+      });
+      
+      return orderDate >= start && orderDate <= end;
     });
   };
 
