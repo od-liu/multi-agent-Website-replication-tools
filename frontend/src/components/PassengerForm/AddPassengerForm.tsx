@@ -142,9 +142,20 @@ const AddPassengerForm: React.FC<AddPassengerFormProps> = ({ onSuccess, onCancel
     }
     
     try {
+      // 🔧 从 localStorage 获取用户ID
+      const userId = localStorage.getItem('userId');
+      
+      if (!userId) {
+        alert('请先登录！');
+        return;
+      }
+      
       const response = await fetch('/api/passengers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-User-Id': userId  // 🆕 发送用户ID到后端
+        },
         body: JSON.stringify(formData)
       });
       
