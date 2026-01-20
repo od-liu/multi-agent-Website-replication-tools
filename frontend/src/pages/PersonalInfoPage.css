@@ -6,6 +6,15 @@
   background-color: #FFFFFF;
 }
 
+/* ========== 顶部导航区域（白色背景） ========== */
+.personal-info-header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 /* ========== 面包屑导航 ========== */
 .breadcrumb-container {
   max-width: 1200px;

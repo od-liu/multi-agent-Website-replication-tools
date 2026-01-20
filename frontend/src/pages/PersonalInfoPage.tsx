@@ -25,7 +25,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import HomeTopBar from '../components/HomeTopBar/HomeTopBar';
-import MainNavigation from '../components/MainNavigation/MainNavigation';
+import SecondaryNav from '../components/SecondaryNav/SecondaryNav';
 import SideMenu from '../components/SideMenu/SideMenu';
 import PersonalInfoPanel from '../components/PersonalInfoPanel/PersonalInfoPanel';
 import PassengerManagePanel from '../components/PassengerManagePanel/PassengerManagePanel';
@@ -55,11 +55,11 @@ const PersonalInfoPage: React.FC = () => {
 
   return (
     <div className="personal-info-page">
-      {/* 顶部导航栏（共享组件） */}
-      <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
-      
-      {/* 主导航栏（共享组件） */}
-      <MainNavigation />
+      {/* 顶部导航栏（统一样式） */}
+      <header className="personal-info-header">
+        <HomeTopBar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
+        <SecondaryNav />
+      </header>
       
       {/* 面包屑导航 */}
       <div className="breadcrumb-container">
