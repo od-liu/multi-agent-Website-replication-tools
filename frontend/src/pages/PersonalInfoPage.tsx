@@ -49,7 +49,8 @@ const PersonalInfoPage: React.FC = () => {
   // 根据当前面板更新面包屑
   const getBreadcrumbText = () => {
     if (currentPanel === 'passengers') return '当前位置：个人中心 > 常用信息管理 > 乘车人';
-    if (currentPanel === 'orders') return '当前位置：个人中心 > 订单中心 > 火车票订单';
+    // 与目标页 train_order.html 保持一致：不显示“订单中心”层级，且不加空格
+    if (currentPanel === 'orders') return '当前位置：个人中心>火车票订单';
     return '当前位置：个人中心 > 查看个人信息';
   };
 

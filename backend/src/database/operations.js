@@ -762,9 +762,10 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     // 判断是否查询今天的车次
     const isToday = departureDate === currentDate;
     
-    // 查询车次（连接trains、stations、cities表）
+    // 🔧 修复：使用 train_stops 表查询区间票（支持途经站）
+    // 查询所有经过出发城市和到达城市的车次
     let query = `
-      SELECT 
+      SELECT DISTINCT
         t.id as train_id,
         t.train_number,
         t.train_type,
@@ -772,16 +773,24 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
         s2.station_name as arrival_station,
         c1.city_name as departure_city,
         c2.city_name as arrival_city,
-        t.departure_time,
-        t.arrival_time,
+        ts1.departure_time as departure_time,
+        ts2.arrival_time as arrival_time,
         t.duration,
-        t.arrival_day
+        t.arrival_day,
+        ts1.stop_sequence as from_seq,
+        ts2.stop_sequence as to_seq
       FROM trains t
-      JOIN stations s1 ON t.departure_station_id = s1.id
-      JOIN stations s2 ON t.arrival_station_id = s2.id
+      -- 出发站
+      JOIN train_stops ts1 ON t.id = ts1.train_id
+      JOIN stations s1 ON ts1.station_id = s1.id
       JOIN cities c1 ON s1.city_id = c1.id
+      -- 到达站
+      JOIN train_stops ts2 ON t.id = ts2.train_id
+      JOIN stations s2 ON ts2.station_id = s2.id
       JOIN cities c2 ON s2.city_id = c2.id
-      WHERE c1.city_name = ? AND c2.city_name = ? AND t.is_active = 1
+      WHERE c1.city_name = ? AND c2.city_name = ? 
+        AND t.is_active = 1
+        AND ts1.stop_sequence < ts2.stop_sequence
     `;
     
     const params = [fromCity, toCity];
@@ -789,7 +798,7 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
     // 🆕 需求：查询结果应该只包含当前时间之后发车的车次
     // 如果查询今天的车次，只返回还未发车的车次
     if (isToday) {
-      query += ` AND t.departure_time > ?`;
+      query += ` AND ts1.departure_time > ?`;
       params.push(currentTime);
       console.log(`⏰ 查询今天的车次，过滤已发车的列车（发车时间 > ${currentTime}）`);
     }
@@ -799,7 +808,7 @@ export async function searchTrains(fromCity, toCity, departureDate, isStudent = 
       query += ` AND (t.train_type = 'GC' OR t.train_type = 'D')`;
     }
     
-    query += ` ORDER BY t.departure_time`;
+    query += ` ORDER BY ts1.departure_time`;
     
     const t2 = performance.now();
     const trains = await db.allAsync(query, ...params);
@@ -1054,11 +1063,15 @@ export async function getPassengers(userId) {
       '4': '台湾通行证'
     };
     
-    // 乘客类型映射
+    // 乘客类型映射（同时处理数字代码和中文名称）
     const passengerTypeMap = {
       '1': '成人票',
       '2': '学生票',
-      '3': '儿童票'
+      '3': '儿童票',
+      // 🔧 兼容中文名称（统一转换为带"票"的格式）
+      '成人': '成人票',
+      '学生': '学生票',
+      '儿童': '儿童票'
     };
 
     // 转换数据格式并对证件号和手机号进行脱敏处理

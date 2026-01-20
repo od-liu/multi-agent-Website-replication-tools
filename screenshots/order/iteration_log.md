@@ -121,3 +121,65 @@
 
 - **剩余问题**：
   - 仍可微调：表格列宽/表头 padding 与参考图做更细的像素级对齐（当前已接近，但仍可能存在细微差异）。
+
+## Iteration 5（/orders 对齐 `train_order.html`）
+- **差异点**（按优先级：缺失/多余 > 位置尺寸 > 颜色 > 其他；本轮不修改顶部栏/导航栏/底部栏/侧边栏）：
+  1. **订单卡片缺失** - 订单列表区域 - 缺失元素（目标存在“订票日期/订单号/车票当日当次有效 + 5列表格 + 操作按钮区”）
+  2. **Tab 选中态样式不一致** - “未出行订单”Tab - 颜色/下划线/高度（目标高度 42px、蓝色 `rgb(59,153,252)`）
+  3. **查询按钮样式不一致** - 筛选区域右侧“查询” - 尺寸/边框/圆角（目标 `100×30`、`1px solid #dedede`、`border-radius: 6px`、白底）
+  4. **温馨提示框样式不一致** - 列表底部“温馨提示” - 背景/边框（目标背景 `#fffbf8`、边框 `2px solid #ffddba`、padding `10px 20px`）
+  5. **分页区缺失** - 订单卡片下方 - 缺失元素（目标有“共1页 1 到[ ]页 确定”）
+
+- **从原站提取的信息（用于对齐）**：
+  - Tab：高度 `42px`，选中文字色 `rgb(59,153,252)`。
+  - 查询按钮：`100×30`，`border: 1px solid rgb(222,222,222)`，`border-radius: 6px`，白底。
+  - 温馨提示：背景 `rgb(255,251,248)`（`#fffbf8`），边框 `2px solid rgb(255,221,186)`（`#ffddba`），padding `10px 20px`。
+
+- **修复内容**：
+  - 修改文件：
+    - `frontend/src/components/OrderHistoryPanel/OrderHistoryPanel.tsx`
+    - `frontend/src/components/OrderHistoryPanel/OrderHistoryPanel.css`
+    - `frontend/src/pages/PersonalInfoPage.tsx`（仅面包屑文案对齐：`当前位置：个人中心>火车票订单`）
+  - 修复的差异点：
+    - 订单列表改为“订单卡片 + 表格(rowspan)”结构，并支持“两乘车人时第一列共享、第二列起两行”。
+    - 对齐 Tab 选中态、筛选行控件高度、查询按钮样式。
+    - 对齐温馨提示背景/边框/padding，并补齐分页区。
+
+- **验证结果**：已验证（截图对比通过主要结构与关键样式）
+  - 目标：`screenshots/order/target_image.png`
+  - 复刻验证：`screenshots/order/replica_page_iteration_1_verify.png`
+  - 说明：订单内的具体车次/姓名/价格等内容允许不一致（按本轮要求不做强对齐）。
+
+- **剩余问题**：
+  - 日期输入在 macOS 下原生渲染可能显示为 `YYYY/MM/DD`（浏览器实现差异），与目标的 `YYYY-MM-DD` 存在细微差异；目前已确保输入值与布局一致。
+
+## Iteration 6（/orders 第2轮：修复“历史订单查询栏”与“订单项样式”）
+- **差异点**（按优先级：缺失/多余 > 位置尺寸 > 颜色 > 其他；本轮不修改顶部栏/导航栏/底部栏/侧边栏）：
+  1. **历史订单查询栏布局不一致** - Tab “历史订单”筛选行 - 缺失元素（应与“未出行订单”一致：下拉 + 起止日期 + 搜索框 + 查询按钮）
+  2. **历史/未出行默认日期范围不一致** - 筛选行日期 - 内容不一致（应为“过去30天”范围）
+  3. **订单项头部样式不一致** - 每个订单卡片顶部蓝色条 - 颜色/排版（缺少复选框样式、圆形展开图标、文字排版不一致）
+  4. **订单卡片边框/分割线不一致** - 订单列表区域 - 颜色/线条（目标为淡蓝外框、浅灰表格分割线）
+  5. **“订单详情”等按钮区背景色不一致** - 订单卡片底部操作按钮行 - 颜色差异（目标为白底，之前为浅蓝底）
+
+- **修复内容**：
+  - 修改文件：
+    - `frontend/src/components/OrderHistoryPanel/OrderHistoryPanel.tsx`
+    - `frontend/src/components/OrderHistoryPanel/OrderHistoryPanel.css`
+  - 修复的差异点：
+    - 历史订单筛选行改为与未出行订单一致：`按订票日期查询/按出行日期查询` 下拉 + 日期输入 + 搜索框 + 查询按钮
+    - 历史/未出行默认范围统一为“过去30天”
+    - 订单卡片头部增加复选框占位与圆形展开图标，并调整背景/边框颜色接近目标
+    - 订单卡片外框改为淡蓝边框、表格分割线调整为浅灰
+    - “订单详情”等按钮区背景改为白色
+
+- **验证截图**：
+  - 目标（未出行）：`screenshots/order/target_upcoming_iteration_2.png`
+  - 复刻（未出行）：`screenshots/order/replica_upcoming_iteration_2_after_fix4.png`
+  - 目标（历史）：`screenshots/order/target_history_iteration_2.png`
+  - 复刻（历史）：`screenshots/order/replica_history_iteration_2_after_fix4.png`
+  - 复刻（未完成空态）：`screenshots/order/replica_uncompleted_iteration_2_after_fix3.png`
+
+- **验证结果**：已修复（本轮要求项）
+- **剩余问题**：
+  - 可继续像素级微调：订单卡片头部字号/间距、表格各列宽度、以及真实站点的复选框/展开图标的 sprite 资源（当前为 CSS 近似绘制）。
+  - 订单乘客列已按要求去掉“打印信息单”，仅展示姓名（验证：`screenshots/order/replica_upcoming_iteration_2_after_fix5.png`）。

@@ -32,7 +32,7 @@ async function setupCompleteSystem() {
     // Step 2: 导入车次数据
     console.log('📌 Step 2/3: 导入车次数据');
     console.log('----------------------------------------');
-    const trainDataPath = join(dirname(dirname(dirname(__dirname))), ' 车次信息.json');
+    const trainDataPath = join(dirname(dirname(dirname(__dirname))), '车次信息.json');
     console.log(`📄 数据文件路径: ${trainDataPath}`);
     
     const importResult = await importTrainData(trainDataPath);

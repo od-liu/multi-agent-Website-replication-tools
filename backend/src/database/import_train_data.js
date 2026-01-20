@@ -191,6 +191,21 @@ async function importTrainStops(db, trainId, stops) {
  * 导入车厢配置
  */
 async function importTrainCars(db, trainId, cars) {
+  // 如果 cars 不存在或不是数组，使用默认配置
+  if (!Array.isArray(cars) || cars.length === 0) {
+    console.warn(`⚠️  车次 ${trainId} 缺少车厢配置，使用默认配置`);
+    cars = [
+      { "car_no": 1, "type": "商务座" },
+      { "car_no": 2, "type": "一等座" },
+      { "car_no": 3, "type": "一等座" },
+      { "car_no": 4, "type": "二等座" },
+      { "car_no": 5, "type": "二等座" },
+      { "car_no": 6, "type": "二等座" },
+      { "car_no": 7, "type": "二等座" },
+      { "car_no": 8, "type": "二等座" }
+    ];
+  }
+  
   for (const car of cars) {
     // 映射车厢类型到标准类型
     const carType = normalizeCarType(car.type);

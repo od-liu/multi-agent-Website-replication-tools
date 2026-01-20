@@ -137,15 +137,19 @@ export async function submitOrderV2(userId, orderData) {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + 20 * 60 * 1000); // 20分钟
     
+    // 🔧 orders.id 是 TEXT 类型，需要显式指定
+    const orderId = orderNumber; // 使用 orderNumber 作为订单 ID
+    
     const orderResult = await db.runAsync(`
       INSERT INTO orders (
-        order_number, user_id, schedule_id, 
+        id, order_number, user_id, schedule_id, 
         train_number, from_station, to_station,
         departure_date, departure_time, arrival_time,
         from_stop_seq, to_stop_seq,
         total_price, status, created_at, expires_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
+      orderId,     // id (TEXT 类型，使用 orderNumber)
       orderNumber, // order_number
       userId, 
       schedule.id,
@@ -162,8 +166,6 @@ export async function submitOrderV2(userId, orderData) {
       now.toISOString(), 
       expiresAt.toISOString()
     );
-    
-    const orderId = orderResult.lastID; // 使用数据库自动生成的 ID
     
     console.log(`📦 [订单提交V2] 订单创建成功: ${orderNumber} (ID=${orderId})`);
     
