@@ -31,6 +31,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import DatePicker from '../DatePicker/DatePicker';
 import './OrderHistoryPanel.css';
 
 interface OrderPassenger {
@@ -70,6 +71,10 @@ const OrderHistoryPanel: React.FC = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  // 🆕 日期选择器显示状态（防止与其他页面冲突，使用特定前缀）
+  const [showOrderHistoryStartDatePicker, setShowOrderHistoryStartDatePicker] = useState(false);
+  const [showOrderHistoryEndDatePicker, setShowOrderHistoryEndDatePicker] = useState(false);
 
   const setDefaultDateRangeForTab = (tab: 'uncompleted' | 'upcoming' | 'history') => {
     const today = new Date();
@@ -377,18 +382,30 @@ const OrderHistoryPanel: React.FC = () => {
 
             {/* 开始日期 */}
             <div className="filter-item date-picker">
-              <div className="date-box">
+              <div className="date-box" onClick={() => setShowOrderHistoryStartDatePicker(true)}>
                 <input
                   type="text"
-                  className="date-input"
+                  className="date-input orderHistory-date-input"
                   placeholder="请输入日期，例如2021-01-01"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
+                  readOnly
                 />
-                <span className="date-calendarIcon" aria-hidden="true">
-                  
+                <span className="date-calendarIcon orderHistory-calendarIcon" aria-hidden="true">
+                  
                 </span>
               </div>
+              {/* 🆕 开始日期选择器（使用特定类名前缀防止CSS冲突） */}
+              {showOrderHistoryStartDatePicker && (
+                <DatePicker
+                  value={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    setShowOrderHistoryStartDatePicker(false);
+                  }}
+                  onClose={() => setShowOrderHistoryStartDatePicker(false)}
+                />
+              )}
             </div>
 
             {/* 分隔符 */}
@@ -396,18 +413,31 @@ const OrderHistoryPanel: React.FC = () => {
 
             {/* 结束日期 */}
             <div className="filter-item date-picker">
-              <div className="date-box">
+              <div className="date-box" onClick={() => setShowOrderHistoryEndDatePicker(true)}>
                 <input
                   type="text"
-                  className="date-input"
+                  className="date-input orderHistory-date-input"
                   placeholder="请输入日期，例如2021-01-01"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  readOnly
                 />
-                <span className="date-calendarIcon" aria-hidden="true">
-                  
+                <span className="date-calendarIcon orderHistory-calendarIcon" aria-hidden="true">
+                  
                 </span>
               </div>
+              {/* 🆕 结束日期选择器（使用特定类名前缀防止CSS冲突） */}
+              {showOrderHistoryEndDatePicker && (
+                <DatePicker
+                  value={endDate}
+                  onChange={(date) => {
+                    setEndDate(date);
+                    setShowOrderHistoryEndDatePicker(false);
+                  }}
+                  onClose={() => setShowOrderHistoryEndDatePicker(false)}
+                  minDate={startDate ? new Date(startDate) : undefined}
+                />
+              )}
             </div>
 
             {/* 搜索框 */}
