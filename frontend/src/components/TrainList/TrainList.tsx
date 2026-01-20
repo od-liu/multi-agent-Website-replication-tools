@@ -149,6 +149,10 @@ const TrainList: React.FC<TrainListProps> = ({
       return parseInt(String(seatValue)) || 0;
     };
     
+    // 🔧 根据车次类型构造不同的价格数据
+    const trainType = train.trainNumber.charAt(0);
+    const isDTrainType = trainType === 'D';
+    
     // 构造订单填写页需要的车次数据
     const trainData = {
       date: date, // 使用传入的日期
@@ -159,7 +163,24 @@ const TrainList: React.FC<TrainListProps> = ({
       arrivalTime: train.arrivalTime,
       duration: train.duration,
       arrivalDay: train.arrivalDay,
-      prices: {
+      prices: isDTrainType ? {
+        // D车次：软卧、硬卧、二等座
+        softSleeper: {
+          price: getSeatPrice('软卧', 800.0),
+          available: getSeatAvailable('软卧')
+        },
+        hardSleeper: {
+          price: getSeatPrice('硬卧', 500.0),
+          available: getSeatAvailable('硬卧')
+        },
+        secondClass: { 
+          price: getSeatPrice('二等座', 300.0), 
+          available: getSeatAvailable('二等座')
+        },
+        firstClass: { price: 0, available: 0 },
+        businessClass: { price: 0, available: 0 }
+      } : {
+        // G/C车次：商务座、一等座、二等座
         secondClass: { 
           price: getSeatPrice('二等座', 662.0), 
           available: getSeatAvailable('二等座')

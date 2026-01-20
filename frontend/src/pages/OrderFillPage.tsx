@@ -104,16 +104,29 @@ const OrderFillPage: React.FC = () => {
       businessClass: {
         price: routeData?.prices?.businessClass?.price ?? defaultTrainData.prices.businessClass.price,
         available: routeData?.prices?.businessClass?.available ?? defaultTrainData.prices.businessClass.available
-      }
+      },
+      softSleeper: routeData?.prices?.softSleeper,
+      hardSleeper: routeData?.prices?.hardSleeper
     }
   };
 
-  // 转换为PassengerInfo组件需要的格式
-  const availableSeats = [
-    { type: '二等座' as const, price: trainData.prices.secondClass.price, available: trainData.prices.secondClass.available },
-    { type: '一等座' as const, price: trainData.prices.firstClass.price, available: trainData.prices.firstClass.available },
-    { type: '商务座' as const, price: trainData.prices.businessClass.price, available: trainData.prices.businessClass.available }
-  ];
+  // 🔧 根据车次类型动态生成可用席位列表
+  const trainType = trainData.trainNo.charAt(0);
+  const isDTrainType = trainType === 'D';
+  
+  const availableSeats = isDTrainType
+    ? [
+        // D车次：软卧、硬卧、二等座
+        ...(trainData.prices.softSleeper ? [{ type: '软卧' as const, price: trainData.prices.softSleeper.price, available: trainData.prices.softSleeper.available }] : []),
+        ...(trainData.prices.hardSleeper ? [{ type: '硬卧' as const, price: trainData.prices.hardSleeper.price, available: trainData.prices.hardSleeper.available }] : []),
+        { type: '二等座' as const, price: trainData.prices.secondClass.price, available: trainData.prices.secondClass.available }
+      ]
+    : [
+        // G/C车次：商务座、一等座、二等座
+        { type: '商务座' as const, price: trainData.prices.businessClass.price, available: trainData.prices.businessClass.available },
+        { type: '一等座' as const, price: trainData.prices.firstClass.price, available: trainData.prices.firstClass.available },
+        { type: '二等座' as const, price: trainData.prices.secondClass.price, available: trainData.prices.secondClass.available }
+      ];
 
   // ========== Lifecycle ==========
   // 监听 localStorage 变化（用于跨标签页同步登录状态）
