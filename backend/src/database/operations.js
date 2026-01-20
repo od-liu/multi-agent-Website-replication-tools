@@ -1040,9 +1040,9 @@ export async function getPassengers(userId) {
     const { getDb } = await import('./db.js');
     const db = getDb();
     
-    // 从数据库获取该用户的乘客列表
+    // 从数据库获取该用户的乘客列表（包含 is_self 字段）
     const passengers = await db.allAsync(
-      'SELECT id, name, id_type, id_number, passenger_type FROM passengers WHERE user_id = ?',
+      'SELECT id, name, id_type, id_number, passenger_type, is_self FROM passengers WHERE user_id = ?',
       userId
     );
     
@@ -1074,7 +1074,8 @@ export async function getPassengers(userId) {
         name: p.name,
         idType: idTypeMap[p.id_type] || p.id_type || '居民身份证',
         idNumber: maskedIdNumber,
-        passengerType: passengerTypeMap[p.passenger_type] || p.passenger_type || '成人票'
+        passengerType: passengerTypeMap[p.passenger_type] || p.passenger_type || '成人票',
+        isSelf: p.is_self === 1  // 🆕 是否为用户本人
       };
     });
     
@@ -1176,6 +1177,63 @@ export async function addPassenger(userId, passengerData) {
     return {
       success: false,
       message: '添加失败，请稍后重试'
+    };
+  }
+}
+
+/**
+ * 删除乘客
+ * @param {number} userId - 用户ID
+ * @param {number} passengerId - 乘客ID
+ * @returns {Promise<Object>} 删除结果
+ */
+export async function deletePassenger(userId, passengerId) {
+  try {
+    const { getDb } = await import('./db.js');
+    const db = getDb();
+    
+    console.log(`🗑️ [删除乘客] 用户${userId} 尝试删除乘客${passengerId}`);
+    
+    // 检查乘客是否存在且属于该用户
+    const passenger = await db.getAsync(
+      'SELECT id, name, is_self FROM passengers WHERE id = ? AND user_id = ?',
+      passengerId, userId
+    );
+    
+    if (!passenger) {
+      console.warn(`⚠️ [删除乘客] 乘客不存在或不属于该用户`);
+      return {
+        success: false,
+        message: '乘客不存在'
+      };
+    }
+    
+    // 🚫 禁止删除用户本人
+    if (passenger.is_self === 1) {
+      console.warn(`⚠️ [删除乘客] 禁止删除用户本人: ${passenger.name}`);
+      return {
+        success: false,
+        message: '不能删除本人信息'
+      };
+    }
+    
+    // 删除乘客
+    await db.runAsync(
+      'DELETE FROM passengers WHERE id = ? AND user_id = ?',
+      passengerId, userId
+    );
+    
+    console.log(`✅ [删除乘客] 成功删除: ID=${passengerId}, 姓名=${passenger.name}`);
+    
+    return {
+      success: true,
+      message: '删除成功'
+    };
+  } catch (error) {
+    console.error('❌ [删除乘客失败]:', error);
+    return {
+      success: false,
+      message: '删除失败，请稍后重试'
     };
   }
 }

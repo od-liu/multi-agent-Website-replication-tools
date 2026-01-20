@@ -20,6 +20,7 @@ import {
   getTrainDetails,
   getPassengers,
   addPassenger,
+  deletePassenger,
   submitOrder,
   getOrderPaymentInfo,
   confirmPayment,
@@ -604,6 +605,54 @@ router.post('/api/passengers', async (req, res) => {
     return res.status(500).json({
       success: false,
       message: '添加失败，请稍后重试'
+    });
+  }
+});
+
+/**
+ * @api DELETE /api/passengers/:id
+ * @summary 删除常用乘客
+ * @param {number} params.id - 乘客ID
+ * @returns {Object} response - 响应体
+ * @returns {boolean} response.success - 是否成功
+ * @returns {string} response.message - 响应消息
+ * @calls deletePassenger - 委托给数据库操作函数
+ */
+router.delete('/api/passengers/:id', async (req, res) => {
+  const passengerId = parseInt(req.params.id);
+  
+  // 从 session 或 header 获取用户ID
+  const userId = req.session?.userId || req.headers['x-user-id'];
+  
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: '请先登录'
+    });
+  }
+  
+  if (!passengerId || isNaN(passengerId)) {
+    return res.status(400).json({
+      success: false,
+      message: '乘客ID无效'
+    });
+  }
+  
+  try {
+    console.log(`🗑️ [API] 删除乘客: 用户=${userId}, 乘客ID=${passengerId}`);
+    
+    const result = await deletePassenger(userId, passengerId);
+    
+    if (result.success) {
+      return res.status(200).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    console.error('❌ [API] 删除乘客失败:', error);
+    return res.status(500).json({
+      success: false,
+      message: '删除失败，请稍后重试'
     });
   }
 });

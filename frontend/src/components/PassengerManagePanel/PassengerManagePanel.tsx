@@ -148,8 +148,14 @@ const PassengerManagePanel: React.FC = () => {
       showCancel: true,
       onConfirm: async () => {
         try {
+          // 🔧 从 localStorage 获取用户ID
+          const userId = localStorage.getItem('userId');
+          
           const response = await fetch(`/api/passengers/${passengerId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+              'X-User-Id': userId || ''  // 🆕 发送用户ID到后端
+            }
           });
           
           const result = await response.json();
@@ -197,8 +203,16 @@ const PassengerManagePanel: React.FC = () => {
       showCancel: true,
       onConfirm: async () => {
         try {
+          // 🔧 从 localStorage 获取用户ID
+          const userId = localStorage.getItem('userId');
+          
           const deletePromises = selectedIds.map(id =>
-            fetch(`/api/passengers/${id}`, { method: 'DELETE' })
+            fetch(`/api/passengers/${id}`, { 
+              method: 'DELETE',
+              headers: {
+                'X-User-Id': userId || ''  // 🆕 发送用户ID到后端
+              }
+            })
           );
           
           await Promise.all(deletePromises);
@@ -328,13 +342,16 @@ const PassengerManagePanel: React.FC = () => {
             <tbody>
               {filteredPassengers.map((passenger, index) => (
                 <tr key={passenger.id}>
-                  <td className="col-checkbox">
+                <td className="col-checkbox">
+                  {/* 🚫 禁止选择本人 */}
+                  {!passenger.isSelf && (
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(passenger.id)}
                       onChange={() => handleCheckboxChange(passenger.id)}
                     />
-                  </td>
+                  )}
+                </td>
                   <td className="col-sequence">{index + 1}</td>
                   <td className="col-name">{passenger.name}</td>
                   <td className="col-id-type">{passenger.idType}</td>
