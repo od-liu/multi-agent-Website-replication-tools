@@ -51,7 +51,7 @@ const SuccessTips: React.FC = () => {
               alt="微信二维码" 
               className="qrcode-image"
             />
-            <div className="qrcode-label">使用微信扫一扫，可通过铁路12306行程提醒</div>
+            <div className="qrcode-label">使用微信扫一扫，可通过微信接收12306行程通知</div>
           </div>
           <div className="qrcode-item">
             <img 
@@ -59,7 +59,7 @@ const SuccessTips: React.FC = () => {
               alt="支付宝二维码" 
               className="qrcode-image"
             />
-            <div className="qrcode-label">使用支付宝扫一扫，可通过支付宝铁路12306行程提醒</div>
+            <div className="qrcode-label">使用支付宝扫一扫，可通过支付宝通知提醒接收12306行程通知</div>
           </div>
         </div>
       </div>

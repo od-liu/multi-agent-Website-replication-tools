@@ -3,21 +3,25 @@
 
 .success-order-info-container {
   margin: 20px 0 !important;
-  width: 1100px !important;
+  width: 978px !important;
   box-sizing: border-box !important;
-  border: 1px solid #D0D0D0 !important;
-  border-radius: 10px !important;
+  /* 官网 layout b-info */
+  border: 1px solid #1678BE !important;
+  border-radius: 5px 5px 0px 0px !important;
   overflow: hidden !important;
   background-color: #FFFFFF !important;
 }
 
 /* ========== 标题栏（渐变蓝色） ========== */
 .success-order-info-header {
+  /* 参考截图：蓝色渐变标题条 */
   background: linear-gradient(rgb(54, 152, 213), rgb(29, 130, 189)) !important;
-  color: rgb(255, 255, 255) !important; /* 白色 */
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  padding: 5px 20px !important;
+  color: rgb(255, 255, 255) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 30px !important;
+  height: 32px !important;
+  padding: 0px 0px 0px 20px !important;
   border-bottom: 2px solid #8FCDEC !important;
 }
 
@@ -26,66 +30,105 @@
   background-color: #FFFFFF !important;
   padding: 15px 20px !important;
   border-bottom: 1px solid #D0D0D0 !important;
-  font-size: 20px !important;
   color: rgb(51, 51, 51) !important; /* #333333 */
-  line-height: 1.5 !important;
-}
-
-.train-date {
-  margin-right: 20px !important;
-}
-
-.train-number {
+  font-size: 20px !important;
+  line-height: 30px !important;
   font-weight: 700 !important;
-  margin-right: 5px !important;
 }
 
-.station-name {
+.successOrderInfo-dateText {
+  margin-right: 20px !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: rgb(51, 51, 51) !important;
+}
+
+.successOrderInfo-weekday {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: rgb(51, 51, 51) !important;
+}
+
+.successOrderInfo-trainText {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  margin-right: 10px !important;
+  color: rgb(51, 51, 51) !important;
+}
+
+.successOrderInfo-stationNameFrom {
   color: rgb(255, 0, 0) !important; /* #FF0000 - 红色 */
   font-size: 26px !important;
-  font-weight: 1000 !important; /* 超粗体 */
+  font-weight: 700 !important;
+  margin-left: 0px !important;
 }
 
-.train-time {
+.successOrderInfo-stationNameTo {
+  color: rgb(51, 51, 51) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
+.successOrderInfo-stationSuffix {
+  color: rgb(51, 51, 51) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
+.successOrderInfo-timeText {
   color: rgb(51, 51, 51) !important;
   font-size: 16px !important;
+  font-weight: 700 !important;
 }
 
-.arrow {
-  margin: 0 5px !important;
+.successOrderInfo-separator {
+  margin: 0 6px !important;
   color: rgb(51, 51, 51) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
 }
 
 /* ========== 订单信息表格 ========== */
 .success-order-table {
-  width: 100% !important;
+  width: 958px !important; /* 官网 table width */
   border-collapse: collapse !important;
   background-color: #FFFFFF !important;
+  margin: 0 auto !important;
+  border: 1px solid #D0D0D0 !important;
 }
 
 .success-order-table thead {
-  background-color: rgb(239, 241, 249) !important; /* #EFF1F9 */
+  background-color: rgb(229, 229, 229) !important; /* 参考截图：灰色表头 */
 }
 
 .success-order-table th {
-  padding: 12px 8px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+  padding: 0px 0px 0px 5px !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
   color: rgb(51, 51, 51) !important;
   text-align: center !important;
   border: 1px solid #D0D0D0 !important;
+  height: 32px !important;
+  line-height: 32px !important;
 }
 
 .success-order-table td {
-  padding: 12px 8px !important;
-  font-size: 14px !important;
+  padding: 0px 0px 0px 5px !important;
+  font-size: 12px !important;
   color: rgb(51, 51, 51) !important;
   text-align: center !important;
   border: 1px solid #D0D0D0 !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+/* 表体行浅蓝底（参考截图） */
+.success-order-table tbody tr {
+  background-color: rgb(239, 241, 249) !important; /* #EFF1F9 */
 }
 
 /* 已支付状态（橙色） */
-.status-paid {
-  color: rgb(251, 133, 48) !important; /* #FB8530 */
+.success-order-table td.status-paid {
+  color: rgb(251, 116, 3) !important; /* #FB7403 - 官网 .colorA */
   font-weight: 700 !important;
 }

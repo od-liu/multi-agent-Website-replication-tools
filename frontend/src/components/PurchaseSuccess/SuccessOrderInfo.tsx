@@ -58,6 +58,27 @@ const SuccessOrderInfo: React.FC<SuccessOrderInfoProps> = ({ orderInfo }) => {
     return `${idNumber.slice(0, 4)}${'*'.repeat(idNumber.length - 7)}${idNumber.slice(-3)}`;
   };
 
+  const weekdayMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] as const;
+  const weekday = (() => {
+    const dateStr = (orderInfo.date || '').trim();
+    // Safer parsing across browsers than `new Date('YYYY-MM-DD')`
+    const d = new Date(dateStr.replace(/-/g, '/'));
+    return Number.isNaN(d.getTime()) ? '周日' : weekdayMap[d.getDay()];
+  })();
+
+  const renderStation = (stationName: string, variant: 'from' | 'to') => {
+    const trimmed = (stationName || '').trim();
+    const hasSuffix = trimmed.endsWith('站');
+    const nameCls =
+      variant === 'from' ? 'successOrderInfo-stationNameFrom' : 'successOrderInfo-stationNameTo';
+    return (
+      <>
+        <span className={nameCls}>{hasSuffix ? trimmed.slice(0, -1) : trimmed}</span>
+        {!hasSuffix && <span className="successOrderInfo-stationSuffix">站</span>}
+      </>
+    );
+  };
+
   return (
     <div className="success-order-info-container">
       {/* 标题栏 */}
@@ -65,13 +86,15 @@ const SuccessOrderInfo: React.FC<SuccessOrderInfoProps> = ({ orderInfo }) => {
 
       {/* 车次信息行 */}
       <div className="success-order-train-info">
-        <span className="train-date">{orderInfo.date} (周日)</span>
-        <span className="train-number">{orderInfo.trainNumber}次</span>
-        <span className="station-name">{orderInfo.fromStation}</span>
-        <span className="train-time"> ({orderInfo.departTime} 开) </span>
-        <span className="arrow">→</span>
-        <span className="station-name">{orderInfo.toStation}</span>
-        <span className="train-time"> ({orderInfo.arriveTime} 到)</span>
+        <span className="successOrderInfo-dateText">
+          {orderInfo.date} <span className="successOrderInfo-weekday">（{weekday}）</span>
+        </span>
+        <span className="successOrderInfo-trainText">{orderInfo.trainNumber}次</span>
+        {renderStation(orderInfo.fromStation, 'from')}
+        <span className="successOrderInfo-timeText">（{orderInfo.departTime} 开）</span>
+        <span className="successOrderInfo-separator">—</span>
+        {renderStation(orderInfo.toStation, 'to')}
+        <span className="successOrderInfo-timeText">（{orderInfo.arriveTime} 到）</span>
       </div>
 
       {/* 乘客信息表格 */}
