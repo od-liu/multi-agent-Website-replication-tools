@@ -189,13 +189,15 @@
   color: #ff7f00;
 }
 
-/* ========== 错误提示 ========== */
-.error-message {
-  display: block;
+/* ========== 错误提示（注册表单专用） ========== */
+.registration-form-container .error-message {
+  display: inline-block;
   color: #ff4d4f;
   font-size: 12px;
-  margin-top: 5px;
-  line-height: 1.5;
+  line-height: 30px;
+  font-family: Tahoma, 宋体;
+  white-space: nowrap;
+  margin-left: 8px;
 }
 
 /* ========== 密码强度指示器 ========== */

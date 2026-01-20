@@ -57,8 +57,8 @@
   line-height: 1 !important;
 }
 
-/* 错误信息 */
-.error-message {
+/* 错误信息 - 增加特异性，避免影响其他页面的 .error-message */
+.error-modal .error-message {
   font-size: 18px !important;
   color: #333333 !important;
   text-align: center !important;
@@ -106,7 +106,7 @@
     font-size: 30px !important;
   }
   
-  .error-message {
+  .error-modal .error-message {
     font-size: 16px !important;
     margin-bottom: 20px !important;
   }
