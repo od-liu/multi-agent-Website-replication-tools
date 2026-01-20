@@ -1,0 +1,192 @@
+/**
+ * 12306 Icon Font Styles
+ * 定义项目中使用的图标字体
+ */
+
+/* Icon 字体基础样式 */
+.icon {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 添加图标 */
+.icon-add-fill::before {
+  content: '+';
+  font-weight: bold;
+}
+
+/* 删除图标 */
+.icon-del::before {
+  content: '×';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 编辑图标 */
+.icon-edit::before {
+  content: '✎';
+}
+
+/* 清空/关闭图标 */
+.icon-clear::before {
+  content: '×';
+  font-size: 18px;
+}
+
+/* 用户图标 */
+.icon-user::before {
+  content: '👤';
+}
+
+/* 密码图标 */
+.icon-pwd::before {
+  content: '🔒';
+}
+
+/* 搜索图标 */
+.icon-search::before {
+  content: '🔍';
+}
+
+/* 成功图标 */
+.icon-success::before {
+  content: '✓';
+  color: #52C41A;
+}
+
+/* 错误图标 */
+.icon-error::before {
+  content: '✗';
+  color: #E60000;
+}
+
+/* 警告图标 */
+.icon-warning::before {
+  content: '⚠';
+  color: #FF9800;
+}
+
+/* 信息图标 */
+.icon-info::before {
+  content: 'ℹ';
+  color: #3B99FC;
+}
+
+/* 箭头图标 */
+.icon-arrow-right::before {
+  content: '→';
+}
+
+.icon-arrow-left::before {
+  content: '←';
+}
+
+.icon-arrow-down::before {
+  content: '↓';
+}
+
+.icon-arrow-up::before {
+  content: '↑';
+}
+
+/* 更多图标 */
+.icon-more::before {
+  content: '⋯';
+}
+
+/* 关闭图标 */
+.icon-close::before {
+  content: '×';
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 勾选图标 */
+.icon-check::before {
+  content: '✓';
+}
+
+/* 日历图标 */
+.icon-calendar::before {
+  content: '📅';
+}
+
+/* 时钟图标 */
+.icon-clock::before {
+  content: '🕐';
+}
+
+/* 位置图标 */
+.icon-location::before {
+  content: '📍';
+}
+
+/* 电话图标 */
+.icon-phone::before {
+  content: '📞';
+}
+
+/* 邮件图标 */
+.icon-mail::before {
+  content: '✉';
+}
+
+/* 设置图标 */
+.icon-setting::before {
+  content: '⚙';
+}
+
+/* 帮助图标 */
+.icon-help::before {
+  content: '❓';
+}
+
+/* 下载图标 */
+.icon-download::before {
+  content: '⬇';
+}
+
+/* 上传图标 */
+.icon-upload::before {
+  content: '⬆';
+}
+
+/* 刷新图标 */
+.icon-refresh::before {
+  content: '⟳';
+}
+
+/* 星标图标 */
+.icon-star::before {
+  content: '★';
+}
+
+/* 空心星标图标 */
+.icon-star-outline::before {
+  content: '☆';
+}
+
+/* 收藏图标 */
+.icon-favorite::before {
+  content: '♥';
+}
+
+/* 分享图标 */
+.icon-share::before {
+  content: '⤴';
+}
+
+/* 打印图标 */
+.icon-print::before {
+  content: '🖨';
+}
+
+/* 复制图标 */
+.icon-copy::before {
+  content: '📋';
+}
