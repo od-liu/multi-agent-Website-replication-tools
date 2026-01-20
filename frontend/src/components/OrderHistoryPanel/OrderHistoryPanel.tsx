@@ -388,16 +388,14 @@ const OrderHistoryPanel: React.FC = () => {
 
       {/* 订单列表（目标：订单卡片+表格） */}
       <div className="order-list-section">
-        {/* 表头（未完成订单空态不显示表头） */}
-        {activeTab !== 'uncompleted' && (
-          <div className="order-table-header" role="row">
-            <div className="order-th order-th-train">车次信息</div>
-            <div className="order-th order-th-passenger">旅客信息</div>
-            <div className="order-th order-th-seat">席位信息</div>
-            <div className="order-th order-th-price">票价</div>
-            <div className="order-th order-th-status">车票状态</div>
-          </div>
-        )}
+        {/* 表头（目标：未完成订单也显示同样的5列表头） */}
+        <div className="order-table-header" role="row">
+          <div className="order-th order-th-train">车次信息</div>
+          <div className="order-th order-th-passenger">旅客信息</div>
+          <div className="order-th order-th-seat">席位信息</div>
+          <div className="order-th order-th-price">票价</div>
+          <div className="order-th order-th-status">车票状态</div>
+        </div>
 
         {loading ? (
           <div className="empty-state">加载中...</div>
