@@ -92,6 +92,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
   // 🆕 实时余票数状态（动态更新）
   const [seatAvailability, setSeatAvailability] = useState(initialSeatAvailability);
   const [loadingSeats, setLoadingSeats] = useState(true);
+  const [trainType, setTrainType] = useState<'D' | 'G/C'>('G/C'); // 车型类型
   
   // ========== Effect: 获取实时余票数 ==========
   
@@ -120,6 +121,7 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
         if (data.success) {
           console.log(`🎫 [订单确认] 获取实时余票:`, data.data);
           setSeatAvailability(data.data);
+          setTrainType(data.data.trainType || 'G/C'); // 设置车型类型
         } else {
           console.error('❌ [订单确认] 获取余票失败:', data.message);
           // 失败时使用初始值
@@ -340,9 +342,21 @@ const OrderConfirmModal: React.FC<OrderConfirmModalProps> = ({
               <p className="availability-text">正在获取最新余票信息...</p>
             ) : (
               <p className="availability-text">
-                本次列车，<span>商务座余票 <span className="seat-count">{seatAvailability.businessClass}</span> 张</span>
-                <span>，二等座余票 <span className="seat-count">{seatAvailability.secondClass}</span> 张</span>
-                <span>，一等座余票 <span className="seat-count">{seatAvailability.firstClass}</span> 张</span>。
+                {trainType === 'D' ? (
+                  // D 开头车型：显示软卧、硬卧、二等座
+                  <>
+                    本次列车，<span>软卧余票 <span className="seat-count">{seatAvailability.softSleeper || 0}</span> 张</span>
+                    <span>，硬卧余票 <span className="seat-count">{seatAvailability.hardSleeper || 0}</span> 张</span>
+                    <span>，二等座余票 <span className="seat-count">{seatAvailability.secondClass || 0}</span> 张</span>。
+                  </>
+                ) : (
+                  // G/C 开头车型：显示商务座、一等座、二等座
+                  <>
+                    本次列车，<span>商务座余票 <span className="seat-count">{seatAvailability.businessClass || 0}</span> 张</span>
+                    <span>，一等座余票 <span className="seat-count">{seatAvailability.firstClass || 0}</span> 张</span>
+                    <span>，二等座余票 <span className="seat-count">{seatAvailability.secondClass || 0}</span> 张</span>。
+                  </>
+                )}
               </p>
             )}
           </div>

@@ -781,37 +781,84 @@ router.get('/api/trains/available-seats', async (req, res) => {
       });
     }
     
-    // 4. 使用 V2 系统计算区间可用座位
-    const businessClassCount = await countAvailableSeats(
-      schedule.id,
-      fromStop.stop_sequence,
-      toStop.stop_sequence,
-      '商务座'
-    );
+    // 4. 根据车型判断座位类型
+    // G/C 开头：高铁/城际 → 商务座、一等座、二等座
+    // D 开头：动车 → 软卧、硬卧、二等座
+    const trainType = trainNumber.charAt(0);
+    const isDTrainType = trainType === 'D';
     
-    const firstClassCount = await countAvailableSeats(
-      schedule.id,
-      fromStop.stop_sequence,
-      toStop.stop_sequence,
-      '一等座'
-    );
+    let seatCounts;
+    let logMessage;
     
-    const secondClassCount = await countAvailableSeats(
-      schedule.id,
-      fromStop.stop_sequence,
-      toStop.stop_sequence,
-      '二等座'
-    );
-    
-    console.log(`🎫 [余票查询] ${trainNumber} ${fromStation}→${toStation}: 商务座${businessClassCount}, 一等座${firstClassCount}, 二等座${secondClassCount}`);
-    
-    return res.status(200).json({
-      success: true,
-      data: {
+    if (isDTrainType) {
+      // D 开头：返回软卧、硬卧、二等座
+      const softSleeperCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '软卧'
+      );
+      
+      const hardSleeperCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '硬卧'
+      );
+      
+      const secondClassCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '二等座'
+      );
+      
+      seatCounts = {
+        trainType: 'D',
+        softSleeper: softSleeperCount,
+        hardSleeper: hardSleeperCount,
+        secondClass: secondClassCount
+      };
+      
+      logMessage = `🎫 [余票查询] ${trainNumber} ${fromStation}→${toStation}: 软卧${softSleeperCount}, 硬卧${hardSleeperCount}, 二等座${secondClassCount}`;
+    } else {
+      // G/C 开头：返回商务座、一等座、二等座
+      const businessClassCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '商务座'
+      );
+      
+      const firstClassCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '一等座'
+      );
+      
+      const secondClassCount = await countAvailableSeats(
+        schedule.id,
+        fromStop.stop_sequence,
+        toStop.stop_sequence,
+        '二等座'
+      );
+      
+      seatCounts = {
+        trainType: 'G/C',
         businessClass: businessClassCount,
         firstClass: firstClassCount,
         secondClass: secondClassCount
-      }
+      };
+      
+      logMessage = `🎫 [余票查询] ${trainNumber} ${fromStation}→${toStation}: 商务座${businessClassCount}, 一等座${firstClassCount}, 二等座${secondClassCount}`;
+    }
+    
+    console.log(logMessage);
+    
+    return res.status(200).json({
+      success: true,
+      data: seatCounts
     });
   } catch (error) {
     console.error('❌ [余票查询失败]:', error);

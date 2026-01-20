@@ -32,15 +32,17 @@ import './TrainInfo.css';
 
 interface TrainInfoProps {
   date: string; // 如 "2026-01-18（周日）"
-  trainNo: string; // 如 "G103"
+  trainNo: string; // 如 "G103" 或 "D10"
   departureStation: string; // 如 "北京南"
   departureTime: string; // 如 "06:20"
   arrivalStation: string; // 如 "上海虹桥"
   arrivalTime: string; // 如 "11:58"
   prices: {
     secondClass: { price: number; available: number }; // 二等座
-    firstClass: { price: number; available: number }; // 一等座
-    businessClass: { price: number; available: number }; // 商务座
+    firstClass?: { price: number; available: number }; // 一等座（G/C车型）
+    businessClass?: { price: number; available: number }; // 商务座（G/C车型）
+    hardSleeper?: { price: number; available: number }; // 硬卧（D车型）
+    softSleeper?: { price: number; available: number }; // 软卧（D车型）
   };
 }
 
@@ -56,6 +58,10 @@ const TrainInfo: React.FC<TrainInfoProps> = ({
   arrivalTime,
   prices
 }) => {
+  // 根据车次号判断车型
+  const trainType = trainNo.charAt(0);
+  const isDTrainType = trainType === 'D';
+  
   // ========== UI Render ==========
   return (
     <div className="train-info-section" id="ui-train-info-full">
@@ -84,29 +90,59 @@ const TrainInfo: React.FC<TrainInfoProps> = ({
           </span>
         </div>
         
-        {/* 票价信息：三种席别 */}
+        {/* 票价信息：根据车型显示不同席别 */}
         <div className="train-fare-info">
-          <div className="fare-item">
-            <span className="seat-type-label">二等座</span>
-            <span className="seat-price-bracket">（</span>
-            <span className="seat-price">¥{prices.secondClass.price.toFixed(1)}元</span>
-            <span className="seat-price-bracket">）</span>
-            <span className="seat-available"> {prices.secondClass.available}张票</span>
-          </div>
-          <div className="fare-item">
-            <span className="seat-type-label">一等座</span>
-            <span className="seat-price-bracket">（</span>
-            <span className="seat-price">¥{prices.firstClass.price.toFixed(1)}元</span>
-            <span className="seat-price-bracket">）</span>
-            <span className="seat-available"> {prices.firstClass.available}张票</span>
-          </div>
-          <div className="fare-item">
-            <span className="seat-type-label">商务座</span>
-            <span className="seat-price-bracket">（</span>
-            <span className="seat-price">¥{prices.businessClass.price.toFixed(1)}元</span>
-            <span className="seat-price-bracket">）</span>
-            <span className="seat-available"> {prices.businessClass.available}张票</span>
-          </div>
+          {isDTrainType ? (
+            // D 开头车型：显示软卧、硬卧、二等座
+            <>
+              <div className="fare-item">
+                <span className="seat-type-label">软卧</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{(prices.softSleeper?.price || 0).toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.softSleeper?.available || 0}张票</span>
+              </div>
+              <div className="fare-item">
+                <span className="seat-type-label">硬卧</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{(prices.hardSleeper?.price || 0).toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.hardSleeper?.available || 0}张票</span>
+              </div>
+              <div className="fare-item">
+                <span className="seat-type-label">二等座</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{prices.secondClass.price.toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.secondClass.available}张票</span>
+              </div>
+            </>
+          ) : (
+            // G/C 开头车型：显示商务座、一等座、二等座
+            <>
+              <div className="fare-item">
+                <span className="seat-type-label">商务座</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{(prices.businessClass?.price || 0).toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.businessClass?.available || 0}张票</span>
+              </div>
+              <div className="fare-item">
+                <span className="seat-type-label">一等座</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{(prices.firstClass?.price || 0).toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.firstClass?.available || 0}张票</span>
+              </div>
+              <div className="fare-item">
+                <span className="seat-type-label">二等座</span>
+                <span className="seat-price-bracket">（</span>
+                <span className="seat-price">¥{prices.secondClass.price.toFixed(1)}元</span>
+                <span className="seat-price-bracket">）</span>
+                <span className="seat-available"> {prices.secondClass.available}张票</span>
+              </div>
+            </>
+          )}
         </div>
         
         {/* 价格说明 */}
