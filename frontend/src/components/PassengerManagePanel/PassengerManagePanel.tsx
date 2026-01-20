@@ -76,14 +76,11 @@ const PassengerManagePanel: React.FC = () => {
   const fetchPassengers = async () => {
     try {
       // 从 localStorage 获取用户ID
-      const userInfoStr = localStorage.getItem('user_info');
-      if (!userInfoStr) {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
         console.error('❌ 未登录，无法获取乘客列表');
         return;
       }
-      
-      const userInfo = JSON.parse(userInfoStr);
-      const userId = userInfo.userId;
       
       console.log('📋 [乘客管理] 获取常用乘客, userId:', userId);
       
