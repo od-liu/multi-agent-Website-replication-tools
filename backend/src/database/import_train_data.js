@@ -324,7 +324,8 @@ function formatDuration(minutes) {
 
 // 如果直接执行此文件，则运行导入
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const trainDataPath = join(dirname(dirname(dirname(__dirname))), ' 车次信息.json');
+  // 注意：文件名前面有空格
+  const trainDataPath = process.argv[2] || join(dirname(dirname(dirname(__dirname))), ' 车次信息.json');
   
   importTrainData(trainDataPath)
     .then(() => {
