@@ -358,7 +358,7 @@ cs3604-12306-automation-mcp/
 如有问题或建议，欢迎通过以下方式联系：
 
 - 项目 Issues: [GitHub Issues](https://github.com/your-username/cs3604-12306-automation-mcp/issues)
-- Email: your-email@example.com
+- Email: 3279882704@qq.com
 
 ---
 
